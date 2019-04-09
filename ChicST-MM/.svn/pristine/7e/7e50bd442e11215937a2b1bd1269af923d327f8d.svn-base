@@ -1,0 +1,43 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ChicST_MM.WEB.Models
+{
+    /// <summary>
+    /// 售后发起数据
+    /// </summary>
+    public class AfterSalesViewModel
+    {
+        public int ID { get; set; }
+        public string 售后单号 { get; set; }
+        public System.DateTime 客诉日期 { get; set; }
+        public string 订货单号 { get; set; }
+        public System.DateTime 发货日期 { get; set; }
+        public System.DateTime 送货安装日期 { get; set; }
+        public string 产品型号 { get; set; }
+        public string 尺寸 { get; set; }
+        public string 产品描述 { get; set; }
+        public int 店铺ID { get; set; }
+        public string 店铺 { get; set; }
+        public int? 销售人员ID { get; set; }
+        public string 销售人员 { get; set; }
+        public string 售后描述 { get; set; }
+        public int 照片附件 { get; set; }
+        public string 初审意见 { get; set; }
+        public int 提交人ID { get; set; }
+        public string 提交人 { get; set; }
+        public System.DateTime 制单日期 { get; set; }
+        public int 更新人ID { get; set; }
+        public string 更新人 { get; set; }
+        public System.DateTime 更新日期 { get; set; }
+
+        /// <summary>
+        /// 售后凭证集
+        /// </summary>
+        public List<int> proof { get; set; }
+
+        public List<AfterSales_TrackInfoViewModel> afterSales_TrackInfoViewModels { get; set; }
+    }
+}

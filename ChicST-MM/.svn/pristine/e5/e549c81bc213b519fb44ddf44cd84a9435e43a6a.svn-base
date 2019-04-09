@@ -1,0 +1,8 @@
+﻿@model ChicST_MM.WEB.Models.BusinessTrip_ReportViewModel
+
+@{
+    ViewBag.Title = "EditBusinessTrip_ReportView";
+}
+
+<h2>EditBusinessTrip_ReportView</h2>
+

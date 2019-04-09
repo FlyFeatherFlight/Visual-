@@ -1,0 +1,8 @@
+﻿@model ChicST_MM.WEB.Models.OtherReimburseViewModel
+
+@{
+    ViewBag.Title = "ApplyOtherReimbursementView";
+}
+
+<h2>ApplyOtherReimbursementView</h2>
+

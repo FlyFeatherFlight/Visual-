@@ -1,0 +1,8 @@
+﻿@model ChicST_MM.WEB.Models.RegionViewModel
+
+@{
+    ViewBag.Title = "AddReceivingRecordsView";
+}
+
+<h2>AddReceivingRecordsView</h2>
+

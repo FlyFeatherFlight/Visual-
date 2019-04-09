@@ -1,0 +1,165 @@
+.nav-warpper{
+    width: 15%;
+    height: 100%;
+    background-color: #f8f8f8;
+    overflow: hidden;
+    position: fixed;
+    color: #337ab7;
+    
+}
+
+.active{
+    background-color: #eee;
+}
+.nav {
+    padding-right: 0;
+}
+.nav>li{
+    border-bottom: 1px solid #eee;
+    padding: 15px;
+    position: relative;
+    cursor: pointer;
+}
+
+.container-fluid{
+    height: 100%;
+    padding: 0 !important;
+}
+.user-warpper{
+    margin-bottom: 20px;
+    text-align: center;
+    width: 100%;
+    cursor: pointer;
+    position: relative;
+    padding-top: 20px;
+}
+.user-warpper:hover{
+   background-color: #eee;
+}
+.user-warpper:hover .goOut{
+    display: block;
+}
+.glyphicon-user {
+    font-size: 24px;
+    margin-right: 10px;
+}
+.goOut{
+    position: absolute;
+    left: 45%;
+    display: none;
+}
+.search-warpper{
+    padding:  10px ;
+}
+
+.glyphicon-menu-left{
+    font-size: 12px !important;
+}
+.row{margin: 0 !important;}
+
+.running{
+    transform: rotate(-90deg);
+ }
+ .run{
+     transform: rotate(0deg);
+ }
+ .nav-second{
+     height: auto;
+ }
+ .nav-second>ul{
+     margin-left: 48px;
+ }
+ .nav-second>ul>li{
+    padding: 8px 0;
+    margin-top: 3px;
+    cursor: pointer;
+ }
+ .nav-second>ul>li:hover{
+     background-color: #eeeeee;
+ }
+ /* 缩略菜单 */
+ .small-box{
+     height: 46px;
+     background-color: #f8f8f8;
+     line-height: 46px ;
+     color: #337ab7;
+     font-size: 1.3em;
+     padding: 0 !important;
+     position: fixed !important;
+     z-index: 2;
+ }
+.icon-menus {
+    float: right;
+    background-color: #eee;
+    padding: 6px 8px;
+    margin-top: 7px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+}
+.icon-menu{
+    display: block;
+    height: 1px;
+    width: 20px;
+    border: 1px solid #337ab7;
+}
+.icon-menu:not(:last-child){
+    margin-bottom:3px; 
+}
+.small-nav{
+    font-size: 14px;
+    z-index: 1;
+    background-color: #f8f8f8;
+    display: none;
+    transition: 1s;
+   
+}
+.small-nav>.type-list
+{
+   line-height: 34px;
+   padding: 10px 15px;
+   cursor:pointer;
+}
+.small-nav > .nav-second > ul > li {
+    margin-top: 1px;
+    padding: 4px 0;
+    line-height: 15px;
+    cursor: pointer;
+}
+.small-nav .glyphicon-menu-left {
+    top: 12px;
+}
+.col-xs-12, .col-sm-12 {
+    padding-left: 0;
+    padding-right: 0;
+}
+/* 小屏幕时内容区域 */
+@media screen and (min-width: 769px) {
+    .content-warpper{
+        width: calc(100% - 15%) !important;
+        height: 3000px;
+        background-color: pink;
+        margin-left: 15%;
+        overflow: hidden;
+        padding: 10px;
+    }
+    .navbar-collapse {
+        width: 15% !important;
+        border-top: 0;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+}
+ @media screen and (max-width: 768px){
+    .content-warpper{
+        height: 2000px;
+        background-color: pink;
+        overflow: hidden;
+        padding: 10px;
+        margin-top: 46px;
+    }
+ }
+ .show{
+    display: block;
+    height: auto;
+ }                         

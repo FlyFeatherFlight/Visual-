@@ -1,0 +1,11 @@
+﻿using ChicST_MM.Model;
+
+namespace ChicST_MM.IDAL
+{
+    /// <summary>
+    /// 5S评审
+    /// </summary>
+   public partial interface IReview_5SDAL:IBaseDAL<C5S_评审标准>
+    {
+    }
+}

@@ -1,0 +1,176 @@
+﻿@model ChicST_MM.WEB.Models.BusinessRecReimburseViewModel
+
+@{
+    ViewBag.Title = "接待报销详情";
+}
+@*判断数据是否异常*@
+@if (ViewBag.IsEdit == true)
+{
+    <h3>接待报销修改</h3>
+
+    using (Html.BeginForm("BusinessRec_Edit", "Reimbursement", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <input type="text" name="接待计划ID" value="@Model.接待计划ID" class="hidden" />
+        <input type="text" name="ID" value="@Model.ID" class="hidden" />
+        <table class="table table-hover table-bordered table-striped">
+            <tr>
+                <td>申请人</td>
+                <td colspan="3">@Model.提交人</td>
+            </tr>
+            <tr>
+                <td>时间</td>
+                <td colspan="3">
+                    <input type="text" name="时间" value="@Model.时间.ToString("yyyy-MM-dd")" class="form-control dateTime red" placeholder="请选择日期" oninput="sureRed()" />
+                    <span class="must" style="color:red;">*该项为必填项</span>
+                </td>
+            </tr>
+            <tr>
+
+                <td>城市</td>
+                <td colspan="3">
+                    <input type="text" name="城市" value="@Model.城市" class="form-control red" oninput="sureRed()" />
+                    <span class="must" style="color:red;">*该项为必填项</span>
+                </td>
+            </tr>
+
+            <tr>
+                <td>经销商</td>
+                <td colspan="3">
+                    <input type="text" name="经销商" value="@Model.经销商" class="form-control red" oninput="sureRed()" />
+                    <span class="must" style="color:red;">*该项为必填项</span>
+                </td>
+            </tr>
+            <tr>
+                <td>金额</td>
+                <td colspan="3">
+                    <input type="text" name="金额" value="@Model.金额" class="form-control red" oninput="sureRed()"
+                           onkeyup="value=value.replace(/[^\d.]/g,'')"
+                           onblur="value=value.replace(/[^\d.]/g,'')" />
+                    <span class="must" style="color:red;">*该项为必填项</span>
+                </td>
+            </tr>
+            <tr>
+                <td>事由</td>
+                <td colspan="3">
+                    <textarea rows="3" name="事由" class="form-control red" oninput="sureRed()">@Model.事由</textarea>
+                    <span class="must" style="color:red;">*该项为必填项</span>
+                </td>
+            </tr>
+            <tr>
+                <td>提交人</td>
+                <td>
+                    <input type="text" name="提交人" value="@Model.提交人" class="form-control" readonly />
+                    <input type="text" name="提交人ID" value="@Model.提交人ID" class=" hidden"  />
+                </td>
+                <td>提交时间</td>
+                <td>
+                    <input type="text" name="提交时间" value="@Model.提交时间" class="form-control" readonly/>
+                </td>
+            </tr>
+        </table>
+        <div class="submit-btns" style="margin-top:10px;">
+            <input type="button" value="提交" class="btn btn-success width-7" onclick="sureForm()">
+            &nbsp;&nbsp;
+            <input type="button" value="取消" class="btn btn-danger width-7" onclick="javascript:history.back(-1);">
+        </div>
+
+    }
+
+}
+else
+{
+
+    <h3>接待报销详情</h3>
+    @Html.ActionLink("修改接待报销详情", "BusinessRec_InfoView", new { id = Model.ID, isEdit = true }, new { style = "margin-left:2.5%;" })
+    <table class="table table-hover table-bordered table-striped">
+        <tr>
+            <td>申请人</td>
+            <td colspan="3">@Model.提交人</td>
+        </tr>
+        <tr>
+            <td>时间</td>
+            <td colspan="3">@Model.时间</td>
+        </tr>
+        <tr>
+
+            <td>城市</td>
+            <td colspan="3">@Model.城市</td>
+        </tr>
+
+        <tr>
+            <td>经销商</td>
+            <td colspan="3">@Model.经销商</td>
+        </tr>
+        <tr>
+            <td>金额</td>
+            <td colspan="3">@Model.金额</td>
+        </tr>
+        <tr>
+            <td>事由</td>
+            <td colspan="3">@Model.事由</td>
+        </tr>
+        <tr>
+            <td>提交人</td>
+            <td>@Model.提交人</td>
+            <td>提交时间</td>
+            <td>@Model.提交时间</td>
+        </tr>
+        <tr>
+            <td>更新人</td>
+            <td>@Model.更新人</td>
+            <td>更新时间</td>
+            <td>@Model.更新时间</td>
+        </tr>
+        <tr>
+            <td>审核状态</td>
+            <td colspan="3">
+                @if (Model.审核状态 == null)
+                {
+                    <span>未审核</span>
+                }
+                else if (Model.审核状态 == true)
+                {
+                    <span>通过</span>
+                }
+                else
+                {
+                    <span>驳回</span>
+                }
+            </td>
+        </tr>
+    </table>
+
+    <div style="text-align:center;">
+        @if (ViewBag.ReCheck == true)
+        {
+            using (Html.BeginForm("ReimbursementCheck", "Reimbursement", FormMethod.Post))
+            {
+
+                <input type="text" name="id" value="@Model.ID" class="hidden" />
+                <input type="text" name="dataType" value="1" class="hidden" />
+                <input type="radio" value="通过" name="result" />
+                <label>通过</label>
+                <input type="radio" value="驳回" name="result" />
+                <label>驳回</label>
+                <input type="submit" value="提交" />
+            }
+        }
+    </div>
+}
+<script>
+    function sureForm() {
+        var status = false;
+        $("form .red").each((i, m) => {
+            if (m.value == "" || m.value == null) {
+                return status = true;
+            }
+        })
+        if (status) {
+            alert("请完善信息！")
+        } else {
+            $("form").submit();
+        }
+
+    }
+</script>

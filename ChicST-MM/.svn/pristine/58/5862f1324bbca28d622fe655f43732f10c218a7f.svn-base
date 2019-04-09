@@ -1,0 +1,695 @@
+﻿using ChicST_MM.IBLL;
+using ChicST_MM.WEB.Models;
+using JPager.Net;
+using Microsoft.Win32;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using UploadManager;
+
+
+namespace ChicST_MM.WEB.Controllers
+{
+    /// <summary>
+    /// 售后
+    /// </summary>
+    public class AfterSalesController : Controller
+    {
+        private readonly IAfterSalesBLL afterSalesBLL;
+        private readonly IAccountBLL accountBLL;
+        private readonly IStoreBLL storeBLL;
+        private readonly IStoreEmployeesBLL storeEmployeesBLL;
+        private readonly IDistributorBLL distributorBLL;
+        private readonly IAfterSales_ProofBLL afterSales_ProofBLL;
+        private readonly IAfterSales_TrackBLL afterSales_TrackBLL;
+        private readonly IEmployeeInformationBLL employeeInformationBLL;
+        private readonly IAfterSales_ClassifyBLL afterSales_ClassifyBLL;
+        private readonly IAfterSales_CostComputationBLL afterSales_CostComputationBLL;
+
+        public AfterSalesController(IAfterSalesBLL afterSalesBLL, IAccountBLL accountBLL, IStoreBLL storeBLL, IStoreEmployeesBLL storeEmployeesBLL, IDistributorBLL distributorBLL, IAfterSales_ProofBLL afterSales_ProofBLL, IAfterSales_TrackBLL afterSales_TrackBLL, IEmployeeInformationBLL employeeInformationBLL, IAfterSales_ClassifyBLL afterSales_ClassifyBLL, IAfterSales_CostComputationBLL afterSales_CostComputationBLL)
+        {
+            this.afterSalesBLL = afterSalesBLL;
+            this.accountBLL = accountBLL;
+            this.storeBLL = storeBLL;
+            this.storeEmployeesBLL = storeEmployeesBLL;
+            this.distributorBLL = distributorBLL;
+            this.afterSales_ProofBLL = afterSales_ProofBLL;
+            this.afterSales_TrackBLL = afterSales_TrackBLL;
+            this.employeeInformationBLL = employeeInformationBLL;
+            this.afterSales_ClassifyBLL = afterSales_ClassifyBLL;
+            this.afterSales_CostComputationBLL = afterSales_CostComputationBLL;
+        }
+
+
+
+        /// <summary>
+        /// 售后发起添加视图
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult AddAfterSalesView()
+        {
+            AfterSalesViewModel afterSalesViewModel = new AfterSalesViewModel() { };
+
+            afterSalesViewModel.售后单号 = Guid.NewGuid().ToString("N").ToUpper();
+
+            return View(afterSalesViewModel);
+        }
+
+        /// <summary>
+        /// 售后发起添加操作
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult AfterSalesAdd(AfterSalesViewModel afterSalesViewModel)
+        {
+            var ac = GetAccountInfo();
+            客服_售后发起单 model = new 客服_售后发起单() { };
+            model.产品型号 = afterSalesViewModel.产品型号;
+            model.产品描述 = afterSalesViewModel.产品描述;
+            model.初审意见 = afterSalesViewModel.初审意见;
+            model.制单日期 = DateTime.Now;
+            model.发货日期 = afterSalesViewModel.发货日期;
+            model.售后单号 = afterSalesViewModel.售后单号;
+            model.售后描述 = afterSalesViewModel.售后描述;
+            model.客诉日期 = afterSalesViewModel.客诉日期;
+            model.尺寸 = afterSalesViewModel.尺寸;
+            model.店铺ID = afterSalesViewModel.店铺ID;
+            model.提交人ID = ac.用户ID;
+            model.更新人ID = ac.用户ID;
+            model.更新日期 = DateTime.Now;
+            model.订货单号 = afterSalesViewModel.订货单号;
+            model.送货安装日期 = afterSalesViewModel.送货安装日期;
+            model.销售人员ID = afterSalesViewModel.销售人员ID;
+            try
+            {
+                model = afterSalesBLL.AddReturnModel(model);
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+
+            return Json(model.ID);
+
+        }
+
+        /// <summary>
+        /// 售后发起详情
+        /// </summary>
+        /// <param name="id">售后发起单ID</param>
+        /// <returns></returns>
+        public ActionResult AfterSales_RecordInfoView(int id, bool? isEdit)
+        {
+            var model = afterSalesBLL.GetModel(p => p.ID == id);
+            AfterSalesViewModel afterSalesViewModel = new AfterSalesViewModel() { };
+            afterSalesViewModel = BuildAfterSales(model);
+            ViewBag.IsEdit = isEdit;
+            var m = afterSales_CostComputationBLL.GetModel(p => p.营销售后ID == id);
+            if (m != null)
+            {
+                ViewBag.Sharing = true;//为true，已存在费用分摊。
+            }
+            return View(afterSalesViewModel);
+        }
+
+        /// <summary>
+        /// 售后发起单修改操作
+        /// </summary>
+        /// <param name="afterSalesViewModel"></param>
+        /// <returns></returns>
+        public ActionResult AfterSales_Edit(AfterSalesViewModel afterSalesViewModel)
+        {
+            var ac = GetAccountInfo();
+            客服_售后发起单 model = new 客服_售后发起单() { };
+            model.ID = afterSalesViewModel.ID;
+            model.产品型号 = afterSalesViewModel.产品型号;
+            model.产品描述 = afterSalesViewModel.产品描述;
+            model.初审意见 = afterSalesViewModel.初审意见;
+            model.制单日期 = afterSalesViewModel.制单日期;
+            model.发货日期 = afterSalesViewModel.发货日期;
+            model.售后单号 = afterSalesViewModel.售后单号;
+            model.售后描述 = afterSalesViewModel.售后描述;
+            model.客诉日期 = afterSalesViewModel.客诉日期;
+            model.尺寸 = afterSalesViewModel.尺寸;
+            model.店铺ID = afterSalesViewModel.店铺ID;
+            model.提交人ID = afterSalesViewModel.提交人ID;
+            model.更新人ID = ac.用户ID;
+            model.更新日期 = DateTime.Now;
+            model.订货单号 = afterSalesViewModel.订货单号;
+            model.送货安装日期 = afterSalesViewModel.送货安装日期;
+            model.销售人员ID = afterSalesViewModel.销售人员ID;
+            try
+            {
+                afterSalesBLL.Modify(model);
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+            return Json(new { id = model.ID, isEdit = false });
+        }
+        /// <summary>
+        /// 售后跟进添加视图
+        /// </summary>
+        /// <param name="afterID">售后发起单ID</param>
+        /// <returns></returns>
+        public ActionResult AfterSales_TrackAddView(int afterID)
+        {
+            AfterSales_TrackInfoViewModel model = new AfterSales_TrackInfoViewModel();
+            model.营销售后ID = afterID;
+            model.售后受理单号 = afterSalesBLL.GetModel(p => p.ID == afterID).售后单号;
+            return View(model);
+        }
+        /// <summary>
+        /// 售后跟进日志添加操作
+        /// </summary>
+        /// <param name="trackInfoViewModel"></param>
+        /// <returns></returns>
+        public ActionResult AfterSales_Track(AfterSales_TrackInfoViewModel trackInfoViewModel)
+        {
+            var ac = GetAccountInfo();
+            客服_售后跟进日志 model = new 客服_售后跟进日志();
+            model.公司投入预估 = trackInfoViewModel.公司投入预估;
+            model.内容 = trackInfoViewModel.内容;
+            model.工厂投入预估 = trackInfoViewModel.工厂投入预估;
+            model.日期 = trackInfoViewModel.日期;
+            model.更新人 = ac.用户ID;
+            model.更新日期 = DateTime.Now;
+            model.材质分类 = trackInfoViewModel.材质分类ID;
+            model.经销投入预估 = trackInfoViewModel.经销投入预估;
+            model.营销售后ID = trackInfoViewModel.营销售后ID;
+            model.责任判定 = trackInfoViewModel.责任判定ID;
+            model.跟进人ID = ac.用户ID;
+            model.问题分类 = trackInfoViewModel.问题分类ID;
+            try
+            {
+                model = afterSales_TrackBLL.AddReturnModel(model);
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+            return RedirectToAction("AfterSales_RecordInfoView",new { id=model.营销售后ID, isEdit=false });
+        }
+
+        /// <summary>
+        /// 售后费用分摊添加视图
+        /// </summary>
+        /// <param name="id">售后受理ID</param>
+        /// <returns></returns>
+        public ActionResult AfterSales_CostCostComputationAddView(int id) {
+            AfterSales_CostComputationViewModel afterSales_CostComputationViewModel = new AfterSales_CostComputationViewModel();
+            afterSales_CostComputationViewModel.营销售后ID = id;
+            return View(afterSales_CostComputationViewModel);
+        }
+
+        /// <summary>
+        /// 售后分摊提交操作
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public ActionResult AfterSales_CostCostComputationAdd(AfterSales_CostComputationViewModel model) {
+            var ac = GetAccountInfo();
+            客服_售后费用分摊 m = new 客服_售后费用分摊();
+            m.公司费用判定 = model.公司费用判定;
+            m.工厂费用判定 = model.工厂费用判定;
+            m.提交人ID = ac.用户ID;
+            m.提交日期 = DateTime.Now;
+            m.更新人ID = ac.用户ID;
+            m.更新日期 = DateTime.Now;
+            m.材质分类 = model.材质分类ID;
+            m.经销商费用判定 = model.经销商费用判定;
+            m.营销售后ID = model.营销售后ID;
+            m.责任判定 = model.责任判定ID;
+            m.问题分类 = model.问题分类ID;
+
+            try
+            {
+                m = afterSales_CostComputationBLL.AddReturnModel(m);
+            }
+            catch (Exception e)
+            {
+
+                return Content("" + e.Message) ;
+            }
+
+            return RedirectToAction("AfterSales_CostComputationInfoView", new {id=m.营销售后ID, isEdit =false});
+        }
+
+        /// <summary>
+        /// 售后费用分摊详细
+        /// </summary>
+        /// <param name="id">售后ID</param>
+        /// <param name="isEdit">是否为修改页面</param>
+        /// <returns></returns>
+        public ActionResult AfterSales_CostComputationInfoView(int id,bool isEdit) {
+            var model=afterSales_CostComputationBLL.GetModel(p => p.营销售后ID == id);
+            ViewBag.IsEdit = isEdit;
+           
+            return View(BuildCostComputationViewModel(model));
+        }
+
+        /// <summary>
+        /// 售后费用分摊修改操作
+        /// </summary>
+        /// <param name="model">售后费用分摊实体</param>
+        /// <returns></returns>
+        public ActionResult AfterSales_CostComputationEdit(AfterSales_CostComputationViewModel model) {
+            var ac = GetAccountInfo();
+            客服_售后费用分摊 m = new 客服_售后费用分摊();
+            m = afterSales_CostComputationBLL.GetModel(p => p.ID == model.ID);
+            m.公司费用判定 = model.公司费用判定;
+            m.工厂费用判定 = model.工厂费用判定;
+            m.更新人ID = ac.用户ID;
+            m.更新日期 = DateTime.Now;
+            m.材质分类 = model.材质分类ID;
+            m.经销商费用判定 = model.经销商费用判定;
+            m.营销售后ID = model.营销售后ID;
+            m.责任判定 = model.责任判定ID;
+            m.问题分类 = model.问题分类ID;
+            try
+            {
+                afterSales_CostComputationBLL.Modify(m);
+            }
+            catch (Exception e)
+            {
+
+
+                return Content("" + e.Message);
+            }
+
+            return RedirectToAction("AfterSales_CostComputationInfoView", new { id = m.营销售后ID, isEdit = false });
+        }
+
+
+
+        /// <summary>
+        /// 文件上传
+        /// </summary>
+        /// <param name="UploadStream">文件流</param>
+        /// <param name="storeid">店铺ID</param>
+        /// <param name="afterSalesCode">售后序号</param>
+        /// <returns></returns>
+        public ActionResult UpFiles(HttpPostedFileBase UploadStream, string storeid, string afterSalesCode)
+        {
+            var ac = GetAccountInfo();
+            if (UploadStream == null)
+            {
+                return Json(new { success = false, Message = "上传文件为空" });
+            }
+
+            string fileName = UploadStream.FileName;
+            var path = UploadManager.UploadManager.SaveFile(UploadStream, "售后发起单凭证", storeid, DateTime.Now.ToString("yyyy-MM-dd"), afterSalesCode, fileName);
+            客服_售后发起单凭证 model = new 客服_售后发起单凭证() { };
+            model.关联售后发起单号 = afterSalesCode;
+            model.提交人ID = ac.用户ID;
+            model.时间 = DateTime.Now;
+            model.路径 = path;
+            model = afterSales_ProofBLL.AddReturnModel(model);
+
+            if (model == null)
+            {
+                return Json(new { Success = false, Message = "上传失败！" });
+            }
+            return Json(new { Success = true, Message = "上传成功！" });
+        }
+
+        /// <summary>
+        /// 文件下载
+        /// </summary>
+        /// <param name="rowid">ID</param>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult DownLoadFiles(int id)
+        {
+
+
+
+            var path = afterSales_ProofBLL.GetModel(p => p.ID == id).路径;
+
+            string msg = "";
+            if (!System.IO.File.Exists(path))
+            {
+
+
+                msg = "<script>alert('文件下载失败！');parent.location.href='Index';</script>";
+                return Content(msg);
+            }
+            FileStream fs = new FileStream(path, FileMode.Open);
+            byte[] bytes = new byte[(int)fs.Length];
+            fs.Read(bytes, 0, bytes.Length);
+            fs.Close();
+            FileInfo fi = new FileInfo(path);
+            //**********处理可以解决文件类型问题
+            string fileextname = fi.Extension;
+            string DEFAULT_CONTENT_TYPE = "application/unknown";
+            RegistryKey regkey, fileextkey;
+            string filecontenttype;
+            try
+            {
+                regkey = Registry.ClassesRoot;
+                fileextkey = regkey.OpenSubKey(fileextname);
+                filecontenttype = fileextkey.GetValue("Content Type", DEFAULT_CONTENT_TYPE).ToString();
+            }
+            catch
+            {
+                filecontenttype = DEFAULT_CONTENT_TYPE;
+            }
+            //**********end
+            Response.Charset = "UTF-8";
+            Response.ContentEncoding = System.Text.Encoding.GetEncoding("UTF-8");
+            Response.ContentType = filecontenttype;
+            try
+            {
+
+                Response.AddHeader("Content-Disposition", "attachment; filename=" + Guid.NewGuid().ToString().Substring(0, 5) + ".JPG");//设置文件信息
+                Response.BinaryWrite(bytes);
+                Response.Flush();
+                Response.End();
+            }
+            catch (Exception E)
+            {
+
+                throw E;
+            }
+
+            return new EmptyResult();
+
+
+
+
+        }
+
+        /// <summary>
+        /// 售后发起记录
+        /// </summary>
+        /// <param name="searchString">搜索关键字</param>
+        /// <param name="pagerInBase">页面配置</param>
+        /// <returns></returns>
+        public ActionResult AfterSales_SubRecordsView(string searchString, PagerInBase pagerInBase)
+        {
+            var ac = GetAccountInfo();
+            var models = BuildAfterSalesViewModels();
+            models = models.OrderByDescending(p => p.ID).ToList();
+            models = searchString != null ?
+               models.Where(t => t.订货单号.Contains(searchString)).ToList() :
+               models.ToList();
+            //分页数据
+            var data = models.Skip(pagerInBase.Skip).Take(pagerInBase.PageSize);
+
+            //总页数
+            var count = models.Count;
+
+            var res = new PagerResult<AfterSalesViewModel>
+            {
+                Code = 0,
+                DataList = data,
+                Total = count,
+                PageSize = 10,
+                PageIndex = 0,
+                RequestUrl = ""
+            };
+            return View(res);
+        }
+        /// <summary>
+        /// 获得店员
+        /// </summary>
+        /// <param name="id">经销商ID</param>
+        /// <returns></returns>
+        public JsonResult GetEmployeesObj(int id)
+        {
+            var ems = storeEmployeesBLL.GetModels(p => p.店铺ID == id);
+            var emObj = new ArrayList();
+            foreach (var item in ems)
+            {
+
+                var em = new string[] { item.ID.ToString(), item.姓名 };
+                emObj.Add(em);
+            }
+            return Json(emObj);
+
+
+        }
+        /// <summary>
+        /// 获得门店
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult GetTripObj()
+        {
+
+            var stores = storeBLL.GetModels(p => true);
+            var tripObj = new ArrayList();
+            foreach (var item in stores)
+            {
+
+                var store = new string[] { item.ID.ToString(), item.名称 };
+                tripObj.Add(store);
+            }
+            return Json(tripObj);
+
+        }
+
+        /// <summary>
+        /// 获得分类数据信息
+        /// </summary>
+        /// <param name="type">分类名称(问题分类/责任判定/材质分类)</param>
+        /// <returns></returns>
+        public ActionResult GetClassify(string type) {
+            var models = BuildAfterSales_ClassifyViewModels();
+            models = models.Where(p => p.分类类型名称 == type).ToList();
+            return Json(models);
+        }
+
+
+
+        /// <summary>
+        /// 构建售后发起单实体
+        /// </summary>
+        /// <param name="model">客服_售后发起单</param>
+        /// <returns></returns>
+        public AfterSalesViewModel BuildAfterSales(客服_售后发起单 model)
+        {
+            AfterSalesViewModel afterSalesViewModel = new AfterSalesViewModel() { };
+            afterSalesViewModel.ID = model.ID;
+            afterSalesViewModel.产品型号 = model.产品型号;
+            afterSalesViewModel.产品描述 = model.产品描述;
+            afterSalesViewModel.初审意见 = model.初审意见;
+            afterSalesViewModel.制单日期 = model.制单日期;
+            afterSalesViewModel.发货日期 = model.发货日期;
+            afterSalesViewModel.售后单号 = model.售后单号;
+            afterSalesViewModel.售后描述 = model.售后描述;
+            afterSalesViewModel.客诉日期 = model.客诉日期;
+            afterSalesViewModel.尺寸 = model.尺寸;
+            afterSalesViewModel.店铺ID = model.店铺ID;
+            afterSalesViewModel.店铺 = storeBLL.GetModel(p => p.ID == model.店铺ID).名称;
+            afterSalesViewModel.提交人ID = model.提交人ID;
+            afterSalesViewModel.提交人 = accountBLL.GetModel(p => p.ID == model.提交人ID).姓名;
+            afterSalesViewModel.更新人ID = model.更新人ID;
+            afterSalesViewModel.更新人 = accountBLL.GetModel(p => p.ID == model.更新人ID).姓名;
+            afterSalesViewModel.更新日期 = model.更新日期;
+            afterSalesViewModel.订货单号 = model.订货单号;
+            afterSalesViewModel.送货安装日期 = model.送货安装日期;
+            afterSalesViewModel.销售人员ID = model.销售人员ID.Value;
+            afterSalesViewModel.销售人员 = storeEmployeesBLL.GetModel(p => p.ID == model.销售人员ID).姓名;
+            List<int> proofs = new List<int>() { };
+            var lis = afterSales_ProofBLL.GetModels(p => p.关联售后发起单号 == model.售后单号);
+            foreach (var item in lis)
+            {
+                int n = item.ID;
+                proofs.Add(n);
+
+            }
+            afterSalesViewModel.proof = proofs;
+            afterSalesViewModel.afterSales_TrackInfoViewModels = BuildAfterSales_TrackInfoViewModels(model.ID);
+            return afterSalesViewModel;
+        }
+
+        /// <summary>
+        /// 构建售后发起单实体集
+        /// </summary>
+        /// <returns></returns>
+        public List<AfterSalesViewModel> BuildAfterSalesViewModels()
+        {
+            var ac = GetAccountInfo();
+            var models = afterSalesBLL.GetModels(p => p.更新人ID == ac.用户ID);
+            List<AfterSalesViewModel> lis = new List<AfterSalesViewModel>();
+            foreach (var item in models)
+            {
+                var model = BuildAfterSales(item);
+                lis.Add(model);
+            }
+            return lis;
+        }
+
+        /// <summary>
+        /// 构建售后跟进实体
+        /// </summary>
+        /// <returns></returns>
+        public AfterSales_TrackInfoViewModel BuildAfterSales_TrackInfoViewModel(客服_售后跟进日志 model)
+        {
+            AfterSales_TrackInfoViewModel afterSales_TrackInfoViewModel = new AfterSales_TrackInfoViewModel();
+            afterSales_TrackInfoViewModel.ID = model.ID;
+            afterSales_TrackInfoViewModel.公司投入预估 = model.公司投入预估;
+            afterSales_TrackInfoViewModel.内容 = model.内容;
+            afterSales_TrackInfoViewModel.工厂投入预估 = model.工厂投入预估;
+            afterSales_TrackInfoViewModel.日期 = model.日期;
+            afterSales_TrackInfoViewModel.更新人 = model.更新人.Value;
+            afterSales_TrackInfoViewModel.更新日期 = model.更新日期.Value;
+            afterSales_TrackInfoViewModel.经销投入预估 = model.经销投入预估;
+            afterSales_TrackInfoViewModel.营销售后ID = model.营销售后ID;
+            afterSales_TrackInfoViewModel.跟进人ID = model.跟进人ID;
+
+            afterSales_TrackInfoViewModel.问题分类ID = model.问题分类.Value;
+            if (model.问题分类>0)
+            {
+                afterSales_TrackInfoViewModel.问题分类= afterSales_ClassifyBLL.GetModel(p => p.ID == model.问题分类).分类数据;
+            }
+            afterSales_TrackInfoViewModel.材质分类ID = model.材质分类.Value;
+            if (model.材质分类>0)
+            {
+                afterSales_TrackInfoViewModel.材质分类 = afterSales_ClassifyBLL.GetModel(p => p.ID == model.材质分类).分类数据;
+
+            }
+            afterSales_TrackInfoViewModel.责任判定ID = model.责任判定.Value;
+            if (model.责任判定>0)
+            {
+                afterSales_TrackInfoViewModel.责任判定 = afterSales_ClassifyBLL.GetModel(p => p.ID == model.责任判定).分类数据;
+
+            }
+            try
+            {
+                afterSales_TrackInfoViewModel.最后一次更新人 = employeeInformationBLL.GetModel(p => p.用户ID == model.更新人).姓名;
+
+                afterSales_TrackInfoViewModel.跟进人 = employeeInformationBLL.GetModel(p => p.用户ID == model.跟进人ID).姓名;
+
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+            return afterSales_TrackInfoViewModel;
+        }
+
+        /// <summary>
+        /// 构建售后跟进实体集
+        /// </summary>
+        /// <param name="afterID">售后发起ID</param>
+        /// <returns></returns>
+        public List<AfterSales_TrackInfoViewModel> BuildAfterSales_TrackInfoViewModels(int afterID)
+        {
+            var mdoels = afterSales_TrackBLL.GetModels(p => p.营销售后ID == afterID);
+            List<AfterSales_TrackInfoViewModel> lis = new List<AfterSales_TrackInfoViewModel>();
+            foreach (var item in mdoels)
+            {
+                var m = BuildAfterSales_TrackInfoViewModel(item);
+                lis.Add(m);
+            }
+            return lis;
+        }
+
+        /// <summary>
+        /// 设置当前的用户信息
+        /// </summary>
+        private AcountInformation GetAccountInfo()
+        {
+
+            string userName = HttpContext.User.Identity.Name;
+            if (userName != null)
+            {
+
+                var account = HttpContext.Session["Account"] as AcountInformation;
+                return account;
+            }
+            else
+            {
+                return null;
+            }
+
+        }
+
+        /// <summary>
+        /// 构建费用分摊实体
+        /// </summary>
+        /// <param name="model">费用分摊实体</param>
+        /// <returns></returns>
+        private AfterSales_CostComputationViewModel BuildCostComputationViewModel(客服_售后费用分摊 model) {
+            AfterSales_CostComputationViewModel costComputationViewModel = new AfterSales_CostComputationViewModel();
+            costComputationViewModel.ID = model.ID;
+            costComputationViewModel.公司费用判定 = model.公司费用判定;
+            costComputationViewModel.工厂费用判定 = model.工厂费用判定;
+            costComputationViewModel.材质分类ID = model.材质分类;
+            costComputationViewModel.经销商费用判定 = model.经销商费用判定;
+            costComputationViewModel.营销售后ID = model.营销售后ID;
+            costComputationViewModel.责任判定ID = model.责任判定;
+            costComputationViewModel.问题分类ID = model.问题分类;
+            if (model.材质分类>0)
+            {
+                costComputationViewModel.材质分类 = afterSales_ClassifyBLL.GetModel(p => p.ID == model.材质分类).分类数据;
+
+            }
+            if (model.责任判定>0)
+            {
+                costComputationViewModel.责任判定 = afterSales_ClassifyBLL.GetModel(p => p.ID == model.责任判定).分类数据;
+
+            }
+            if (model.问题分类>0)
+            {
+                costComputationViewModel.问题分类 = afterSales_ClassifyBLL.GetModel(p => p.ID == model.问题分类).分类数据;
+
+            }
+            costComputationViewModel.提交人ID = model.提交人ID;
+            costComputationViewModel.提交人 = employeeInformationBLL.GetModel(p => p.用户ID == model.提交人ID).姓名;
+            costComputationViewModel.提交日期 = model.提交日期;
+            costComputationViewModel.更新人ID = model.更新人ID;
+            costComputationViewModel.更新人 = employeeInformationBLL.GetModel(p => p.用户ID == model.更新人ID).姓名;
+            costComputationViewModel.更新日期 = model.更新日期;
+            return costComputationViewModel;
+
+        }
+
+        /// <summary>
+        /// 构建费用分摊实体集
+        /// </summary>
+        /// <returns></returns>
+        private List<AfterSales_CostComputationViewModel> BuildCostComputationViewModels() {
+            var models = afterSales_CostComputationBLL.GetModels(p => true);
+            List<AfterSales_CostComputationViewModel> lis = new List<AfterSales_CostComputationViewModel>();
+            foreach (var item in models)
+            {
+                var model = BuildCostComputationViewModel(item);
+                lis.Add(model);
+            }
+            return lis;
+        }
+
+        /// <summary>
+        /// 构建售后问题分类集
+        /// </summary>
+        /// <returns></returns>
+        private List<AfterSales_ClassifyViewModel> BuildAfterSales_ClassifyViewModels() {
+            List<AfterSales_ClassifyViewModel> lis = new List<AfterSales_ClassifyViewModel>();
+            var models = afterSales_ClassifyBLL.GetModels(p => true);
+            foreach (var item in models)
+            {
+                AfterSales_ClassifyViewModel model = new AfterSales_ClassifyViewModel();
+
+                if (item.是否停用!=true)
+                {
+                    model.ID = item.ID;
+                    model.分类数据 = item.分类数据;
+                    model.分类类型名称 = item.分类类型名称;
+                    model.是否停用 = item.是否停用;
+                    lis.Add(model);
+                }
+            }
+            return lis;
+        }
+    }
+}

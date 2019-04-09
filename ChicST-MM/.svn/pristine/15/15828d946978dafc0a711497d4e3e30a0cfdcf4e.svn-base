@@ -1,0 +1,177 @@
+﻿@model ChicST_MM.WEB.Models.BusinessReceiving_RecordsViewModel
+
+@{
+    ViewBag.Title = "ReceivingRecords_DetailsView";
+}
+
+<h3>接待详情</h3>
+@Html.ActionLink("修改接待计划", "ReceivingRecords_DetailsEditView", new { id = Model.ID},new { style="margin-left:2.5%;"})
+<table class="table table-striped table-bordered table-hover">
+    <tr>
+        <td  >申请人</td>
+        <td colspan="3">@Model.申请人</td>
+        <td  >部门</td>
+        <td colspan="4">@Model.部门</td>
+    </tr>
+    <tr>
+        <td  >入住酒店</td>
+        <td colspan="3">@Model.入住酒店</td>
+        <td  >航班号</td>
+        <td colspan="4">@Model.航班号</td>
+    </tr>
+    <tr>
+        <td  >关联审核人</td>
+        <td colspan="9">@Model.审核人</td>
+    </tr>
+    <tr>
+        <td colspan="9" class="" style="position:relative;">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 start-date">
+                <span  >抵达日期</span>
+                <span>@Model.抵达日期</span>
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <span  >离开日期</span>
+                <span>@Model.离开日期</span>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td  >主要沟通内容</td>
+        <td colspan="8">@Model.主要沟通内容</td>
+    </tr>
+
+    <tr>
+        <td  >费用总预算</td>
+        <td colspan="3">@Model.费用总预算</td>
+        <td  >配合部门</td>
+        <td colspan="4">@Model.配合部门</td>
+    </tr>
+    <tr>
+        <td colspan="9"  class="bold">接待来宾信息</td>
+    </tr>
+    <tr>
+        <td>姓名</td>
+        <td colspan="2">身份</td>
+        <td colspan="2">性别</td>
+        <td colspan="2">电话</td>
+        <td colspan="2">备注</td>
+
+    </tr>
+    @foreach (var item in Model.营销_接待来宾信息)
+    {
+        <tr>
+            <td>@item.姓名</td>
+            <td colspan="2">@item.身份</td>
+            <td colspan="2">@item.性别</td>
+            <td colspan="2">@item.电话</td>
+            <td colspan="2">@item.备注</td>
+
+        </tr>
+    }
+    <tr>
+        <td colspan="9" class="bold" >接待计划明细</td>
+    </tr>
+    <tr>
+        <td>日期</td>
+        <td>开始时间</td>
+        <td>结束时间</td>
+        <td>行程项目</td>
+        <td>陪同人员</td>
+        <td>准备的资料</td>
+        <td>车辆配备数</td>
+        <td>会谈地点</td>
+        <td>会谈重点项目</td>
+    </tr>
+    @foreach (var item in Model.营销_接待计划明细)
+    {
+        <tr>
+            <td>@item.日期</td>
+            <td>@item.开始时间</td>
+            <td>@item.结束时间</td>
+            <td>@item.行程项目</td>
+            <td>@item.陪同人员</td>
+            <td>@item.准备的资料</td>
+            <td>@item.车辆配备数</td>
+            <td>@item.会谈地点</td>
+            <td>@item.会谈重点项目</td>
+
+        </tr>
+    }
+    <tr>
+        <td colspan="9"  class="bold" >接待来访主要事项</td>
+    </tr>
+    <tr>
+        <td colspan="2">主要问题</td>
+        <td colspan="2">计划应对方案</td>
+        <td colspan="2">预计成果</td>
+        <td colspan="3">需要的协助</td>
+
+    </tr>
+    @foreach (var item in Model.营销_接待来访主要事项)
+    {
+        <tr>
+            <td colspan="2">@item.主要问题</td>
+            <td colspan="2">@item.计划应对方案</td>
+            <td colspan="2">@item.预计成果</td>
+            <td colspan="3">@item.需要的协助</td>
+
+        </tr>
+    }
+    <tr>
+        <td colspan="9" class="bold">接待计划费用预估</td>
+    </tr>
+    <tr>
+        <td colspan="3">时间</td>
+        <td colspan="3">摘要</td>
+        <td colspan="3">金额预估</td>
+    </tr>
+    @foreach (var item in Model.营销_接待计划费用预估)
+    {
+        <tr>
+            <td colspan="3">@item.时间</td>
+            <td colspan="3">@item.摘要</td>
+            <td colspan="3">@item.金额预估</td>
+
+        </tr>
+    }
+        <tr>
+            <td>审核状态</td>
+            <td colspan="8">
+                @if (Model.审核状态 == null)
+                {
+                    <span>未审核</span>
+                }
+                        @if (Model.审核状态 == true)
+                        {
+                            <span>通过</span>
+                        }
+                        @if (Model.审核状态 == false)
+                        {
+                            <span>驳回</span>
+                        }
+                    </td>
+        </tr>
+</table>
+<div style="text-align:center;">
+    @if (ViewBag.Role == "true")
+    {
+        using (Html.BeginForm("CheckRecord", "BusinessReceiving", FormMethod.Post))
+        {
+            <input type="text" name="id" value="@Model.ID" style="display:none" />
+            <input type="radio" value="1" name="checkString" />
+            <label>通过</label>
+            <input type="radio" value="0" name="checkString" />
+            <label>驳回</label>
+            <input type="submit" value="提交" />
+        }
+    }
+    else
+    {
+        @Html.ActionLink("报销", "", "", new { id = Model.ID, reimbursementType = "接待" }, new { @class = "btn btn-success" })
+
+    }
+
+</div>
+
+

@@ -1,0 +1,42 @@
+﻿@*@model JPager.Net.PagerInBase<ChicST_MM.WEB.Models.RegionViewModel>*@
+@{
+    ViewBag.Title = "接待查询";
+}
+
+<h3>接待查询</h3>
+<div>
+    <div style="padding-left:2.5%; margin:10px 0;">
+        <form method="get">
+            根据对象查询：
+            <input name="keyObj" class="search-input" />
+            <input type="submit" value="查询" class="city-sure" style="position: relative;top:0;" />
+        </form>
+    </div>
+    <table class="table table-bordered table-striped  " style="text-align:center; table-layout:fixed;">
+        <tr>
+            <th>接待</th>
+            <th>接待</th>
+            <th>接待</th>
+            <th>接待</th>
+            <th>接待</th>
+            <th>接待</th>
+            <th>接待</th>
+        </tr>
+       
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="ellipsis"></td>
+                <td  class="ellipsis"></td>
+                <td></td>
+                <td></td>
+            </tr>
+    </table>
+
+</div>
+<div style="padding-left:2.5%; margin:10px 0; text-align:center;">
+    @*@Html.Raw(Model.PagerHtml()) 共 @Model.Total 条*@
+</div>
+
+

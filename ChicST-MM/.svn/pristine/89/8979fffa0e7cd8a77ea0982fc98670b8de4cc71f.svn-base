@@ -1,0 +1,59 @@
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace ChicST_MM.WEB.Models
+{
+    public class BusinessTripViewModel
+    {
+
+        public int ID { get; set; }
+        
+        public int 部门ID { get; set; }
+        [DataType(DataType.Text)]
+        [Required]
+        public int 对象类别ID { get; set; }
+
+        public string 对象类别 { get; set; }
+        [DataType(DataType.Text)]
+        [Required]
+        public int? 对象ID { get; set; }
+
+
+        public string 对象 { get; set; }
+        [DataType(DataType.Text)]
+        [Required]
+        public int 城市ID { get; set; }
+
+        public string 城市 { get; set; }
+
+        [DataType(DataType.Text)]
+        [Required]
+        public string 出差内容 { get; set; }
+
+        [DataType(DataType.Date)]
+        [Required]
+        public System.DateTime 开始时间 { get; set; }
+
+        [DataType(DataType.Date)]
+        [Required]
+        public System.DateTime 结束时间 { get; set; }
+
+        [DataType(DataType.Text)]
+        [Required]
+        public int 提交人ID { get; set; }
+
+        public string 提交人 { get; set; }
+
+        [DataType(DataType.Text)]
+        [Required]
+        public int? 关联审核人ID { get; set; }
+
+        public string 关联审核人 { get; set; }
+        public string 审核状态 { get; set; }
+
+        [DataType(DataType.Date)]
+        [Required]
+        public DateTime 提交时间 { get; set; }
+
+    }
+}

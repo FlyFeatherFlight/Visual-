@@ -1,0 +1,58 @@
+﻿using ChicST_MM.IBLL;
+using System.Web.Mvc;
+
+namespace ChicST_MM.WEB.Controllers
+{
+    public class BusinessTripController : Controller
+    {
+        private readonly IBusinessTripBLL businessTripBLL;
+        private readonly IBusinessTrip_DetailsBLL businessTrip_DetailsBLL;
+        private readonly IBusinessTrip_TypeBLL businessTrip_TypeBLL;
+
+        public BusinessTripController(IBusinessTripBLL businessTripBLL, IBusinessTrip_DetailsBLL businessTrip_DetailsBLL, IBusinessTrip_TypeBLL businessTrip_TypeBLL)
+        {
+            this.businessTripBLL = businessTripBLL;
+            this.businessTrip_DetailsBLL = businessTrip_DetailsBLL;
+            this.businessTrip_TypeBLL = businessTrip_TypeBLL;
+        }
+
+        // GET: BusinessTrip
+        public ViewResult Index()
+        {
+            Session["View"] = true;
+            return View();
+        }
+
+        public ViewResult AddBusinessTrip() {
+            Session["View"] = true;
+            return View();
+        }
+
+        public ViewResult AddBusinessTrip_Details(int id) {
+            Session["View"] = true;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult BusinessTripAdd() {
+            if (Session["View"].ToString()=="false")
+            {
+                return Content ("<script>alert('重复操作！');parent.location.href='Index';</script>");
+            }
+            Session["View"] = false;
+            return RedirectToAction("AddBusinessTrip_Details",new {id=0 });
+        }
+
+        [HttpPost]
+        public ActionResult BusinessTrip_DetailsAdd() {
+            if (Session["View"].ToString() == "false")
+            {
+                return Content("<script>alert('重复操作！');parent.location.href='Index';</script>");
+            }
+            Session["View"] = false;
+            return RedirectToAction("Index");
+        }
+
+
+    }
+}

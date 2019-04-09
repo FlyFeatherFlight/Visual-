@@ -1,0 +1,159 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.BusinessTripViewModel>
+
+@{
+    ViewBag.Title = "BusinessTripList";
+}
+
+<h2>BusinessTripList</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.部门ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.部门)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.出差人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.出差人姓名)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.出差内容)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.提交时间)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.开始时间)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.结束时间)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.备注)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.提交人ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.提交人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.车船费预计)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.住宿费预计)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.餐补费预计)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.关联审核人ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.关联审核人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.审核状态)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.审核时间)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.合计)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.户名)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.是否报销机票)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.是否分摊机票报销)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.部门ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.部门)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.出差人)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.出差人姓名)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.出差内容)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.提交时间)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.开始时间)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.结束时间)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.备注)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.提交人ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.提交人)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.车船费预计)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.住宿费预计)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.餐补费预计)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.关联审核人ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.关联审核人)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.审核状态)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.审核时间)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.合计)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.户名)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.是否报销机票)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.是否分摊机票报销)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

@@ -1,0 +1,313 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using ChicST_MM.IBLL;
+using ChicST_MM.WEB.Models;
+using Newtonsoft.Json;
+
+namespace ChicST_MM.WEB.Controllers
+{
+    public class Review_5SController : Controller
+    {
+        private readonly IReview_5SBLL review_5SBLL;
+        private readonly IReview_5S_RcordBLL review_5S_RcordBLL;
+        private readonly IReview_5S_RecordDetailsBLL review_5S_RecordDetailsBLL;
+        private readonly IReview_5S_RecordProofBLL review_5S_RecordProofBLL;
+        private readonly IDistributorBLL distributorBLL;
+        private readonly IStoreBLL storeBLL;
+        private readonly IEmployeeInformationBLL employeeInformationBLL;
+
+        public Review_5SController(IReview_5SBLL review_5SBLL, IReview_5S_RcordBLL review_5S_RcordBLL, IReview_5S_RecordDetailsBLL review_5S_RecordDetailsBLL, IReview_5S_RecordProofBLL review_5S_RecordProofBLL, IDistributorBLL distributorBLL, IStoreBLL storeBLL, IEmployeeInformationBLL employeeInformationBLL)
+        {
+            this.review_5SBLL = review_5SBLL;
+            this.review_5S_RcordBLL = review_5S_RcordBLL;
+            this.review_5S_RecordDetailsBLL = review_5S_RecordDetailsBLL;
+            this.review_5S_RecordProofBLL = review_5S_RecordProofBLL;
+            this.distributorBLL = distributorBLL;
+            this.storeBLL = storeBLL;
+            this.employeeInformationBLL = employeeInformationBLL;
+        }
+
+
+
+
+
+
+
+        /// <summary>
+        /// 评审标准
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Index()
+        {
+            var models = review_5SBLL.GetModels(p => true).ToList();
+           
+            List<Review_5SViewModel> lis = new List<Review_5SViewModel>();
+            foreach (var item in models)
+            {
+                Review_5SViewModel review_5SViewModel = new Review_5SViewModel();
+                review_5SViewModel.ID = item.ID;
+                review_5SViewModel.具体内容 = item.具体内容;
+                review_5SViewModel.分值 = item.分值;
+                review_5SViewModel.扣分标准 = item.扣分标准;
+                review_5SViewModel.评估标准 = item.评估标准;
+                review_5SViewModel.评估项目 = item.评估项目;
+                lis.Add(review_5SViewModel);
+            }
+            return View(lis);
+        }
+
+        /// <summary>
+        /// 审查主表添加视图
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ReviewRecordAddView() {
+            Session["View"] = true;
+            ReviewRecordViewModel reviewRecordViewModel = new ReviewRecordViewModel();
+            var models = review_5SBLL.GetModels(p => true).ToList();
+            List<C5S_评审标准> lis = new List<C5S_评审标准>();
+            foreach (var item in models)
+            {
+                C5S_评审标准 m = new C5S_评审标准();
+                m.ID = item.ID;
+                m.具体内容 = item.具体内容;
+                m.分值 = item.分值;
+                m.扣分标准 = item.扣分标准;
+                m.评估标准 = item.评估标准;
+                m.评估项目 = item.评估项目;
+                
+               lis.Add(m);
+            }
+            reviewRecordViewModel.ReviewRecordModels = lis;
+            return View(reviewRecordViewModel);
+        }
+
+        /// <summary>
+        /// 5S审查主表提交操作
+        /// </summary>
+        /// <param name="reviewRecordViewModel"></param>
+        /// <returns></returns>
+        public ActionResult AddReviewRecord(ReviewRecordViewModel reviewRecordViewModel) {
+
+            if (Session["View"].ToString() == "false")
+            {
+                return Content("<script>alert('重复操作！');window.history.go(-1);</script>");
+            }
+            var ac = GetAccountInfo();
+            C5S_评审记录 model = new C5S_评审记录();
+            model.奖惩制度提出意见 = reviewRecordViewModel.奖惩制度提出意见;
+            model.展厅 = reviewRecordViewModel.展厅;
+            model.巡店人员 = ac.用户ID;
+            model.巡店日期 = reviewRecordViewModel.巡店日期;
+            model.提交人 = ac.用户ID;
+            model.提交日期 = DateTime.Now;
+            model.经销商 = reviewRecordViewModel.经销商;
+            model.门店需调整内容 = reviewRecordViewModel.门店需调整内容;
+
+            try
+            {
+               model= review_5S_RcordBLL.AddReturnModel(model);
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+           
+            return Json(model);
+
+        }
+
+        /// <summary>
+        /// 5S审查副表提交
+        /// </summary>
+        /// <param name="recordID"></param>
+        /// <returns></returns>
+        public ActionResult AddReviewRecord_Details(string  reviewRecord_DetailsViewModel) {
+            var ac = GetAccountInfo();
+            int reviewID = 0;
+            var lis = JsonConvert.DeserializeObject<List<ReviewRecord_DetailsViewModel>>(reviewRecord_DetailsViewModel);
+            if (lis.Count()<=0)
+            {
+         return Json("<script>alert('提交数据异常！');window.history.go(-1);</script>");
+            }
+            foreach (var item in lis)
+            {
+                C5S_评审记录详细 model = new C5S_评审记录详细();
+                model.凭证 = item.凭证;
+                model.分值 = item.分值;
+                model.备注 = item.备注;
+                model.得分 = item.得分;
+                model.扣分 = item.扣分;
+                model.扣分标准 = item.扣分标准;
+                model.日期 = DateTime.Now;
+                model.评估标准 = item.评估标准;
+                model.评估项目 = item.评估项目;
+                model.评审人 = ac.用户ID;
+                model.评审表ID = item.评审表ID;
+                model.门店 = item.门店;
+
+                model = review_5S_RecordDetailsBLL.AddReturnModel(model);
+                if (model==null) {
+
+                    return Json("失败");
+                }
+                reviewID = model.评审表ID;
+
+            }
+
+            return Json(reviewID);
+        }
+
+        /// <summary>
+        /// 文件上传
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult UpFiles(HttpPostedFileBase UploadStream) {
+
+            return Json("");
+        }
+
+        /// <summary>
+        /// 文件下载
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult DownLoadFiles(int id) { return Json(""); }
+
+        /// <summary>
+        /// 获取经销商
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult BuildDistributor() {
+            var distributors = distributorBLL.GetModels(p => true).ToList();
+            var tripObj = new ArrayList();
+            foreach (var item in distributors)
+            {
+
+                var distributor = new string[] { item.ID.ToString(), item.名称 };
+                tripObj.Add(distributor);
+
+            }
+            return Json(tripObj);
+        }
+
+        /// <summary>
+        /// 获得店铺
+        /// </summary>
+        /// <param name="id">经销商ID</param>
+        /// <returns></returns>
+        public ActionResult GetStore(int id) {
+            var stores = storeBLL.GetModels(p => p.经销商ID==id);
+            var tripObj = new ArrayList();
+            foreach (var item in stores)
+            {
+
+                var store = new string[] { item.ID.ToString(), item.名称 };
+                tripObj.Add(store);
+            }
+            return Json(tripObj);
+        }
+
+        /// <summary>
+        /// 构建单个评审记录
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public ReviewRecordViewModel BuildReviewModel(C5S_评审记录 model)
+        {
+            if (model == null)
+            {
+                return null;
+            }
+            ReviewRecordViewModel reviewRecordView = new ReviewRecordViewModel();
+            reviewRecordView.ID = model.ID;
+            reviewRecordView.分数 = model.分数;
+            reviewRecordView.奖惩制度提出意见 = model.分数;
+            reviewRecordView.展厅 = model.展厅;
+            reviewRecordView.巡店人员 = model.巡店人员;
+            reviewRecordView.巡店人员姓名 = employeeInformationBLL.GetModel(p => p.用户ID == model.巡店人员).姓名;
+            reviewRecordView.巡店日期 = model.巡店日期;
+            reviewRecordView.提交人 = model.提交人;
+            reviewRecordView.提交人姓名 = employeeInformationBLL.GetModel(p => p.用户ID == model.提交人).姓名;
+            reviewRecordView.提交日期 = model.提交日期;
+            reviewRecordView.经销商 = model.经销商;
+            reviewRecordView.经销商名字 = distributorBLL.GetModel(p => p.ID == model.经销商).名称;
+            reviewRecordView.门店需调整内容 = model.门店需调整内容;
+            reviewRecordView.展厅名称 = storeBLL.GetModel(p => p.ID == model.展厅).名称;
+            var reviewRecord_Details = review_5S_RecordDetailsBLL.GetModels(p => p.评审表ID == model.ID);
+            foreach (var item in reviewRecord_Details)
+            {
+                ReviewRecord_DetailsViewModel r = new ReviewRecord_DetailsViewModel();
+                r.ID = item.ID;
+                r.凭证 = item.凭证;
+                r.分值 = item.分值;
+                r.备注 = item.备注;
+                r.得分 = item.得分;
+                r.扣分 = item.扣分;
+                r.扣分标准 = item.扣分标准;
+                r.日期 = item.日期;
+                r.评估标准 = item.评估标准;
+                r.评估项目 = item.评估项目;
+                r.评审人 = item.评审人;
+                r.评审人姓名 = employeeInformationBLL.GetModel(p => p.用户ID == item.评审人).姓名;
+                r.评审表ID = item.评审表ID;
+                r.门店 = item.门店;
+                r.门店名称 = storeBLL.GetModel(p => p.ID == item.门店).名称;
+                reviewRecordView.ReviewRecord_DetailsViewModels.Add(r);
+            }
+            return reviewRecordView;
+        }
+
+
+
+        /// <summary>
+        /// 构建评审记录集
+        /// </summary>
+        /// <param name="storeid"></param>
+        /// <returns></returns>
+        public List<ReviewRecordViewModel> BuildReviewModels(int? storeid)
+        {
+            var ac = GetAccountInfo();
+            var models = review_5S_RcordBLL.GetModels(p => true);
+            List<ReviewRecordViewModel> lis = new List<ReviewRecordViewModel>();
+            if (storeid != null || storeid != 0)
+            {
+                models = models.Where(p => p.展厅 == storeid);
+            }
+            else
+            {
+                models = models.Where(p => p.提交人 == ac.用户ID);
+            }
+            foreach (var item in models)
+            {
+                var model = BuildReviewModel(item);
+                lis.Add(model);
+            }
+            return lis;
+        }
+        /// <summary>
+        /// 设置当前的用户信息
+        /// </summary>
+        private AcountInformation GetAccountInfo()
+        {
+
+            string userName = HttpContext.User.Identity.Name;
+            if (userName != null)
+            {
+
+                var account = HttpContext.Session["Account"] as AcountInformation;
+                return account;
+            }
+            else
+            {
+                return null;
+            }
+
+        }
+
+    }
+}

@@ -1,0 +1,8 @@
+﻿@model ChicST_MM.WEB.Models.BusinessTripViewModel
+
+@{
+    ViewBag.Title = "添加出差记录";
+}
+
+<h2>AddBusinessTripView</h2>
+

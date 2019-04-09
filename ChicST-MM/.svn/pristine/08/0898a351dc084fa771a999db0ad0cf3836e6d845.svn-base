@@ -1,0 +1,38 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using ChicST_MM.IBLL;
+
+namespace ChicST_MM.WEB.Controllers
+{
+    /// <summary>
+    /// 机票报销控制器
+    /// </summary>
+    public class AirFareController : Controller
+    {
+        private IAirFaresBLL airFaresBLL;
+        private IAirfareSharingBLL airfareSharingBLL;
+        private IAccountBLL accountBLL;
+        private IEmployeeInformationBLL employeeInformationBLL;
+        private IBusinessTripBLL businessTripBLL;
+
+        public AirFareController(IAirFaresBLL airFaresBLL, IAirfareSharingBLL airfareSharingBLL, IAccountBLL accountBLL, IEmployeeInformationBLL employeeInformationBLL, IBusinessTripBLL businessTripBLL)
+        {
+            this.airFaresBLL = airFaresBLL;
+            this.airfareSharingBLL = airfareSharingBLL;
+            this.accountBLL = accountBLL;
+            this.employeeInformationBLL = employeeInformationBLL;
+            this.businessTripBLL = businessTripBLL;
+        }
+
+        // GET: AirFare
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+
+    }
+}

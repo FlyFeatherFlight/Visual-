@@ -1,0 +1,138 @@
+﻿@model ChicST_MM.WEB.Models.BusinessRecReimburseViewModel
+
+@{
+    ViewBag.Title = "BusinessRec_InfoView";
+}
+
+<h2>BusinessRec_InfoView</h2>
+
+<div>
+    <h4>BusinessRecReimburseViewModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.城市)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.城市)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.经销商)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.经销商)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.事由)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.事由)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.时间)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.时间)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.金额)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.金额)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.接待计划ID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.接待计划ID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.提交人)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.提交人)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.提交人ID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.提交人ID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.提交时间)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.提交时间)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.更新人)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.更新人)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.更新人ID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.更新人ID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.更新时间)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.更新时间)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.审核状态)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.审核状态)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.财务审核人)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.财务审核人)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.财务审核人ID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.财务审核人ID)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

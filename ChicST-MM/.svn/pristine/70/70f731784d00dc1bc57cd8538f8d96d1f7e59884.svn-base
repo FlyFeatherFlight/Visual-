@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace ChicST_MM.WEB.Controllers
+{
+    /// <summary>
+    /// 机票报销控制器
+    /// </summary>
+    public class AirFareController : Controller
+    {
+        // GET: AirFare
+        public ActionResult Index()
+        {
+            return View();
+        }
+    }
+}

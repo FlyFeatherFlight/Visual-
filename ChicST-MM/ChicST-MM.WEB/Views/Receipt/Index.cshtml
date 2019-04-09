@@ -1,0 +1,48 @@
+﻿@model JPager.Net.PagerResult<ChicST_MM.WEB.Models.ReceiptViewModel>
+@{
+    ViewBag.Title = "收款查询";
+}
+<style>
+    .table tbody tr td{
+        text-align: center;
+        width: auto !important;
+    }
+</style>
+<h3>收款查询</h3>
+<div>
+    <div style="padding-left:2.5%; margin:10px 0;">
+        <form action="~/Receipt/Index" method="post">
+            根据付款方查询：
+            <input name="searchString" class="search-input" />
+            <input type="submit" value="查询" class="city-sure" style="position: relative;top:0;" />
+
+        </form>
+    </div>
+    <table class="table table-bordered table-striped table-hover " style="text-align:center;">
+        <tr>
+            <th>操作</th>
+            <th>发起人</th>
+            <th>付款方</th>
+            <th>付款账号</th>
+            <th>提交日期</th>
+           
+        </tr>
+        @foreach (var item in Model.DataList)
+        {
+            <tr>
+                <td>@Html.ActionLink("查看", "ReceiptInfoView", new { id = item.ID })</td>
+                <td>@item.提交人员</td>
+                <td>@item.付款方</td>
+                <td>@item.付款账号</td>
+                <td>@item.提交时间</td>
+            </tr>
+        }
+    </table>
+
+</div>
+<div style="padding-left:2.5%; margin:10px 0; text-align:center;">
+    @Html.Raw(Model.PagerHtml()) 共 @Model.Total 条
+</div>
+
+
+

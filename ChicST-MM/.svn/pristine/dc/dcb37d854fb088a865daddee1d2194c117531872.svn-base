@@ -1,0 +1,39 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using ChicST_MM.IBLL;
+using ChicST_MM.WEB.Models;
+
+namespace ChicST_MM.WEB.Controllers
+{
+    public class Review_5SController : Controller
+    {
+        private readonly IReview_5SBLL review_5SBLL;
+
+        public Review_5SController(IReview_5SBLL review_5SBLL)
+        {
+            this.review_5SBLL = review_5SBLL ?? throw new ArgumentNullException(nameof(review_5SBLL));
+        }
+
+        // GET: Review_5S
+        public ActionResult Index()
+        {
+            var models = review_5SBLL.GetModels(p => true).ToList();
+           
+            List<Review_5SViewModel> lis = new List<Review_5SViewModel>();
+            foreach (var item in models)
+            {
+                Review_5SViewModel review_5SViewModel = new Review_5SViewModel();
+                review_5SViewModel.ID = item.ID;
+                review_5SViewModel.具体内容 = item.具体内容;
+                review_5SViewModel.分值 = item.分值;
+                review_5SViewModel.扣分标准 = item.扣分标准;
+                review_5SViewModel.评估标准 = item.评估标准;
+                review_5SViewModel.评估项目 = item.评估项目;
+            }
+            return View(lis);
+        }
+    }
+}

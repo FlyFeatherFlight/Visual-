@@ -1,0 +1,320 @@
+﻿@model ChicST_MM.WEB.Models.ReviewRecordViewModel
+
+@{
+    ViewBag.Title = "5s评审表";
+}
+<style type="text/css">
+    #tab tbody tr td:nth-child(2n-1) {
+        text-align: center;
+        width: auto !important;
+    }
+   
+    
+</style>
+
+<script>
+    // 附件上传
+    $('.ssi-upload2').ssi_uploader({
+        url: 'path/to/upload.php',
+        maxFileSize: 6,
+        preview: false,
+        allowed: ['jpg', 'gif', 'txt', 'png', 'pdf', 'html'],
+        errorHandler: {
+            method: function () {
+                alert("格式错误!");
+            },
+            success: 'success',
+            error: 'error'
+        }
+    });
+    $(".ssi-upload2").siblings().html("选择文件");
+    $("span.ssi-btnIn").html("上传")
+    $(".info").html("清除");
+
+    // 开始评审操作
+    function startReview() {
+        // 必填项操作
+        var inputs = $("#must-table").find(".must-fill");
+        var status = false;
+        $(inputs).each((i, m) => {
+            if (m.value == null || m.value == "") {
+                return status = true;
+            }
+        })
+        if (status) {
+            alert("请完善信息！");
+        } else {
+            //点击开始评审后向后端传数据并从后端获取ID数据
+            $.ajax({
+                url: 'AddReviewRecord',
+                type: 'post',
+                dataType: 'json',
+                data: $("#Myform").serialize(),
+                async: true,
+                success: (data) => {
+                    var dataID = JSON.stringify(data.ID);
+                    var store = $("#gallery").children("option:eq(1)").val()
+                    $(".setID").val(dataID);
+                    $(".store").val(store);
+                    
+                },
+                error: (err) => {
+                    console.log(err)
+                }
+                
+            })
+            $(".mask-jsGrid").addClass("hidden");
+            
+        }
+
+    }
+
+    //副表提交
+ 
+    function MyformF() {
+        
+        
+        var set = [];
+        var mytable = $('#tab');
+        console.log(mytable[0].rows.length)
+        for (var i = 1, rows = mytable[0].rows.length; i < rows; i++) {
+            //类似存储一个对象,包括了与student对相应的属性
+            //var index = mytable.rows[i].cells[2].getElementsByTagName("select")[0].selectedIndex;
+
+            let postdata = {
+                "评审表ID": $(".setID").val(),
+                "门店": $(".store").val(),
+                "评估项目": mytable[0].rows[i].cells[1].innerHTML,
+                "具体内容": mytable[0].rows[i].cells[2].innerHTML,
+                "评估标准": mytable[0].rows[i].cells[3].innerHTML,
+                "分值": mytable[0].rows[i].cells[4].innerHTML,
+                "扣分标准": mytable[0].rows[i].cells[5].innerHTML,
+                "扣分": mytable[0].rows[i].cells[6].getElementsByTagName("input")[0].value,
+                "得分": mytable[0].rows[i].cells[7].getElementsByTagName("input")[0].value,
+                "备注": mytable[0].rows[i].cells[8].getElementsByTagName("textarea")[0].value,
+                "凭证": mytable[0].rows[i].cells[9].getElementsByTagName("input")[0].value,
+            };
+            set.push(postdata);//添加到数组
+
+        }
+        console.log(set)
+
+
+        try {
+            $.ajax({
+                url: 'AddReviewRecord_Details',
+                type: 'post',
+                dataType: 'json',
+                data: { reviewRecord_DetailsViewModel: JSON.stringify(set) },
+                async: true,
+                success: (data) => {
+                    console.log(data)
+
+                   
+                },
+                error: (err) => {
+                    console.log(err)
+                }
+
+            })
+        }
+        catch (e) {
+            alert(e.name + ": " + e.message);
+        }
+        
+    }
+
+
+    $(function () {
+
+        // 获取经销商下拉框
+        $.ajax({
+            type: "post",
+            data: {},
+            url: "@Url.Action("BuildDistributor", "Review_5S")",
+            cache: false,
+            async: true,
+            success: function (data) {
+                $.each(data, (i, m) => {
+                    $("#dealer").append("<option value=" + m[0] + ">" + m[1] + "</option>");
+
+                })
+
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        });
+
+        //获取展厅名称
+        $("#dealer").change(function () {
+            var dealer = $("#dealer").val();
+            $.ajax({
+                type: "post",
+                data: { id: dealer },
+                url: "@Url.Action("GetStore", "Review_5S")",
+                cache: false,
+                async: true,
+                success: function (data) {
+                    console.log(data)
+                    $.each(data, (i, m) => {
+                        $("#gallery").append("<option value=" + m[0] + ">" + m[1] + "</option>");
+                    })
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            })
+        })
+
+    });
+   
+</script>
+<h3>5S评审表</h3>
+<sapn style="color: orange;display: block;margin: 5px 0 5px 2.5%;">温馨提示：填写下方信息后点击“开始评审”按钮后方可评审</sapn>
+
+<form  id="Myform">
+    <table class="table table-striped table-bordered table-hover" id="must-table" style="margin: 0 auto;">
+        <tr>
+            <td>经销商名字</td>
+            <td colspan="4">
+                <select id="dealer" class="form-control red must-fill" oninput="sureRed()" name="经销商">
+                    <option value="" selected>-请选择经销商-</option>
+                </select>
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+            <td>展厅名称</td>
+            <td colspan="3">
+                <select id="gallery" class="form-control red must-fill" oninput="sureRed()" name="展厅">
+                    <option value="" selected>-请选择展厅-</option>
+                </select>
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>巡店日期</td>
+            <td colspan="8">
+                <input type="text" name="巡店日期" value="" data-provide="datepicker" class="form-control datepicker must-fill red" readonly placeholder="请选择巡店日期" oninput="sureRed()" />
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+        </tr>
+
+        <tr>
+            <td>门店需调整内容</td>
+            <td colspan="8">
+                <textarea name="门店需调整内容" rows="3" class="form-control"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>奖惩制度提出意见</td>
+            <td colspan="8">
+                <textarea name="奖惩制度提出意见" rows="3" class="form-control"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="9">
+                <input type="button" name="name" value="开始评审" class="startReview btn  btn-primary" onclick="startReview()" />
+            </td>
+        </tr>
+    </table>
+</form>
+@*评审明细*@
+<form action="#" method="post" id="Myform-f">
+    <div style="position:relative;width:95%; margin:auto;">
+        <input type="text" class="setID" name="评审表ID" style="display:none;"/>
+        <input type="text" class="store" name="门店" style="display:none;"/>
+        @*<div class="mask-jsGrid" title="填写上方信息后点击“开始评审”按钮方可评审"></div>*@
+        <table class="table table-striped table-bordered " id="tab" style="width:100% !important; margin:auto;">
+            <tr>
+                <th>序号</th>
+                <th>评估项目</th>
+                <th>具体内容</th>
+                <th>评估标准</th>
+                <th>分值</th>
+                <th>扣分标准</th>
+                <th>扣分情况</th>
+                <th>实际得分</th>
+                <th style="width:15%;">备注/提升</th>
+                <th>凭证</th>
+            </tr>
+            @foreach (var item in Model.ReviewRecordModels.ToList())
+            {
+                <tr style="text-align:center; width:auto !important;">
+                    <td>@item.ID</td>
+                    <td>@item.评估项目</td>
+                    <td>@item.具体内容</td>
+                    <td>@item.评估标准</td>
+                    <td>@item.分值</td>
+                    <td>@item.扣分标准</td>
+                    <td>
+                        <input type="text" name="扣分" class="form-control zero"
+                               onkeyup="value=value.replace(/[^\d]/g,'')"
+                               onblur="value=value.replace(/[^\d]/g,'')" value="0" />
+                    </td>
+                    <td>
+                        <input type="text" name="得分" class="form-control zero"
+                               onkeyup="value=value.replace(/[^\d]/g,'')"
+                               onblur="value=value.replace(/[^\d]/g,'')" value="0" />
+                    </td>
+                    <td>
+                        <textarea name="备注" class="form-control"></textarea>
+                    </td>
+                    <td>
+                        @*<input type="text" name="凭证" value="" />*@
+                        <input type="file" multiple class="ssi-upload2" />
+                    </td>
+                </tr>
+            }
+        </table>
+        <div class="submit-btns" style="margin-top:10px;">
+            <input type="button" value="提交" class="btn btn-success width-7" onclick="MyformF()">
+            &nbsp;&nbsp;
+            <input type="button" value="取消" class="btn btn-danger width-7" onclick="javascript:history.back(-1);">
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+
+
+
+    window.onload = function () {
+        // 显示当前登录者
+        var a = sessionStorage.getItem("userkey");
+        $('.userName').text(a);
+        //合并单元格
+        var tab = document.getElementById("tab");
+        var maxCol = 4, val, count, start;
+
+        for (var col = maxCol - 1; col >= 0; col--) {
+            count = 1;
+            val = "";
+            for (var i = 0; i < tab.rows.length; i++) {
+                if (val == tab.rows[i].cells[col].innerHTML) {
+                    count++;
+                } else {
+                    if (count > 1) { //合并
+                        start = i - count;
+                        tab.rows[start].cells[col].rowSpan = count;
+                        for (var j = start + 1; j < i; j++) {
+                            tab.rows[j].cells[col].style.display = "none";
+                        }
+                        count = 1;
+                    }
+                    val = tab.rows[i].cells[col].innerHTML;
+                }
+            }
+            if (count > 1) { //合并，最后几行相同的情况下
+                start = i - count;
+                tab.rows[start].cells[col].rowSpan = count;
+                for (var j = start + 1; j < i; j++) {
+                    tab.rows[j].cells[col].style.display = "none";
+                }
+            }
+        }
+    };
+
+</script>
+
+
+
+

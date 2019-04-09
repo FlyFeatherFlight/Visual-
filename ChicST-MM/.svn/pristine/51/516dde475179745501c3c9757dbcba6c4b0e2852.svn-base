@@ -1,0 +1,127 @@
+﻿@model ChicST_MM.WEB.Models.ReviewRecordViewModel
+
+@{
+    ViewBag.Title = "5s评审表";
+}
+<script>
+    // 开始评审操作
+    function startReview() {
+        // 必填项操作
+        var inputs = $("#must-table").find(".must-fill");
+        var status = false;
+        $(inputs).each((i, m) => {
+            if (m.value == null || m.value == "") {
+                return status = true;
+            }
+        })
+        if (status) {
+            alert("请完善信息！");
+        } else {
+            //$(".review-mask").addClass("hidden")
+            $("#Myform").submit();
+        }
+
+    }
+    $(function () {
+       
+        // 获取经销商下拉框
+        $.ajax({
+            type: "post",
+            data: {},
+            url: "@Url.Action("BuildDistributor", "Review_5S")",
+            cache: false,
+            async: true,
+                success: function (data) {
+                $.each(data, (i, m) => {
+                    $("#dealer").append("<option value=" + m[0] + ">" + m[1] + "</option>");
+
+                })
+
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
+
+        //获取展厅名称
+        $("#dealer").change(function () {
+            var dealer = $("#dealer").val();
+            $.ajax({
+                type: "post",
+                data: { id: dealer},
+                url: "@Url.Action("GetStore", "Review_5S")",
+                cache: false,
+                async: true,
+                success: function (data) {
+                    console.log(data)
+                    $.each(data, (i, m) => {
+                        $("#gallery").append("<option value=" + m[0] + ">" + m[1] + "</option>");
+                    })
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            })
+        })
+
+    })
+</script>
+<h3>5S评审表</h3>
+<sapn style="color: orange;display: block;margin: 5px 0 5px 2.5%;">温馨提示：填写下方信息后点击“开始评审”按钮后方可评审</sapn>
+<form action="@Url.Action("AddReviewRecord","Review_5S")" method="post" id="Myform">
+   
+    <table class="table table-striped table-bordered table-hover" id="must-table">
+        <tr>
+            <td>经销商名字</td>
+            <td>
+                <select id="dealer" class="form-control red must-fill" oninput="sureRed()" name="经销商">
+                    <option value="" selected>-请选择经销商-</option>
+                </select>
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+            <td>展厅名称</td>
+            <td>
+                <select id="gallery" class="form-control red must-fill" oninput="sureRed()" name="展厅">
+                    <option value="" selected>-请选择展厅-</option>
+                </select>
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>巡店日期</td>
+            <td colspan="3">
+                <input type="text" name="巡店日期" value="" data-provide="datepicker" class="form-control datepicker must-fill red" readonly placeholder="请选择巡店日期" oninput="sureRed()" />
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+            @*<td>分数</td>
+            <td>
+                <input type="text" name="分数" value="" class="form-control must-fill red" oninput="sureRed()"
+                       onkeyup="value=value.replace(/[^\d]/g,'')"
+                       onblur="value=value.replace(/[^\d]/g,'')" placeholder="请输入数字" />
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>*@
+        </tr>
+
+        <tr>
+            <td>门店需调整内容</td>
+            <td colspan="3">
+                <textarea name="门店需调整内容" rows="3" class="form-control"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>奖惩制度提出意见</td>
+            <td colspan="3">
+                <textarea name="奖惩制度提出意见" rows="3" class="form-control"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <input type="button" name="name" value="开始评审" class="startReview btn  btn-primary" onclick="startReview()" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+
+
+

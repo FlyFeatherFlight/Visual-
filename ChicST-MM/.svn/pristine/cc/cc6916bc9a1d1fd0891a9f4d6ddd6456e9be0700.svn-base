@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ChicST_MM.WEB.Models
+{
+    /// <summary>
+    /// 公司员工
+    /// </summary>
+    public class CompanyStaffViewModel
+    {
+    }
+}

@@ -1,0 +1,11 @@
+﻿using ChicST_MM.IDAL;
+
+namespace ChicST_MM.DAL
+{
+    /// <summary>
+    /// 出差详情
+    /// </summary>
+    public partial class BusinessTrip_DetailsDAL:BaseDAL<HR_出差详情>, IBusinessTrip_DetailsDAL
+    {
+    }
+}

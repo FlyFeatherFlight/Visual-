@@ -1,0 +1,62 @@
+﻿@model ChicST_MM.WEB.Models.OtherReimburseViewModel
+
+@{
+    ViewBag.Title = "其他报销详情";
+}
+@*判断数据是否异常*@
+@if (Model == null) {
+
+<script>
+    alert("数据异常！");
+    window.history.go(-1);
+</script>
+}
+else {
+    <div>
+        <h3>其它报销详情</h3>
+    </div>
+    <table class="table table-striped table-bordered table-hover">
+        <tr>
+            <td>报销部门</td>
+            <td>@Model.报销部门</td>
+            <td>报销人</td>
+            <td>@Model.报销人</td>
+        </tr>
+        <tr>
+            <td>原借款</td>
+            <td>@Model.原借款</td>
+            <td>应退余额</td>
+            <td>@Model.应退余款</td>
+        </tr>
+        <tr>
+            <td>汇款银行</td>
+            <td>@Model.汇款银行</td>
+            <td>汇款银行卡账号</td>
+            <td>@Model.汇款银行卡账号</td>
+        </tr>
+        <tr>
+            <td colspan="4">报销详情内容</td>
+        </tr>
+        <tr>
+            <th>ID</th>
+            <th>用途</th>
+            <th>金额</th>
+            <th>提交时间 </th>
+        </tr>
+        @foreach (var item in Model.财务_其他报销_副表)
+        {
+            <tr>
+                <td>@item.ID</td>
+                <td style="text-align:center;">@item.用途</td>
+                <td>@item.金额</td>
+                <td  style="text-align:center;">@item.提交时间</td>
+            </tr>
+        }
+    </table>
+
+
+}
+
+
+
+  

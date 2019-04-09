@@ -1,0 +1,16 @@
+﻿using ChicST_MM.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ChicST_MM.IBLL
+{
+    /// <summary>
+    /// 其他报销详细
+    /// </summary>
+   public partial interface IOtherReimburse_DetailsBLL:IBaseServiceBLL<财务_其他报销_副表>
+    {
+    }
+}

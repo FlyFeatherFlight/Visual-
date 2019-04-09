@@ -1,0 +1,8 @@
+﻿@model ChicST_MM.WEB.Models.StoreCustomer_TrackViewModel
+
+@{
+    ViewBag.Title = "CustomerTrackInfoView";
+}
+
+<h2>CustomerTrackInfoView</h2>
+

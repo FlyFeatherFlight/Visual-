@@ -1,0 +1,278 @@
+﻿@model ChicST_MM.WEB.Models.OtherReimburseViewModel
+
+@{
+    ViewBag.Title = "其它报销申请";
+}
+<script>
+    //安排计划日程向后端传数据并从后端获取ID数据
+    function plan() {
+
+        $.ajax({
+            url: 'OtherReimbursementAdd',
+            type: 'post',
+            dataType: 'json',
+            data: $("#other").serialize(),
+            async: true,
+            success: (data) => {
+               $(".setID").val(data);
+              
+            },
+            error: (err) => {
+                alert(err);
+                console.log(err);
+            }
+
+        })
+    }
+
+</script>
+
+<form action="#" method="post" id="other">
+    
+    <div>
+        <h3>其它报销申请</h3>
+        <sapn style="color: orange;display: block;margin: 5px 0 5px 2.5%;">温馨提示：填写上方信息后点击“填写报销详情”按钮方可添加报销详细内容</sapn>
+    </div>
+    <table class="table table-striped table-bordered table-hover">
+        <tr>
+            <td>报销部门</td>
+            <td>@Model.报销部门</td>
+            <td>报销人</td>
+            <td>@Model.报销人</td>
+        </tr>
+        <tr>
+            <td>汇款银行</td>
+            <td>
+                <input type="text" class="form-control red blank" name="汇款银行" oninput="sureRed()" />
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+            <td>汇款银行卡账号</td>
+            <td>
+                <input type="text" class="form-control red blank-IC" name="汇款银行卡账号" 
+                oninput="sureRed()" 
+                onkeyup="value=value.replace(/[^\d]/g,'')" 
+                onblur="value=value.replace(/[^\d]/g,'')" placeholder="请输入数字"/>
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>原借款</td>
+            <td>
+                <input type="text" class="form-control" name="原借款"  
+                 onkeyup="value=value.replace(/[^\d.]/g,'')" 
+                 onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字"/>
+            </td>
+            <td>应退余款</td>
+            <td>
+                <input type="text" class="form-control" name="应退余款"  
+                onkeyup="value=value.replace(/[^\d.]/g,'')" 
+                onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字"/>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" style=" text-align: center;"><input type="button" value="填写报销详情" class="plan btn  btn-primary" onclick="plan()" /></td>
+        </tr>
+        <tr>
+            <td colspan="4" style="position:relative;">
+                <div class="mask-jsGrid" title="点击填写报销详情后方可操作"></div>
+                <div style="text-align:start; margin-bottom:10px;">
+                    <input id="create-user" type="button" value="添加" class="btn" />
+                    <sapn style="color: orange;display: block;margin: 5px 0 5px 0;">温馨提示：添加后请点击确定</sapn>
+                </div>
+                <table id="grid"></table>
+                <div id="pager"></div>
+                <div style="margin-top:10px;color:#333;">
+                    <input type="button" value="确认" onclick="goDetail()" class="btn btn-success">
+                </div>
+            </td>
+        </tr>
+    </table>
+</form>
+@**模态框*@
+<div id="dialog-form" style="text-align:center;">
+    <form >
+        <div style="margin-top:20px; margin-bottom:10px;">
+            <label>金额:</label>
+            <input type="text" id="Email" class="search-input" name="金额" 
+            onkeyup="value=value.replace(/[^\d.]/g,'')" 
+            onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字"/>
+        </div>
+        <div>
+            <label style="vertical-align: top">内容:</label>
+            <textarea type="text" id="CreatedOn" class="search-input" name="内容"></textarea>
+        </div>
+    </form>
+</div>
+<input type="text" class="setID" style="display:none;" />
+
+
+<script>
+   
+    //添加的模态框
+    var setid;
+    //遮罩
+    $(".plan").click(function () {
+        if ($(".blank").val() == "" || $(".blank-IC").val() == "") {
+            alert("请先完善信息!");
+            return;
+        } else {
+            $(".mask-jsGrid").css("display", "none");
+            alert("提交成功，请填写下方信息！")
+        }
+    })
+    // 跳转到详情页
+    function goDetail() {
+        setid = $(".setID").val();
+        window.location.href = "OtherReimbursement_DetailsView?id=" + setid;
+    }
+    $(function () {
+        jQuery("#grid").jqGrid({
+            url: "",
+            datatype: "json",
+            styleUI: 'Bootstrap',
+            mtype: "get",
+            colModel: [
+                { label: 'ID', name: 'ID', index: 'ID', width: 60, sorttype: "int" },
+                { label: '金额', name: '金额', index: '其他报销ID', width: 90, align: "center"},
+                { label: '用途', name: '用途', index: '用途', width: 100, sortable: false, align: "center"},
+                { label: '操作', name: 'Delete', index: 'id', width: 100, sortable: false, align: "center"},
+               
+            ],
+            caption: "其他报销展示",
+            loadonce: true,    //排序翻页等操作在服务端完成
+            rowNum: 5,
+            rowList: [5, 10, 20],  //设置分页下拉列表
+            pager: "#pager",
+            viewrecords: true,
+            width: 500, height: "auto",
+            jsonReader: { repeatitems: false }, //prmNames: { id: "No" },
+            sortorder: "asc",
+            sortname: "No",//传递给服务端的排序字段名
+            autowidth: true,
+            gridComplete: function () {  //在此事件中循环为每一行添加删除链接
+                var ids = jQuery("#grid").jqGrid('getDataIDs');
+                for (var i = 0; i < ids.length; i++) {
+                    var id = ids[i];
+                    del = "<span  class='Aspan' onclick='Delete(" + id + ")' >删除</span>";
+                    jQuery("#grid").jqGrid('setRowData', ids[i], { Delete: del });
+                }
+            }
+        }).navGrid("#grid ", { edit: false, add: false, del: false, search: false });
+        // 配置对话框(使用Jquery-UI的dialog插件)
+        $('#dialog-form').dialog({ title: '其他报销详细内容' });
+       
+    });
+    
+   //配置模态框
+    $("#dialog-form").dialog({
+        autoOpen: false,
+        height: 300,
+        width: 350,
+        modal: true,
+        buttons: {
+
+            "取消": function () { $(this).dialog("close") },
+            "提交": function () {
+                setid = $(".setID").val();
+                var money = $.trim($("#Email").val());
+                var content = $.trim($("#CreatedOn").val());
+                var selectedId = $("#grid").jqGrid("getGridParam", "selrow");
+                var actionUrl = "@Url.Action("OtherReimbursement_DetailsAdd", "Reimbursement")";
+                var params = {
+                   
+                    "其他报销ID": setid,
+                    "金额": money,
+                    "用途": content
+                };
+                $.ajax({
+                    url: actionUrl,
+                    type: "post",   //默认为get
+                    data: params,   //传递给服务端的数据
+                    dataType: "json",
+                    cache: false,
+                    error: function (textStatus, errorThrown) {
+                        alert("系统ajax交互错误: " + JSON.stringify(textStatus));
+                    },
+                    success: function (data, textStatus) {
+                        if (data.ID != null) {
+                            var dataRow = {
+                                 "ID":data.ID,
+                                "金额": money,
+                                "用途": content
+                            };
+                           
+                            if (selectedId) {
+                                $("#grid").jqGrid("addRowData", data.ID,dataRow, "before", selectedId);//如果有选定行则添加在选定行前面
+                            } else {
+                                $("#grid").jqGrid("addRowData",data.ID, dataRow, "last");//没有选定行则添加在第一行
+                            }
+                            $("#dialog-form").dialog("close");
+                            alert("报销添加操作成功!");
+                        } else {
+                            alert("添加操作失败!");
+                            
+                        }
+                        if (!data.success) {
+                            console.log(data.msg);
+                        }
+
+                    }
+                });
+            }
+        }
+    });
+    $("#create-user")
+        .button()
+        .click(function () {
+            $("#dialog-form").dialog("open");
+        });
+    // 行删除
+    function Delete(id) {
+        if (confirm("确定删除当前数据?")) {
+            $.ajax({
+            url: "@Url.Action("DelReimbursement_Details", "Reimbursement")",
+            type: "POST",
+            data: { id: id },
+            dataType: 'json',
+            cache: false,
+            error: function (textStatus, errorThrown) { alert("交互错误" + JSON.stringify(textStatus)); },
+                success: function (data) {
+                if (data) {
+                    $("#grid").jqGrid("delRowData", id);
+                    alert(data.msg);
+                } else {
+                    alert(data.msg);
+                }
+            }
+        });
+        }
+    };
+
+
+
+    //删除
+    @*$("#btn_del").click(function () {
+        var selectedId = $("#grid").jqGrid("getGridParam", "selrow");
+        
+        $.ajax({
+            url: "@Url.Action("DelReimbursement_Details", "Reimbursement")",
+            type: "POST",
+            data: { id: selectedId },
+            dataType: 'json',
+            cache: false,
+            error: function (textStatus, errorThrown) { alert("交互错误" + JSON.stringify(textStatus)); },
+            success: function (data) {
+                
+                if (data) {
+                    $("#grid").jqGrid("delRowData", selectedId);
+                    alert("删除成功！");
+                } else {
+                    alert("删除失败！");
+                }
+            }
+        });
+    });*@
+    
+</script>
+

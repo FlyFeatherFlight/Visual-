@@ -1,0 +1,57 @@
+﻿using ChicST_MM.IBLL;
+using ChicST_MM.WEB.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace ChicST_MM.WEB.Controllers
+{
+    /// <summary>
+    /// 售后
+    /// </summary>
+    public class AfterSalesController : Controller
+    {
+        private readonly IAfterSalesBLL afterSalesBLL;
+        private readonly IAccountBLL accountBLL;
+        private readonly IStoreBLL storeBLL;
+        private readonly IStoreEmployeesBLL storeEmployeesBLL;
+
+        public AfterSalesController(IAfterSalesBLL afterSalesBLL, IAccountBLL accountBLL, IStoreBLL storeBLL, IStoreEmployeesBLL storeEmployeesBLL)
+        {
+            this.afterSalesBLL = afterSalesBLL ?? throw new ArgumentNullException(nameof(afterSalesBLL));
+            this.accountBLL = accountBLL ?? throw new ArgumentNullException(nameof(accountBLL));
+            this.storeBLL = storeBLL ?? throw new ArgumentNullException(nameof(storeBLL));
+            this.storeEmployeesBLL = storeEmployeesBLL ?? throw new ArgumentNullException(nameof(storeEmployeesBLL));
+        }
+
+        // GET: AfterSales
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        
+
+        /// <summary>
+        /// 设置当前的用户信息
+        /// </summary>
+        private AcountInformation GetAccountInfo()
+        {
+
+            string userName = HttpContext.User.Identity.Name;
+            if (userName != null)
+            {
+
+                var account = HttpContext.Session["Account"] as AcountInformation;
+                return account;
+            }
+            else
+            {
+                return null;
+            }
+
+        }
+    }
+}

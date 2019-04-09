@@ -1,0 +1,7 @@
+﻿
+@{
+    ViewBag.Title = "AllStoreRecStatisticsView";
+}
+
+<h2>AllStoreRecStatisticsView</h2>
+

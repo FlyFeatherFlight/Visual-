@@ -1,0 +1,68 @@
+﻿using ChicST_MM.WEB.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace ChicST_MM.WEB.Controllers
+{
+    /// <summary>
+    /// 收款单控制器
+    /// </summary>
+    public class ReceiptController : Controller
+    {
+        // GET: Receipt
+
+            /// <summary>
+            /// 首页，显示收款记录
+            /// </summary>
+            /// <returns></returns>
+        public ActionResult Index()
+        {
+            return View();
+        }
+        /// <summary>
+        /// 添加收款记录视图
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ReceiptAddView() {
+            return View();
+        }
+
+        /// <summary>
+        /// 收款记录添加操作
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult AddReceipt(ReceiptViewModel receiptViewModel) {
+            return View();
+        }
+
+        /// <summary>
+        /// 收款详情
+        /// </summary>
+        /// <param name="id">收款单ID</param>
+        /// <returns></returns>
+        public ActionResult ReceiptInfoView(int id) {
+            return View();
+        }
+
+        /// <summary>
+        /// 收款记录审查视图
+        /// </summary>
+        /// <returns></returns>
+       public ActionResult ReceiptCheckView() { return View(); }
+
+
+        /// <summary>
+        /// 收款审查操作
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult CheckReceipt(ReceiptViewModel receiptViewModel) {
+            return View();
+
+        }
+
+       
+    }
+}

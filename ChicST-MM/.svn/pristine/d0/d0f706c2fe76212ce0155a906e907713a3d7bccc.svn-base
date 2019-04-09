@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ChicST_MM.WEB.Models
+{
+    /// <summary>
+    /// 店铺意向客户跟进日志
+    /// </summary>
+    public class StoreCustomer_TrackViewModel
+    {
+    }
+}

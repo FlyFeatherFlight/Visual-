@@ -1,0 +1,42 @@
+﻿@model JPager.Net.PagerResult<ChicST_MM.WEB.Models.AirFaresViewModel>
+@{
+    ViewBag.Title = "机票报销记录";
+}
+
+<h3>机票报销记录</h3>
+<div>
+    <div style="padding-left:2.5%; margin:10px 0;">
+        <form method="get" action="~/AirFare/Index">
+            根据订票人查询：
+            <input name="searchString" class="search-input" />
+            <input type="submit" value="查询" class="city-sure" style="position: relative;top: 0;" />
+        </form>
+    </div>
+    <table class="table table-bordered table-striped table-hover " style="text-align:center;table-layout:fixed;" id="Table">
+        <tr>
+
+            <th>订票人</th>
+            <th>出发时间</th>
+            <th>到达时间</th>
+            <th>费用小计</th>
+            <th>制单日期</th>
+
+        </tr>
+        @foreach (var item in Model.DataList)
+        {
+            <tr>
+
+                <td>@Html.ActionLink(item.订票人, "AirFareInfoView", new { id = item.ID })</td>
+                <td>@item.出发日期.ToString("d")</td>
+                <td>@item.到达日期.ToString("d")</td>
+                <td>@item.费用小计</td>
+                <td>@item.制单日期</td>
+
+            </tr>
+        }
+    </table>
+
+</div>
+<div style="padding-left:2.5%; margin:10px 0; text-align:center;">
+    @Html.Raw(Model.PagerHtml()) 共 @Model.Total 条
+</div>

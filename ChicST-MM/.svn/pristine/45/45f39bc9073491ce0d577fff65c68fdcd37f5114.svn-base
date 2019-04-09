@@ -1,0 +1,7 @@
+﻿
+@{
+    ViewBag.Title = "ReceivingRecords_CheckView";
+}
+
+<h2>ReceivingRecords_CheckView</h2>
+

@@ -1,0 +1,96 @@
+﻿@model ChicST_MM.WEB.Models.RegionViewModel
+
+@{
+    ViewBag.Title = "接待申请表";
+}
+
+<div>
+    <h3>接待申请表</h3>
+</div>
+<form action="" method="POST">
+    <table class="table table-striped table-bordered table-hover">
+        <tr>
+            <td>接待对象所属方类型</td>
+            <td colspan="3">
+                <input type="text" class="form-control" placeholder="请输入接待对象所属方类型" />
+            </td>
+        </tr>
+        <tr>
+            <td>接待对象</td>
+            <td>
+                <input type="text" class="form-control" />
+            </td>
+            <td>接待对象职务</td>
+            <td>
+                <input type="text" class="form-control" />
+            </td>
+        </tr>
+        <tr>
+            <td>关联审核人</td>
+            <td colspan="3">
+                <select name="" id="" class="form-control">
+                    <option>-请选择审核人-</option>
+                    <option value="第一个">第一个</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" class="" style="position:relative;">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 start-date">
+                    <span>接待开始日期</span>
+                    <input data-provide="datepicker" class=" datepicker" type='text' placeholder="请选择开始日期" />
+                </div>
+
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <span>接待结束日期</span>
+                    <input data-provide="datepicker" class=" datepicker" type='text' placeholder="请选择结束日期" />
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>接待目的</td>
+            <td colspan="3">
+                <textarea name="" id="" class="form-control" rows="3"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>接待大概内容</td>
+            <td colspan="3">
+                <textarea name="" id="" class="form-control" rows="3"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>预计完成日期</td>
+            <td>
+                <input type="text" data-provide="datepicker" class=" datepicker form-control" placeholder="请选择完成日期" readonly>
+            </td>
+            <td>预计完成可能性</td>
+            <td>
+                <input type="text" class="form-control">
+            </td>
+        </tr>
+        <tr>
+            <td>新的问题</td>
+            <td colspan="3">
+                <textarea name="" id="" class="form-control" rows="3"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>新的问题应对方案</td>
+            <td colspan="3">
+                <textarea name="" id="" class="form-control" rows="3"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>备注</td>
+            <td colspan="3">
+                <input type="text" class="form-control">
+            </td>
+        </tr>
+    </table>
+    <div class="submit-btns">
+        <input type="submit" value="提交" />
+        <input type="submit" value="取消" />
+    </div>
+</form>
+

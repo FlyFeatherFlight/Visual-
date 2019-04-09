@@ -1,0 +1,139 @@
+﻿
+@{
+    ViewBag.Title = "LogIn";
+    Layout = null;
+}
+
+<link rel="stylesheet" href="~/Content/bootstrap.min.css">
+<style type="text/css">
+    * {
+        box-sizing: border-box;
+    }
+
+    body, html {
+        background: url(../../images/bg.jpg) no-repeat center center/ cover;
+        /*  background-size: 100% 100%; */
+        height: 100%;
+        position: relative;
+    }
+
+    .fl {
+        float: left;
+    }
+
+    .clearFix:after {
+        content: "";
+        display: block;
+        height: 0;
+        clear: both;
+        visibility: hidden;
+    }
+
+    .inline-block {
+        display: inline-block;
+    }
+
+    .width-43 {
+        width: 45px;
+    }
+
+    .width-77 {
+        width: calc(100% - 45px);
+    }
+
+    .mask {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #dddddd42;
+    }
+
+    .login-warpper {
+        height: 100%;
+    }
+
+    .login-box {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        padding: 10px;
+        background-color: #98989866;
+        border-radius: 5px;
+        z-index: 1;
+    }
+
+    h3 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-family: "SimSun";
+        font-weight: bold;
+    }
+
+    .form-control {
+        display: inline-block;
+    }
+
+    label {
+        font-family: "SimSun";
+        font-weight: 600;
+    }
+
+    .btn-success {
+        width: 40%;
+    }
+
+    .user-warpper {
+        line-height: 34px;
+        margin-bottom: 15px;
+    }
+</style>
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+<div class="mask"></div>
+<div class="container-fluid">
+    <div class="row login-warpper">
+        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-12 login-box clearFix ">
+            <form action="~/LogIn/Login" method="POST" id="Myform">
+                <h3>登录</h3>
+                <div class="user-warpper clearFix">
+                    <div class="inline-block fl width-43">
+                        <label for="username">账号：</label>
+                    </div>
+                    <div class="inline-block width-77">
+                        <input type="text" name="code" id="username" placeholder="请输入账号" class="form-control " />
+                    </div>
+                </div>
+                <div class="user-warpper clearFix">
+                    <div class="inline-block fl width-43">
+                        <label for="password">密码：</label>
+                    </div>
+                    <div class="inline-block width-77">
+                        <input type="password" name="pw" id="password" placeholder="请输入密码" class="form-control" />
+                    </div>
+                </div>
+                <div style="color:red;"> @TempData["msg"]</div>
+                <input type="button" value="登录" class="btn btn-success center-block "  onclick="loginBtn()"/>
+            </form>
+        </div>
+
+    </div>
+</div>
+<script>
+    $(document).keydown(function (event) {
+        if (event.keyCode == 13) {
+            //alert("enter")
+           
+                $("#Myform").submit();
+          
+        }
+    })
+    function loginBtn() {
+        //存储当前登录用户名到本地
+        var userName = $("#username").val();
+        sessionStorage.setItem('userkey', userName);
+        $("#Myform").submit();
+    }
+</script>
+
+

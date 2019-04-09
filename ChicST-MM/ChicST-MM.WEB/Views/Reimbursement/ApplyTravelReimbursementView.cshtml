@@ -1,0 +1,494 @@
+﻿@model ChicST_MM.WEB.Models.TravelReimbursementViewModel
+
+@{
+    ViewBag.Title = "出差报销申请";
+}
+<script>
+    $(function () {
+       
+        //获取对象类别数据
+        $.ajax({
+            type: "post",
+            data: {},
+            url: '@Url.Action("TravelReimbursementType", "Reimbursement")',
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                console.log(data)
+                $.each(data, function(i, m) {
+
+                    $("#Type").append("<option value=" + m.对象类型 + ">" + m.对象类型 + "</option>")
+
+                })
+
+            },
+            error: function (err) {
+                alert(err);
+                console.log(err);
+            }
+
+        })
+        //获取省份数据
+        $.ajax({
+            type: "post",
+            data: {},
+            url: '@Url.Action( "GetProvince", "BusinessTrip")',
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                $("#sheng").append("<option value=''>-请选择-</option>")
+                $.each(data, function(i, m) {
+
+                    $("#sheng").append("<option value=" + m + ">" + m + "</option>")
+
+                })
+
+            },
+            error: function (err) {
+                alert(err);
+                console.log(err);
+            }
+
+        })
+        //根据选择的省份，获取市数据
+        $("#sheng").change(function () {
+            var province = $("#sheng").val();
+            $("#shi").empty();
+            $.ajax({
+                type: "post",
+                data: { province: province },
+                url: '@Url.Action("GetRgion", "BusinessTrip")',
+                dataType: "json",
+                cache: false,
+                async: true,
+                success: function (data) {
+                    $("#city").val("");
+                    $(".nowCity").text('');
+                    $("#shi").append("<option value=''>-请选择-</option>")
+                    $.each(data, function(i, m) {
+
+                        $("#shi").append("<option value=" + m[1] + ">" + m[1]  + "</option>")
+
+                    })
+                        
+                },
+                error: function (err) {
+                    alert(err);
+                    console.log(err);
+                }
+
+            })
+        })
+        $("#shi").change(function () {
+            $("#city").val($("#sheng").val() + $("#shi").val());
+            var cityText = $("#city").val();
+            $(".nowCity").text(cityText)
+        })
+    })
+</script>
+<div>
+    <h3>出差报销申请</h3>
+    <sapn style="color: orange;display: block;margin: 5px 0 5px 2.5%;">温馨提示：填写上方信息后点击“填写报销详情”按钮方可添加报销详细内容</sapn>
+</div>
+<form action="#" method="post" id="TravelRreimbursement">
+    <input type="text" name="关联出差ID" value="@Model.关联出差ID" style="display:none;"/>
+    
+    <table class="table table-striped table-bordered table-hover">
+        <tr>
+            <td class="bold">报销人</td>
+            <td>@Model.报销人</td>
+            <td class="bold">报销部门</td>
+            <td>@Model.部门</td>
+        </tr>
+        <tr>
+            <td class="bold">出差日期</td>
+            <td>@Model.出差日期</td>
+            <td class="bold">出差事由</td>
+            <td>@Model.出差事由</td>
+        </tr>
+
+        <tr>
+            <td class="bold">原借款</td>
+            <td>
+                <input type="text" class="form-control" name="借款金额"
+                       onkeyup="value=value.replace(/[^\d.]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字" />
+            </td>
+            <td class="bold">应退补金额</td>
+            <td>
+                <input type="text" class="form-control" name="应退补金额"
+                       onkeyup="value=value.replace(/[^\d.]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字" />
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">汇款银行</td>
+            <td>
+                <input type="text" class="form-control red blank" name="汇款银行" oninput="sureRed()" />
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+            <td class="bold">户名</td>
+            <td>
+                <input type="text" class="form-control red blankName" name="户名" oninput="sureRed()" />
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">汇款账号</td>
+            <td colspan="3">
+                <input type="text" class="form-control red blank-IC" name="汇款账号" oninput="sureRed()"
+                       onkeyup="value=value.replace(/[^\d]/g,'')"
+                       onblur="value=value.replace(/[^\d]/g,'')" placeholder="请输入数字" />
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" style=" text-align: center;"><input type="button" value="填写报销详情" class="plan btn  btn-primary"></td>
+        </tr>
+        <tr>
+            <td colspan="4" style="position:relative;">
+                <div class="mask-jsGrid" title="点击填写报销详情后方可操作"></div>
+                <div style="text-align:left; margin-bottom:10px;">
+                    <input id="create-user" type="button" value="添加" class="btn " />
+
+                    <sapn style="color: orange;display: block;margin: 5px 0 5px 0;">温馨提示：添加后请点击确定</sapn>
+                </div>
+                <table id="grid"></table>
+                <div id="pager"></div>
+                <div style="margin-top:10px;color:#333;">
+                    <input type="button" value="提交" onclick="submitAll()" class="btn btn-success">
+                </div>
+            </td>
+        </tr>
+    </table>
+</form>
+@**模态框*@
+<div id="dialog-form" style="text-align:center;">
+    <form>
+      
+        <table class="table table-striped table-bordered table-hover">
+            <tr>
+                <td style="width:20% !important;">日期:</td>
+                <td colspan="3">
+
+                    <input type="text" class="dateTime red form-control" id="Cdate" oninput="sureRed()" placeholder="请选择日期" style="color:gray;" readonly>
+                    <span class="must" style="color:red;display:block;">*该选项为必填项</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:20% !important;">起讫地点:</td>
+                <td colspan="3">
+                    <input type="text" id="place" class="search-input form-control" name="起讫地点" />
+                </td>
+            </tr>
+            <tr>
+                
+                <td>城市</td>
+                <td>
+                    <select id="sheng" class="search-input ">
+                        <option value="">-请选择省-</option>
+                    </select>
+                    <select id="shi" class="search-input  " style="margin-top:5PX;">
+                        <option value="">-请选择市-</option>
+                    </select>
+                    <div>
+                        城市是： <span class="nowCity"></span>
+                        <input type="text" id="city" class="hidden" />
+                    </div>
+
+
+                </td>
+                <td>对象类型</td>
+                <td>
+                    <select id="Type" class="form-control red" oninput="sureRed()">
+                        <option value="">-请选择对象类型-</option>
+                    </select>
+                    <span class="must" style="color:red;">*该选项为必填项</span>
+                </td>
+            </tr>
+            
+            <tr>
+
+                <td>住宿费:</td>
+                <td colspan="3">
+                    <input type="text" id="room" class="search-input form-control" name="住宿费"
+                           onkeyup="value=value.replace(/[^\d.]/g,'')"
+                           onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字" />
+                </td>
+            </tr>
+            <tr>
+                <td>车船费:</td>
+                <td colspan="3">
+                    <input type="text" id="carBoat" class="search-input form-control" name="车船费"
+                           onkeyup="value=value.replace(/[^\d.]/g,'')"
+                           onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字" />
+                </td>
+            </tr>
+            <tr>
+
+                <td>市内交通费:</td>
+                <td colspan="3">
+                    <input type="text" id="Traffic" class="search-input form-control" name="交通费"
+                           onkeyup="value=value.replace(/[^\d.]/g,'')"
+                           onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字" />
+                </td>
+            </tr>
+            <tr>
+
+                <td>生活补助费:</td>
+                <td colspan="3">
+                    <input type="text" id="Living" class="search-input form-control" name="生活补助"
+                           onkeyup="value=value.replace(/[^\d.]/g,'')"
+                           onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字" />
+                </td>
+            </tr>
+            <tr>
+
+                <td>同行人:</td>
+                <td colspan="3">
+                    <input type="text" id="person" class="search-input form-control" name="同行人" />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script>
+  
+    // 提交表格所有数据并跳转详情
+    function submitAll() {
+        var mainStatus = false;
+        $("#TravelRreimbursement .red").each(function (i, m) {
+            if (m.value == "" || m.value == null) {
+                return mainStatus = true;
+            }
+        })
+        //console.log(allData);
+        //主表提交（表单提交）
+        if (mainStatus) {
+            alert("请完善信息！");
+        } else { 
+
+        $.ajax({
+            url: '@Url.Action("TravelReimbursementApply", "Reimbursement")',
+            type: 'post',
+            dataType: 'json',
+            data: $("#TravelRreimbursement").serialize(),
+            async: true,
+            success: function(data) {
+                console.log(data);
+          
+                //获取当前表格所有数据
+                var o = jQuery("#grid");
+                @****** 获取当前显示的所有数据 ******@
+                var allData = o.jqGrid('getRowData');
+                var rowNum = o.jqGrid('getGridParam', 'rowNum'); //获取显示配置记录数量
+                var total = o.jqGrid('getGridParam', 'records'); //获取查询得到的总记录数量
+                //设置rowNum为总记录数量并且刷新jqGrid，使所有记录现出来调用getRowData方法才能获取到所有数据
+                o.jqGrid('setGridParam', { rowNum: total }).trigger('reloadGrid');
+                var allData = o.jqGrid('getRowData');  //此时获取表格所有匹配的
+                o.jqGrid('setGridParam', { rowNum: rowNum }).trigger('reloadGrid'); //还原原来显示的记录数量
+                //console.log(allData)
+                var idc = data;
+                //console.log(idc)
+                //修改不需要的值
+                allData.map(function (item,index){
+                    item.Delete = "删除";
+                    item.报销ID = idc;
+                    return item;
+                })
+                subForm(allData,idc);//副表提交
+            },
+            error: function(err) {
+                alert(err);
+                console.log(err);
+            }
+
+
+            })
+        }
+     //副表提交
+        function subForm(allData,idc) {
+            $.ajax({
+            url: "@Url.Action("TravelReimbursement_DetailsApply", "Reimbursement")",
+            type: "post",   //默认为get
+            data: { models: JSON.stringify(allData) },   //传递给服务端的数据
+            dataType: "json",
+            cache: false,
+            error: function (textStatus, errorThrown) {
+                alert("副表系统ajax交互错误: " + JSON.stringify(textStatus));
+            },
+            success: function (data, textStatus) {
+                console.log(data)
+                if (data.success) {
+                    alert(data.msg+'跳转至详情页');
+                     window.location.href = '@Url.Action("TravelReimbursementDetailsInfoView", "Reimbursement")?id=' + idc;
+                } else {
+                    alert(data.msg);
+                }
+                
+
+
+            }
+        });
+        }
+        
+
+
+       
+    }
+    //遮罩
+    $(".plan").click(function () {
+        if ($(".blank").val() == "" || $(".blank-IC").val() == "") {
+            alert("请先完善信息!");
+            return;
+        } else {
+            $(".mask-jsGrid").css("display", "none");
+            alert("请填写下方信息！")
+        }
+    })
+    $(function () {
+
+        jQuery("#grid").jqGrid({
+            url: "",
+            datatype: "json",
+            mtype: "get",
+            colModel: [
+                
+                { label: 'ID', name: 'ID', index: 'ID', width: 60, sorttype: "int",align:"center" },
+                { label: '城市', name: '城市', index: '城市', width: 90, align: "center" },
+                { label: '对象类别', name: '对象类别', index: '对象类别', width: 90, align: "center" },
+                { label: '起讫地点', name: '起讫地点', index: '起讫地点', width: 90, align: "center" },
+                { label: '出差日期', name: '日期', index: '出差日期', width: 90, align: "center" },
+               
+                { label: '住宿费', name: '住宿费', index: '住宿费', width: 60, sorttype: "int", align: "center"  },
+                { label: '车船费', name: '车船费', index: '车船费', width: 60, sorttype: "int", align: "center"  },
+                { label: '市内交通费', name: '交通费', index: '交通费', width: 90, align: "center" },
+                { label: '生活补助费', name: '生活补助', index: '生活补助费', width: 100, sortable: false, align: "center" },
+                { label: '同行人', name: '同行人', index: '同行人', width: 100, sortable: false, align: "center" },
+                { label: '操作', name: 'Delete', index: 'id', width: 100, sortable: false, align: "center" },
+                { label: '报销ID', name: '报销ID', index: '报销ID', width: 1, sorttype: "int", align: "center" },
+
+            ],
+            caption: "出差报销展示",
+            loadonce: true,    //排序翻页等操作在服务端完成
+            rowNum: 5,
+            rowList: [5, 10, 20],  //设置分页下拉列表
+            pager: "#pager",
+            viewrecords: true,
+            width: 500, height: "auto",
+            jsonReader: { repeatitems: false }, //prmNames: { id: "No" },
+            sortorder: "asc",
+            sortname: "No",//传递给服务端的排序字段名
+            autowidth: true,
+            gridComplete: function () {  //在此事件中循环为每一行添加删除链接
+                var ids = jQuery("#grid").jqGrid('getDataIDs');
+                for (var i = 0; i < ids.length; i++) {
+                    var id = ids[i];
+                    del = "<span  class='Aspan' onclick='Delete(" + id + ")' >删除</span>";
+                    jQuery("#grid").jqGrid('setRowData', ids[i], { Delete: del });
+                }
+            }
+        });
+        // 配置对话框(使用Jquery-UI的dialog插件)
+        $('#dialog-form').dialog({ title: '出差报销详细内容' });
+
+    });
+
+   //配置模态框
+    $("#dialog-form").dialog({
+        autoOpen: false,
+        height: 600,
+        width: 960,
+        modal: true,
+        buttons: {
+
+            "取消": function () { $(this).dialog("close") },
+            "确认": function () {
+                //获取模态框提交数据
+                var place = $.trim($("#place").val());//起讫地点
+                var Cdate = $.trim($("#Cdate").val());//出差日期
+                var city = $.trim($("#city").val());//城市
+                var Type = $.trim($("#Type").val());//对象类别
+
+                var room = $.trim($("#room").val());//住宿费
+                var carBoat = $.trim($("#carBoat").val());//车船费
+                var Traffic = $.trim($("#Traffic").val());//交通费
+                var Living = $.trim($("#Living").val());//生活补助
+                var person = $.trim($("#person").val());//同行人
+
+
+                //var selectedId = $("#grid").jqGrid("getGridParam", "selrow");
+                var actionUrl = "@Url.Action("TravelReimbursement_DetailsApply", "Reimbursement")";
+                var status = false;
+                if ($("#sheng").val() == "") {
+                    return alert("请选择省份")
+                }
+                if ($("#shi").val() == "") {
+                    return alert("请选择市")
+                }
+                if ($("#city").val() == "") {
+                    return alert("请重新选择城市")
+                }
+                $("#dialog-form .red").each(function(i, m) {
+                    if (m.value == null || m.value == "") {
+                        return status = true;
+                    }
+                })
+                if (status) {
+                    alert("请完善信息！")
+                } else {
+                    var rowid = $("#grid").getGridParam("records") + 1
+                    var params = {
+                        "报销ID":"0",
+                        "ID": rowid,
+                        "起讫地点": place,
+                        "日期": Cdate,
+                        "城市": city,
+                        "对象类别": Type,
+                       
+                        "住宿费": room,
+                        "车船费": carBoat,
+                        "交通费": Traffic,
+                        "生活补助": Living,
+                        "同行人": person
+
+                    };
+
+                    $("#grid").jqGrid("addRowData", rowid, params, "last");//模态框提交后在表格重添加数据
+                    $("#dialog-form").dialog("close");//关闭模态框
+                    alert("添加成功！");
+                }
+                
+            }
+        }
+    });
+    $("#create-user")
+        .button()
+        .click(function () {
+            $("#city").val('');
+            $("#dialog-form").dialog("open");
+        });
+
+
+        // 行删除
+        function Delete(id) {
+            if (confirm("确定删除当前数据?")) {
+
+                $("#grid").jqGrid("delRowData", id);
+                alert("删除成功！");
+
+            } else {
+                alert("删除失败！")
+            }
+        };
+
+
+
+</script>
+
+
+

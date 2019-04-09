@@ -1,0 +1,7 @@
+﻿
+@{
+    ViewBag.Title = "AfterSales_RecordInfoView";
+}
+
+<h2>AfterSales_RecordInfoView</h2>
+

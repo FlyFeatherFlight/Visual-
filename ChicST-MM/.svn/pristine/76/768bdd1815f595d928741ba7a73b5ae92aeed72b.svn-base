@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="0c6100a499804ade981e5344e0e770fd" Name="Diagram1">
+        <EntityTypeShape EntityType="stmmModels.HR_出差对象类型" Width="1.5" PointX="0.75" PointY="2.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmModels.HR_出差记录表" Width="1.5" PointX="3" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmModels.HR_人员信息表" Width="1.5" PointX="5.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmModels.HR_职务" Width="1.5" PointX="3" PointY="6.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmModels.系统_部门" Width="1.5" PointX="0.75" PointY="5.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmModels.系统功能" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmModels.系统用户" Width="1.5" PointX="7.75" PointY="4.75" IsExpanded="true" />
+        <AssociationConnector Association="stmmModels.FK_HR_出差记录表_HR_出差对象类型" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmModels.FK_HR_职务_系统_部门" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="stmmModels.地区" Width="1.5" PointX="10.75" PointY="8.25" />
+        <EntityTypeShape EntityType="stmmModels.销售_店铺档案" Width="1.5" PointX="13" PointY="4.125" />
+        <EntityTypeShape EntityType="stmmModels.销售_经销商档案" Width="1.5" PointX="9.75" PointY="4.375" />
+        <AssociationConnector Association="stmmModels.FK_销售_店铺档案_地区" />
+        <AssociationConnector Association="stmmModels.FK_系统用户_销售_经销商档案" />
+        <AssociationConnector Association="stmmModels.FK_销售_店铺档案_销售_经销商档案" />
+        <EntityTypeShape EntityType="stmmModels.HR_出差详情" Width="1.5" PointX="5.25" PointY="0.75" />
+        <AssociationConnector Association="stmmModels.FK_HR_出差详情_HR_出差记录表" />
+        <EntityTypeShape EntityType="stmmModels.HR_接待记录" Width="1.5" PointX="10" PointY="0.75" />
+        <AssociationConnector Association="stmmModels.FK_HR_接待记录_HR_出差对象类型" />
+        <AssociationConnector Association="stmmModels.FK_HR_接待记录_系统_部门" />
+        <AssociationConnector Association="stmmModels.FK_HR_接待记录_系统用户" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

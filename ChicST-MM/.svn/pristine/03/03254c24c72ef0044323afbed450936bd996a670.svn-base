@@ -1,0 +1,21 @@
+﻿using ChicST_MM.IBLL;
+using ChicST_MM.Model;
+using ChicST_MM.IDAL;
+using System;
+
+namespace ChicST_MM.BLL
+{
+    /// <summary>
+    /// 店铺员工档案
+    /// </summary>
+   public partial class StoreEmployeesBLL:BaseService<销售_店铺员工档案>, IStoreEmployeesBLL
+    {
+        private IStoreEmployeesDAL storeEmployeesDAL;
+
+        public StoreEmployeesBLL(IStoreEmployeesDAL storeEmployeesDAL)
+        {
+            this.storeEmployeesDAL = storeEmployeesDAL ?? throw new ArgumentNullException(nameof(storeEmployeesDAL));
+            Dal = this.storeEmployeesDAL;
+        }
+    }
+}

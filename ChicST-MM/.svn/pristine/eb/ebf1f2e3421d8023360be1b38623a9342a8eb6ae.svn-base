@@ -1,0 +1,8 @@
+﻿@model ChicST_MM.WEB.Models.ReceiptViewModel
+
+@{
+    ViewBag.Title = "ReceiptInfoView";
+}
+
+<h2>ReceiptInfoView</h2>
+

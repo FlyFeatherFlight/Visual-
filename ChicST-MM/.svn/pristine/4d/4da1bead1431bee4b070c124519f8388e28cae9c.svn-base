@@ -1,0 +1,74 @@
+﻿
+using System;
+using System.Web.Mvc;
+
+namespace ChicST_MM.WEB.CustomAttributes
+{
+    ///　<summary>
+    ///　权限拦截
+    ///　</summary>
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
+    public class AuthorizationFilterAttribute: ActionFilterAttribute
+    {
+
+        FilterContextInfo fcinfo;
+        // OnActionExecuted 在执行操作方法后由 ASP.NET MVC 框架调用。
+        // OnActionExecuting 在执行操作方法之前由 ASP.NET MVC 框架调用。
+        // OnResultExecuted 在执行操作结果后由 ASP.NET MVC 框架调用。
+        // OnResultExecuting 在执行操作结果之前由 ASP.NET MVC 框架调用。
+        /// <summary>
+        /// 在执行操作方法之前由 ASP.NET MVC 框架调用。
+        /// </summary>
+        /// <param name="filterContext"></param>
+        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            string userName;
+            bool isState;
+           
+            if (filterContext == null)
+            {
+                throw new ArgumentNullException("filterContext");
+            }
+
+            //检查是否免检页面
+            bool skipAuthorization = filterContext.ActionDescriptor.IsDefined(typeof(AllowAnonymousAttribute), inherit: true)
+                                     || filterContext.ActionDescriptor.ControllerDescriptor.IsDefined(typeof(AllowAnonymousAttribute), inherit: true);
+
+            if (skipAuthorization)
+            {
+                return;
+            }
+
+
+            #region 是否已经登陆
+            var user = filterContext.HttpContext.User;
+            userName = filterContext.HttpContext.User.Identity.Name;//取得当前用户名
+
+            if (filterContext.HttpContext.Session["Account"] == null || user == null || !user.Identity.IsAuthenticated)
+
+            {
+                filterContext.HttpContext.Session.RemoveAll();
+
+                isState = false;
+                filterContext.Result = new ContentResult { Content = @"抱歉,您还未登录！" };
+                filterContext.Result = new HttpUnauthorizedResult();
+                return;
+            }
+            else
+            {
+
+                isState = true;
+            }
+            #endregion
+
+
+
+            fcinfo = new FilterContextInfo(filterContext);
+
+            string actionName = filterContext.ActionDescriptor.ActionName;             //获取触发当前方法的的Action名字          
+            string controllerName = filterContext.ActionDescriptor.ControllerDescriptor.ControllerName;//获取触发当前方法的的Action所在的控制器名字       
+
+        }
+
+    }
+}

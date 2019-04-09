@@ -1,0 +1,43 @@
+﻿@model JPager.Net.PagerResult<ChicST_MM.WEB.Models.BusinessTripViewModel>
+@{
+    ViewBag.Title = "出差首页";
+}
+<h3>出差查询</h3>
+<div>
+    <div style="padding-left:2.5%; margin:10px 0;">
+        <form method="get" action="~/BusinessTrip/Index">
+            根据对象查询：
+            <input name="searchString" class="search-input"/>
+            <input type="submit" value="查询" class="city-sure" style="position: relative;top: 0;"/>
+        </form>
+    </div>
+    <table class="table table-bordered table-striped table-hover " style="text-align:center;table-layout:fixed;">
+        <tr>
+
+            <th>出差人</th>
+            <th>开始时间</th>
+            <th>结束时间</th>
+            <th>出差内容</th>
+            <th>费用预估合计</th>
+            <th>提交时间</th>
+          
+        </tr>
+        @foreach (var item in Model.DataList)
+        {
+        <tr>
+
+            <td>@Html.ActionLink(item.出差人姓名, "BusinessTrip_DetailsView", new { id = item.ID })</td>
+            <td>@item.开始时间.ToString("d")</td>
+            <td>@item.结束时间.ToString("d")</td>
+            <td class="ellipsis" title="@item.出差内容">@item.出差内容</td>
+            <td>@item.合计</td>
+            <td>@item.提交时间</td>
+           
+        </tr>
+        }
+    </table>
+
+</div>
+<div style="padding-left:2.5%; margin:10px 0; text-align:center;">
+    @Html.Raw(Model.PagerHtml()) 共 @Model.Total 条
+</div>

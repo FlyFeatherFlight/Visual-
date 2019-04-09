@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="0c6100a499804ade981e5344e0e770fd" Name="Diagram1" ZoomLevel="94" ShowGrid="true">
+        <EntityTypeShape EntityType="stmmModels.C5S_评审标准" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="stmmModels.C5S_评审记录" Width="1.5" PointX="3" PointY="50.5" />
+        <EntityTypeShape EntityType="stmmModels.C5S_评审记录_凭证" Width="1.5" PointX="5.25" PointY="56.25" />
+        <EntityTypeShape EntityType="stmmModels.C5S_评审记录详细" Width="1.5" PointX="5.25" PointY="35.875" />
+        <EntityTypeShape EntityType="stmmModels.HR_出差对象类型" Width="1.5" PointX="3.75" PointY="32.25" />
+        <EntityTypeShape EntityType="stmmModels.HR_出差汇报" Width="1.5" PointX="6" PointY="27.625" />
+        <EntityTypeShape EntityType="stmmModels.HR_出差汇报凭证" Width="1.5" PointX="8.25" PointY="29" />
+        <EntityTypeShape EntityType="stmmModels.HR_出差计划" Width="1.5" PointX="1.5" PointY="40.875" />
+        <EntityTypeShape EntityType="stmmModels.HR_出差计划详细" Width="1.5" PointX="3.75" PointY="41.25" />
+        <EntityTypeShape EntityType="stmmModels.HR_接待记录" Width="1.5" PointX="6" PointY="21.375" />
+        <EntityTypeShape EntityType="stmmModels.HR_人员信息表" Width="1.5" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="stmmModels.财务_出差报销单" Width="1.5" PointX="6" PointY="15.75" />
+        <EntityTypeShape EntityType="stmmModels.财务_核算分类" Width="1.5" PointX="9" PointY="15.25" />
+        <EntityTypeShape EntityType="stmmModels.财务_机票明细" Width="1.5" PointX="4.75" PointY="0.75" />
+        <EntityTypeShape EntityType="stmmModels.财务_其他报销_副表" Width="1.5" PointX="11.25" PointY="21.875" />
+        <EntityTypeShape EntityType="stmmModels.财务_其它报销" Width="1.5" PointX="3" PointY="21.25" />
+        <EntityTypeShape EntityType="stmmModels.财务_收款单" Width="1.5" PointX="3" PointY="15.125" />
+        <EntityTypeShape EntityType="stmmModels.地区" Width="1.5" PointX="0.75" PointY="4.75" />
+        <EntityTypeShape EntityType="stmmModels.客服_售后发起单" Width="1.5" PointX="3" PointY="26.375" />
+        <EntityTypeShape EntityType="stmmModels.客服_售后发起单凭证" Width="1.5" PointX="3" PointY="47.625" />
+        <EntityTypeShape EntityType="stmmModels.客服_售后跟进日志" Width="1.5" PointX="8.25" PointY="24.125" />
+        <EntityTypeShape EntityType="stmmModels.系统_部门" Width="1.5" PointX="3.75" PointY="11.875" />
+        <EntityTypeShape EntityType="stmmModels.系统用户" Width="1.5" PointX="0.75" PointY="20.875" />
+        <AssociationConnector Association="stmmModels.FK_5S_评审记录_凭证_5S_评审记录" />
+        <AssociationConnector Association="stmmModels.FK_5S_评审记录_系统用户" />
+        <AssociationConnector Association="stmmModels.FK_5S_评审记录_系统用户1" />
+        <AssociationConnector Association="stmmModels.FK_5S_评审记录_系统用户2" />
+        <AssociationConnector Association="stmmModels.FK_5S_评审记录_系统用户3" />
+        <AssociationConnector Association="stmmModels.FK_5S_评审记录详细_5S_评审记录" />
+        <AssociationConnector Association="stmmModels.FK_5S_评审记录详细_系统用户" />
+        <AssociationConnector Association="stmmModels.FK_HR_接待记录_HR_出差对象类型" />
+        <AssociationConnector Association="stmmModels.FK_HR_出差汇报_HR_出差规划" />
+        <AssociationConnector Association="stmmModels.FK_HR_出差汇报_HR_出差记录表" />
+        <AssociationConnector Association="stmmModels.FK_HR_出差汇报_系统用户" />
+        <AssociationConnector Association="stmmModels.FK_HR_出差汇报_系统用户1" />
+        <AssociationConnector Association="stmmModels.FK_HR_出差汇报凭证_HR_出差汇报" />
+        <AssociationConnector Association="stmmModels.FK_HR_出差汇报凭证_HR_出差记录表" />
+        <AssociationConnector Association="stmmModels.FK_HR_出差详情_HR_出差记录表" />
+        <AssociationConnector Association="stmmModels.FK_HR_接待记录_系统_部门" />
+        <AssociationConnector Association="stmmModels.FK_HR_接待记录_系统用户" />
+        <AssociationConnector Association="stmmModels.FK_财务_差_接报销单_系统_部门" />
+        <AssociationConnector Association="stmmModels.FK_财务_差_接报销单_系统用户" />
+        <AssociationConnector Association="stmmModels.FK_财务_差_接报销单_系统用户1" />
+        <AssociationConnector Association="stmmModels.FK_财务_其他报销_副表_财务_核算分类" />
+        <AssociationConnector Association="stmmModels.FK_财务_其他报销_副表_财务_其它报销" />
+        <AssociationConnector Association="stmmModels.FK_财务_其它报销_系统_部门" />
+        <AssociationConnector Association="stmmModels.FK_财务_其它报销_系统用户" />
+        <AssociationConnector Association="stmmModels.FK_财务_其它报销_系统用户1" />
+        <AssociationConnector Association="stmmModels.FK_财务_收款单_HR_人员信息表" />
+        <AssociationConnector Association="stmmModels.FK_财务_收款单_系统用户" />
+        <AssociationConnector Association="stmmModels.FK_营销_售后_系统用户" />
+        <AssociationConnector Association="stmmModels.FK_营销_售后_系统用户1" />
+        <AssociationConnector Association="stmmModels.FK_客服_售后跟进日志_客服_售后发起单" />
+        <AssociationConnector Association="stmmModels.FK_客服_售后发起单凭证_系统用户" />
+        <AssociationConnector Association="stmmModels.FK_客服_售后跟进日志_系统用户" />
+        <AssociationConnector Association="stmmModels.FK_客服_售后跟进日志_系统用户1" />
+        <EntityTypeShape EntityType="stmmModels.销售_店铺档案" Width="1.5" PointX="1" PointY="40.75" />
+        <EntityTypeShape EntityType="stmmModels.销售_经销商档案" Width="1.5" PointX="0.75" PointY="36.375" />
+        <AssociationConnector Association="stmmModels.FK_5S_评审记录_销售_店铺档案" />
+        <AssociationConnector Association="stmmModels.FK_5S_评审记录_销售_经销商档案" />
+        <AssociationConnector Association="stmmModels.FK_5S_评审记录详细_销售_店铺档案" />
+        <AssociationConnector Association="stmmModels.FK_销售_店铺档案_地区" />
+        <AssociationConnector Association="stmmModels.FK_营销_售后_销售_店铺档案" />
+        <AssociationConnector Association="stmmModels.FK_系统用户_销售_经销商档案" />
+        <AssociationConnector Association="stmmModels.FK_销售_店铺档案_销售_经销商档案" />
+        <EntityTypeShape EntityType="stmmModels.销售_店铺员工档案" Width="1.5" PointX="6.375" PointY="7" />
+        <AssociationConnector Association="stmmModels.FK_营销_售后_销售_店铺员工档案2" />
+        <EntityTypeShape EntityType="stmmModels.客服_售后费用分摊" Width="1.5" PointX="3" PointY="56.625" />
+        <EntityTypeShape EntityType="stmmModels.客服_售后分类" Width="1.5" PointX="0.75" PointY="28.75" />
+        <AssociationConnector Association="stmmModels.FK_客服_售后费用分摊_客服_售后分类" />
+        <AssociationConnector Association="stmmModels.FK_客服_售后费用分摊_客服_售后分类1" />
+        <AssociationConnector Association="stmmModels.FK_客服_售后费用分摊_客服_售后分类2" />
+        <AssociationConnector Association="stmmModels.FK_营销_售后费用分摊_营销_售后费用分摊" />
+        <AssociationConnector Association="stmmModels.FK_客服_售后跟进日志_客服_售后分类" />
+        <AssociationConnector Association="stmmModels.FK_客服_售后跟进日志_客服_售后分类1" />
+        <AssociationConnector Association="stmmModels.FK_客服_售后跟进日志_客服_售后分类2" />
+        <AssociationConnector Association="stmmModels.FK_客服_售后费用分摊_系统用户" />
+        <AssociationConnector Association="stmmModels.FK_客服_售后费用分摊_系统用户1" />
+        <EntityTypeShape EntityType="stmmModels.财务_出差报销详细" Width="1.5" PointX="8.625" PointY="18.875" />
+        <AssociationConnector Association="stmmModels.FK_财务_差_接详报销细_财务_差_接报销单" />
+        <AssociationConnector Association="stmmModels.FK_财务_差_接详报销细_系统用户" />
+        <EntityTypeShape EntityType="stmmModels.财务_机票明细分摊" Width="1.5" PointX="7.375" PointY="0.75" />
+        <AssociationConnector Association="stmmModels.FK_财务_机票明细_HR_出差计划" />
+        <AssociationConnector Association="stmmModels.FK_财务_机票明细_系统用户" />
+        <AssociationConnector Association="stmmModels.FK_财务_机票明细_系统用户1" />
+        <AssociationConnector Association="stmmModels.FK_财务_机票明细_系统用户2" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

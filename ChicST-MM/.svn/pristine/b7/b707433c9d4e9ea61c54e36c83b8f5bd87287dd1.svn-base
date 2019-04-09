@@ -1,0 +1,12 @@
+﻿using ChicST_MM.IDAL;
+using ChicST_MM.Model;
+
+namespace ChicST_MM.DAL
+{
+    /// <summary>
+    /// 差/接报销
+    /// </summary>
+  public partial  class TravelReimbursementDAL:BaseDAL<财务_差_接报销单>, ITravelReimbursementDAL
+    {
+    }
+}

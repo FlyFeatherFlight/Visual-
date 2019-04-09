@@ -1,0 +1,127 @@
+﻿@model  ChicST_MM.WEB.Models.ReceiptViewModel
+@{
+    ViewBag.Title = "添加收款记录";
+}
+
+@*收款提交*@
+<h3>添加收款记录</h3>
+<form action="@Url.Action("AddReceipt","Receipt")" method="post" id="Myform">
+    <table class="table table-bordered table-striped table-hover ">
+        <tr>
+            <td class="bold">发起人</td>
+            <td colspan="4">
+                <input type="text" name="发起人" value="" class="form-control red must-fill" oninput="sureRed()"/>
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+
+        </tr>
+        <tr>
+            <td class="bold">款项类型</td>
+            <td colspan="4">
+                <input type="text" name="款项类型" value="" class="form-control red must-fill" oninput="sureRed()"/>
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+
+        </tr>
+        <tr>
+            <td class="bold" rowspan="3">
+                <span class="vertical-font">付款</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">付款方</td>
+            <td colspan="3">
+                <input type="text" name="付款方" value="" class="form-control red must-fill" oninput="sureRed()"/>
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">付款银行</td>
+            <td>
+                <input type="text" name="付款银行" value="" class="form-control red must-fill" oninput="sureRed()"/>
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+            <td class="bold">付款账号</td>
+            <td>
+                <input type="text" name="付款账号" value="" class="form-control red must-fill"
+                       onkeyup="value=value.replace(/[^\d]/g,'')"
+                       onblur="value=value.replace(/[^\d]/g,'')" placeholder="请输入数字" oninput="sureRed()"/>
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold" rowspan="3">
+                <span class="vertical-font">收款</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">收款方</td>
+            <td colspan="3">
+                <input type="text" name="收款方" class="form-control red must-fill" oninput="sureRed()"/>
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">收款银行</td>
+            <td>
+                <input type="text" name="收款银行" class="form-control red must-fill" oninput="sureRed()"/>
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+            <td class="bold">收款账号</td>
+            <td>
+                <input type="text" name="收款账号" class="form-control red must-fill"
+                       onkeyup="value=value.replace(/[^\d]/g,'')"
+                       onblur="value=value.replace(/[^\d]/g,'')" placeholder="请输入数字" oninput="sureRed()"/>
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold" rowspan="2">付款/到账时间</td>
+        </tr>
+        <tr>
+            <td class="bold">付款时间</td>
+            <td>
+                <input type="text" name="付款时间" value=""  class="search-input dateTime red must-fill" placeholder="请选择付款时间" readonly  oninput="sureRed()"/>
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+            <td class="bold">到账时间</td>
+            <td>
+                <input type="text" name="到账时间" value=""  class=" search-input dateTime red must-fill" placeholder="请选择到账时间" readonly oninput="sureRed()"/>
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">备注</td>
+            <td colspan="4">
+                <input type="text" name="备注" value="" class="form-control" />
+            </td>
+        </tr>
+    </table>
+    <div class="submit-btns">
+        <input type="button" name="name" value="提交" class="btn btn-success width-7" onclick="noNull()"/>
+        <input type="button" name="name" value="取消" class="btn btn-danger width-7" onclick="javascript:history.back(-1);" />
+    </div>
+</form>
+<script>
+    function noNull() {
+        var inputs = $(".table").find("input.must-fill");
+        var status = false;
+        $(inputs).each((i, m) => {
+            if (m.value == null || m.value == "") {
+                return status = true;
+            }
+        })
+        if (status) {
+            alert("请完善信息！");
+        } else {
+            $("#Myform").submit();
+        }
+    }
+</script>
+
+
+
+
+
+
+

@@ -1,0 +1,593 @@
+﻿@model ChicST_MM.WEB.Models.AirFaresViewModel
+
+@{
+    ViewBag.Title = "添加机票报销";
+}
+<style>
+    #dialog-form .table tbody tr td:nth-child(2n-1),
+    #dialog-formE .table tbody tr td:nth-child(2n-1) {
+        text-align: center;
+        width: auto;
+    }
+
+   
+</style>
+<script>
+    $(function () { 
+        //获取省份数据
+        $.ajax({
+            type: "post",
+            data: {},
+            url: '@Url.Action( "GetProvince", "BusinessTrip")',
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                console.log(data)
+                $.each(data, (i, m) => {
+                    $("#goalSheng").append("<option value=" + m + ">" + m + "</option>");
+                    $("#startSheng").append("<option value=" + m + ">" + m + "</option>");
+                    $("#addSheng").append("<option value=" + m + ">" + m + "</option>");
+                    $("#addShengE").append("<option value=" + m + ">" + m + "</option>");
+
+                })
+
+            },
+            error: function(err){
+                console.log(err)
+            }
+
+        })
+        //根据选择的省份，获取市数据 (出发地)
+        $("#startSheng").change(function () {
+            var province = $("#startSheng").val();
+            $("#startShi").empty();
+            //获取市数据
+            getShi(province, $("#startCity"), $("#startShi"));
+        })
+        
+        //(出发地)
+        $("#goalSheng").change(function () {
+            var province = $("#goalSheng").val();
+            $("#goalShi").empty();
+            getShi(province, $("#goalCity"), $("#goalShi"));
+        })
+        //(添加模态框)
+        $("#addSheng").change(function () {
+            var province = $("#addSheng").val();
+            $("#addShi").empty();
+            getShi(province, $("#city"), $("#addShi"));
+        })
+        //(修改模态框)
+        $("#addShengE").change(function () {
+            var province = $("#addShengE").val();
+            $("#addShiE").empty();
+            getShi(province, $("#cityE"), $("#addShiE"));
+        })
+        //显示当前选择的城市  (出发地)
+        $("#startShi").change(function () {
+            showCity($("#startSheng").val(), $("#startShi").val(), $("#startCity"), $("#startNowCity"));
+        })
+        //(目的地)
+        $("#goalShi").change(function () {
+
+            showCity($("#goalSheng").val(), $("#goalShi").val(), $("#goalCity"), $("#goalNowCity"));
+        })
+        //(添加模态框)
+        $("#addShi").change(function () {
+
+            showCity($("#addSheng").val(), $("#addShi").val(), $("#city"), $("#addNowCity"));
+        })
+        //(修改模态框)
+        $("#addShiE").change(function () {
+
+            showCity($("#addShengE").val(), $("#addShiE").val(), $("#cityE"), $("#addNowCityE"));
+        })
+        //获取市数据
+        function getShi(province,city,shi) {
+
+             $.ajax({
+                    type: "post",
+                    data: { province: province },
+                    url: '@Url.Action("GetRgion", "BusinessTrip")',
+                    dataType: "json",
+                    cache: false,
+                    async: true,
+                    success: function (data) {
+                        city.val("");
+                        shi.append("<option value=''> -请选择- </option>");
+                        $.each(data, (i, m) => {
+
+                            shi.append("<option value=" + m[1] + ">" + m[1]  + "</option>")
+
+                        })
+                        
+                    },
+                    error: function (err) {
+                        console.log(err)
+                    }
+
+                })
+        }
+        //显示的城市
+        function showCity(provinceVal, shiVal, city,nowCity) {
+            city.val(provinceVal + shiVal);
+            var cityVal = city.val();
+            //console.log(cityVal)
+            nowCity.text(cityVal);
+        }
+    }) 
+</script>
+<h3>机票报销添加</h3>
+@*主表提交*@
+<form id="airFares">
+
+    <input type="text" name="出差ID" value="@Model.出差ID" class="hidden" />
+    <table class="table table-bordered table-hover table-striped">
+
+        <tr>
+            <td class="bold">姓名</td>
+            <td colspan="2">
+                <input type="text" name="姓名" value="@Model.姓名" class="form-control" readonly />
+            </td>
+            <td class="bold">部门</td>
+            <td colspan="3">
+                <input type="text" name="部门" value="@Model.部门" class="form-control" readonly />
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">出发地</td>
+            <td colspan="2">
+                <select id="startSheng" class="search-input red">
+                    <option value="">-请选择省-</option>
+                </select>
+                <select id="startShi" class="search-input  red" style="margin-top:5px;" oninput="sureRed()">
+                    <option value="">-请选择市-</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+                <div>
+                    城市是：<span id="startNowCity"></span>
+                    <input type="text" name="出发地" id="startCity" class="hidden" />
+                    
+                </div>
+            </td>
+            <td class="bold">目的地</td>
+            <td colspan="3">
+                <select id="goalSheng" class="search-input red">
+                    <option value="">-请选择省-</option>
+                </select>
+                <select id="goalShi" class="search-input  red" style="margin-top:5px;" oninput="sureRed()">
+                    <option value="">-请选择市-</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+                <div>
+                    城市是：<span id="goalNowCity"></span>
+                    <input type="text" name="目的地" id="goalCity" class="hidden" />
+
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="7" style="position:relative;">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 start-date">
+                    <span class="bold">出发日期</span>&nbsp;&nbsp;
+                    <input name="出发日期" class="search-input  dateTime  red" type='text' placeholder="请选择开始日期" oninput="sureRed()" readonly />
+                    <span class="must" style="color:red;">*该项为必填项</span>
+                </div>
+
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <span class="bold">到达日期</span>&nbsp;&nbsp;
+                    <input name="到达日期" class="search-input dateTime red" type='text' placeholder="请选择结束日期" oninput="sureRed()" readonly />
+                    <span class="must" style="color:red;">*该项为必填项</span>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td rowspan="3" class="bold">费用</td>
+        </tr>
+        <tr>
+            <td class="bold">机票价格</td>
+            <td>
+                <input type="text" class="form-control red" id="air-price" name="机票价格" onkeyup="value=value.replace(/[^\d]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" value="0" oninput="priceTotal()" />
+
+            </td>
+            <td class="bold">退改费用</td>
+            <td>
+                <input type="text" class="form-control red" id="back-price" name="退改费用" onkeyup="value=value.replace(/[^\d]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" value="0" oninput="priceTotal()" />
+
+            </td>
+            <td class="bold">其它费用</td>
+            <td>
+                <input type="text" class="form-control red" id="other-price" name="其他费用" onkeyup="value=value.replace(/[^\d]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" value="0" oninput="priceTotal()" />
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">订票日期</td>
+            <td>
+                <input type="text" class="form-control dateTime red" name="订票日期" placeholder="请选择日期" oninput="sureRed" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td class="bold">费用小计</td>
+            <td colspan="3">
+                <input type="text" class="form-control total" name="费用小计" value="0" readonly />
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">备注</td>
+            <td colspan="6">
+                <input type="text" class="form-control" name="备注" value="" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="7" style=" text-align: center;">
+                <input type="button" value="填写报销详情" class="plan btn  btn-primary" onclick="submitAir()">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="7" style="position:relative;">
+                @*<div class="mask-jsGrid" title="点击填写报销详情后方可操作"></div>*@
+                <div style="text-align:start; margin-bottom:10px;">
+                    <input id="create-user" type="button" value="添加" class="btn " />
+
+                    <sapn style="color: orange;display: block;margin: 5px 0 5px 0;">温馨提示：添加后请点击确定</sapn>
+                </div>
+                <table id="grid"></table>
+                <div id="pager"></div>
+                <div style="margin-top:10px;color:#333;">
+                    <input type="button" value="确认" onclick="goDetail()" class="btn btn-success">
+                </div>
+            </td>
+        </tr>
+    </table>
+</form>
+@**模态框*@
+<div id="dialog-form">
+    <table class="table table-bordered table-hover table-striped">
+
+        <tr>
+            <td>分摊金额:</td>
+            <td>
+                <input type="text" id="money" class="form-control"
+                       onkeyup="value=value.replace(/[^\d.]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字" />
+            </td>
+        </tr>
+        <tr>
+            <td>城市</td>
+            <td>
+                <select id="addSheng" class="search-input red">
+                    <option value="">-请选择省-</option>
+                </select>
+                <select id="addShi" class="search-input  red" style="margin-top:5px;" oninput="sureRed()">
+                    <option value="">-请选择市-</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+                <div>
+                    城市是：<span id="addNowCity"></span>
+                    <input type="text" name="城市" id="city" class="hidden" />
+
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>备注</td>
+            <td>
+                <input type="text" class="form-control" id="notes" />
+            </td>
+        </tr>
+    </table>
+
+</div>
+@**修改*@
+<form id="dialog-formE">
+    @*分摊详情ID*@
+    <input type="text" name="ID" value="" id="editID" class="hidden"/>
+    <input type="text" name="机票明细ID" value="" id="planID" class="hidden"/>
+    <table class="table table-bordered table-hover table-striped">
+        <tr>
+            <td>分摊金额:</td>
+            <td>
+                <input type="text" name="分摊金额" id="moneyE" class="form-control"
+                       onkeyup="value=value.replace(/[^\d.]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字" />
+            </td>
+        </tr>
+        <tr>
+            <td>城市</td>
+            <td>
+                <select id="addShengE" class="search-input red">
+                    <option value="">-请选择省-</option>
+                </select>
+                <select id="addShiE" class="search-input  red" style="margin-top:5px;" oninput="sureRed()">
+                    <option value="">-请选择市-</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+                <div>
+                    城市是：<span id="addNowCityE"></span>
+                    <input type="text" name="城市" id="cityE" class="hidden" />
+
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>备注</td>
+            <td>
+                <input type="text" name="备注" class="form-control" id="notesE" />
+            </td>
+        </tr>
+    </table>
+
+</form>
+<script>
+    //计划ID
+    var setID = "";
+    // 费用预估合计
+    function priceTotal() {
+        var airPrice = $("#air-price").val();
+        var backPrice = $("#back-price").val();
+        var otherPrice = $("#other-price").val();
+        var total = 0
+        total = parseFloat(airPrice) + parseFloat(backPrice) + parseFloat(otherPrice);
+        $(".total").val(total)
+
+    }
+    // 主表提交
+    function submitAir() {
+        var status = false;
+        $("#airFares .red").each((i, m) => {
+            if (m.value == null || m.value == "") {
+                return status = true;
+            }
+        });
+        if (status) {
+            alert("请完善信息！")
+        } else {
+            $.ajax({
+                url: '@Url.Action("AirFaresAdd", "AirFare")',
+                type: 'post',
+                data: $("#airFares").serialize(),
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data)
+                    
+                    //计划明细ID
+                    $("#planID").val(data.data);
+                    setID = data.data;
+                    $(".mask-jsGrid").css("display", "none");
+                    if (data.success) {
+                        alert(data.msg + "，请填写分摊详细！");
+                    } else {
+                        console.log(data.msg);
+                    }
+                   //console.log(data)
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        }
+    }
+    //点击确认前往详情页
+    function goDetail() {
+        window.location.href = "@Url.Action("AirFareInfoView", "AirFare")?id=" + setID;
+    }
+    //配置jqgrid表格
+    $(function () {
+        jQuery("#grid").jqGrid({
+            url: "OtherReimbursementAdd",
+            datatype: "json",
+            mtype: "get",
+            colModel: [
+                { label: 'ID', name: 'ID', index: 'ID', key: true, width: 60, sorttype: "int", align: "center"},
+                { label: '城市', name: '城市', index: '城市', align: "center"},
+                { label: '分摊金额', name: '分摊金额', index: '分摊金额', sortable: false, align: "center"},
+                { label: '备注', name: '备注', index: '备注', sortable: false, align: "center" },
+                { label: '修改', name: 'Edit', index: 'id', sortable: false, align: "center"},
+                { label: '删除', name: 'Delete', index: 'id', sortable: false, align: "center"},
+
+            ],
+            caption: "机票报销展示",
+            loadonce: true,    //排序翻页等操作在服务端完成
+            rowNum: 5,
+            rowList: [5, 10, 20],  //设置分页下拉列表
+            pager: "#pager",
+            viewrecords: true,
+            width: 500,
+            height: "auto",
+            jsonReader: { repeatitems: false }, //prmNames: { id: "No" },
+            sortorder: "asc",
+            sortname: "ID",//传递给服务端的排序字段名
+            autowidth: true,
+            gridComplete: function () {  //在此事件中循环为每一行添加删除链接
+
+
+                var ids = jQuery("#grid").jqGrid('getDataIDs');
+                //console.log("获取的当前行的id"+ids)
+                for (var i = 0; i < ids.length; i++) {
+                    var id = ids[i];
+                    //// 通过当前行id获取所需ID
+                    //var rowData = $("#grid").jqGrid('getRowData', rowId);
+                    //var id = rowData.ID;
+                    console.log(id)
+                    edit = "<span   class='Aspan' onclick='Edit(" + id + ")' >修改</span>";
+                    del = "<span   class='Aspan' onclick='Delete(" + id + ")' >删除</span>";
+                    jQuery("#grid").jqGrid('setRowData', ids[i], { Edit: edit,Delete: del });
+                }
+            }
+        })
+
+
+    });
+    $("#create-user").button().click(function () {
+        $('#dialog-form').dialog({ title: '机票报销分摊详细填写' }).dialog("open");
+    })
+    //配置模态框
+    $("#dialog-form").dialog({
+
+        autoOpen: false,
+        height: 400,
+        width: 600,
+        modal: true,
+        buttons: {
+
+            "取消": function () { $(this).dialog("close") },
+            "提交": function () {
+
+                var money = $.trim($("#money").val());
+                var city = $.trim($("#city").val());
+                var notes = $.trim($("#notes").val());
+
+                var actionUrl = "@Url.Action("AirFareSharingAdd", "AirFare")";
+                var params = {
+
+                    "机票明细ID": setID,
+                    "分摊金额": money,
+                    "城市": city,
+                    "备注": notes
+                };
+                        //提交模态框的数据
+                        $.ajax({
+                            url: actionUrl,
+                            type: "post",   //默认为get
+                            data: params,   //传递给服务端的数据
+                            dataType: "json",
+                            cache: false,
+                            success: function (data, textStatus) {
+                                //console.log(data.data.ID)
+                                if (data.success) {
+                                    var detailId = data.data.ID;
+                                    var dataRow = {
+
+                                        "ID": detailId,
+                                        "分摊金额": money,
+                                        "城市": city,
+                                        "备注": notes
+                                    };
+
+
+                                    // 添加成功模态框关闭
+                                    $("#dialog-form").dialog("close");
+                                    $("#grid").jqGrid("addRowData", detailId, dataRow, "last");//没有选定行则添加在第一行
+                                    alert("添加操作成功!");
+                                } else {
+                                    console.log(data.msg)
+                                }
+
+
+                            },
+
+                            error: function (textStatus, errorThrown) {
+                                console.log("系统ajax交互错误: " + JSON.stringify(textStatus));
+                            },
+                        });
+
+
+                }
+            }
+    });
+    //修改模态框
+    $("#dialog-formE").dialog({
+
+        autoOpen: false,
+        height: 400,
+        width: 600,
+        modal: true,
+        buttons: {
+
+            "取消": function () { $(this).dialog("close") },
+            "提交": function () {
+                
+                    //提交模态框的数据
+                    $.ajax({
+                        url:'@Url.Action("AirFareSharingEdit", "AirFare")',
+                        type: "post",   //默认为get
+                        data: $("#dialog-formE").serialize(),   //传递给服务端的数据
+                        dataType: "json",
+                        cache: false,
+                        success: function (data, textStatus) {
+                            //console.log(data.data.ID)
+                            if (data.success) {
+                                var detailId = $.trim($("#editID").val());//分摊详情ID
+                                var notesE = $.trim($("#notesE").val());//备注
+                                var cityE = $.trim($("#cityE").val());//城市
+                                var moneyE = $.trim($("#moneyE").val());//分摊金额
+                                var dataRow = {
+
+                                    "ID": detailId,
+                                    "分摊金额": moneyE,
+                                    "城市": cityE,
+                                    "备注": notesE
+                                };
+
+                                $("#grid").jqGrid('setRowData', detailId, dataRow, { color: "" });
+                                // 添加成功模态框关闭
+                                $("#dialog-formE").dialog("close");
+
+                                alert(data.msg);
+                            } else {
+                                console.log(data.msg);
+                            }
+                            
+
+
+                        },
+
+                        error: function (textStatus, errorThrown) {
+                            console.log("系统ajax交互错误: " + JSON.stringify(textStatus));
+                        },
+                    });
+
+
+                }
+            }
+        });
+    //行编辑
+    function Edit(id) {
+        console.log('当前编辑的是'+id)
+
+        var model = $("#grid").jqGrid('getRowData', id);
+        //console.log(model)
+
+        // 给修改模态框的赋值
+        $("#editID").val(id);
+        $.trim($("#notesE").val(model.备注));//备注
+        $.trim($("#addNowCityE").text(model.城市));
+        $.trim($("#cityE").val(model.城市));//城市
+        $.trim($("#moneyE").val(model.分摊金额));//金额
+
+        $("#dialog-formE").dialog("option", "title", "机票报销分摊详情修改").dialog("open");
+
+
+    };
+
+    //行删除
+    function Delete(id) {
+        console.log("当前删除行是"+id)//当前的表上ID和行号ID一样
+        if (confirm("确定删除当前数据?")) {
+            $.ajax({
+                url: "@Url.Action("AirFareSharingDel", "AirFare")",
+                type: "post",
+                data: { id: id },
+                dataType: 'json',
+                cache: false,
+                error: function (textStatus, errorThrown) { alert("交互错误" + JSON.stringify(textStatus)); },
+                success: function (data) {
+
+                    if (data.success) {
+                        $("#grid").jqGrid("delRowData", id);
+
+                        alert(data.msg);
+
+                    } else {
+                        alert("删除失败！");
+                        console.log(data.msg);
+                    }
+                }
+            });
+            }
+    };
+
+</script>

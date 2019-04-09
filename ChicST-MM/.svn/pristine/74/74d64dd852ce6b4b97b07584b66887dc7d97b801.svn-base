@@ -1,0 +1,7 @@
+﻿
+@{
+    ViewBag.Title = "ReceivingRecordsIndex";
+}
+
+<h2>ReceivingRecordsIndex</h2>
+

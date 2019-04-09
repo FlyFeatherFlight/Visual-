@@ -1,0 +1,7 @@
+﻿@model JPager.Net.PagerResult<ChicST_MM.WEB.Models.BusinessTripViewModel>
+@{
+    ViewBag.Title = "BusinerssTrip_CheckView";
+}
+
+<h2>BusinerssTrip_CheckView</h2>
+

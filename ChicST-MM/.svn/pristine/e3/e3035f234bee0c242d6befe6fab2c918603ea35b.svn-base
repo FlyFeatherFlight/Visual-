@@ -1,0 +1,494 @@
+﻿@model ChicST_MM.WEB.Models.ReviewRecordViewModel
+
+@{
+    ViewBag.Title = "5s评审表";
+}
+
+
+<script type="text/javascript">
+   
+    // 开始评审操作
+    function startReview() {
+        // 必填项操作
+        var inputs = $("#must-table").find(".must-fill");
+        var status = false;
+        $(inputs).each((i, m) => {
+            if (m.value == null || m.value == "") {
+                return status = true;
+            }
+        })
+        if (status) {
+            alert("请完善信息！");
+        } else {
+            //点击开始评审后向后端传数据并从后端获取ID数据
+            $.ajax({
+                url: 'AddReviewRecord',
+                type: 'post',
+                dataType: 'json',
+                data: $("#Myform").serialize(),
+                async: true,
+                success: (data) => {
+                    var dataID = JSON.stringify(data.ID);
+                    var store = $("#gallery").children("option:eq(1)").val()
+                    $(".setID").val(dataID);
+                    $(".store").val(store);
+                    $("#must-table").addClass("hidden")
+                    alert("提交成功，请开始评审")
+                },
+                error: (err) => {
+                    console.log(err)
+                }
+
+            })
+            $(".mask-jsGrid").addClass("hidden");
+
+        }
+
+    }
+
+    //副表提交
+
+    function MyformF() {
+        var set = [];
+        var mytable = $('#tab');
+        //console.log(mytable[0].rows.length)
+        for (var i = 1, rows = mytable[0].rows.length; i < rows; i++) {
+            //类似存储一个对象,包括了与student对相应的属性
+            //var index = mytable.rows[i].cells[2].getElementsByTagName("select")[0].selectedIndex;
+
+            let postdata = {
+                "评审表ID": $(".setID").val(),
+                "门店": $(".store").val(),
+                "评分标准序号": mytable[0].rows[i].cells[0].innerHTML,
+                "评估项目": mytable[0].rows[i].cells[1].innerHTML,
+                "具体内容": mytable[0].rows[i].cells[2].innerHTML,
+                "评估标准": mytable[0].rows[i].cells[3].innerHTML,
+                "分值": mytable[0].rows[i].cells[4].innerHTML,
+                "扣分标准": mytable[0].rows[i].cells[5].innerHTML,
+                "扣分": mytable[0].rows[i].cells[6].getElementsByTagName("input")[0].value,
+                "得分": mytable[0].rows[i].cells[7].getElementsByTagName("input")[0].value,
+                "备注": mytable[0].rows[i].cells[8].getElementsByTagName("textarea")[0].value,
+                
+            };
+            set.push(postdata);//添加到数组
+
+        }
+        console.log(set)
+        try {
+            var zeroStatus = false;
+            $(".zero").each((i,m) => {
+                if (m.value == null || m.value == "") {
+                    return zeroStatus = true;
+                }
+
+            })
+            if (zeroStatus) {
+                alert("扣分项不能为空，请完善！")
+            } else {
+                 $.ajax({
+                    url: 'AddReviewRecord_Details',
+                    type: 'post',
+                    dataType: 'json',
+                    data: { reviewRecord_DetailsViewModel: JSON.stringify(set) },
+                    async: true,
+                    success: (data) => {
+                        console.log(data)
+                        alert("提交成功，跳转详情页")
+                        // 跳转到详情
+                        var getID = $(".setID").val();
+                        window.location.href =  '@Url.Action("ReviewRecordInfo", "Review_5S")'+"?id=" + getID;
+
+                    },
+                    error: (err) => {
+                        console.log(err)
+                    }
+
+                })
+            }
+           
+            
+        }
+        catch (e) {
+            alert("提交失败！");
+        }
+
+    }
+
+
+    $(function () {
+          // 获取负责人下拉框
+        $.ajax({
+            type: "post",
+            data: {},
+            url: "@Url.Action("GetStaff", "Review_5S")",
+            cache: false,
+            async: true,
+            success: function (data) {
+                //console.log(data)
+                $.each(data, (i, m) => {
+                    $("#storeOwner").append("<option value=" + m.用户ID + ">" + m.姓名 + "</option>");
+                    $("#operator").append("<option value=" + m.用户ID + ">" + m.姓名 + "</option>");
+                })
+
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        });
+        // 获取经销商下拉框
+        $.ajax({
+            type: "post",
+            data: {},
+            url: "@Url.Action("BuildDistributor", "Review_5S")",
+            cache: false,
+            async: true,
+            success: function (data) {
+                $.each(data, (i, m) => {
+                    $("#dealer").append("<option value=" + m[0] + ">" + m[1] + "</option>");
+                })
+
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        });
+
+        //获取展厅名称
+        $("#dealer").change(function () {
+            var dealer = $("#dealer").val();
+            //清空展厅下拉框
+            $("#gallery").empty();
+            $("#gallery").append("<option value=''>-请选择区/县-</option>")
+            $.ajax({
+                type: "post",
+                data: { id: dealer },
+                url: "@Url.Action("GetStore", "Review_5S")",
+                cache: false,
+                async: true,
+                success: function (data) {
+                    console.log(data)
+                    $.each(data, (i, m) => {
+                        $("#gallery").append("<option value=" + m[0] + ">" + m[1] + "</option>");
+                    })
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            })
+        })
+
+    });
+
+</script>
+
+<h3>5S评审表</h3>
+<sapn style="color: orange;display: block;margin: 5px 0 5px 2.5%;">温馨提示：填写下方信息后点击“开始评审”按钮后方可评审</sapn>
+@*主表*@
+<form id="Myform">
+    <table class="table table-striped table-bordered table-hover" id="must-table" style="margin: 0 auto;">
+        <tr>
+            <td>经销商名字</td>
+            <td colspan="4" style="width: 40%;">
+                <select id="dealer" class="form-control red must-fill" oninput="sureRed()" name="经销商">
+                    <option value="" selected>-请选择经销商-</option>
+                </select>
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+            <td>展厅名称</td>
+            <td colspan="3" style="width: 40%;">
+                <select id="gallery" class="form-control red must-fill" oninput="sureRed()" name="展厅">
+                    <option value="" selected>-请选择展厅-</option>
+                </select>
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>陈列负责人</td>
+            <td colspan="4">
+                <select id="storeOwner" class="form-control red must-fill" oninput="sureRed()" name="陈列负责人ID">
+                    <option value="" selected>-请选择-</option>
+                </select>
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+            <td>运营负责人</td>
+            <td colspan="3">
+                <select id="operator" class="form-control red must-fill" oninput="sureRed()" name="运营负责人ID">
+                    <option value="" selected>-请选择-</option>
+                </select>
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+        </tr> 
+        <tr>
+            <td>巡店日期</td>
+            <td colspan="8">
+                <input type="text" name="巡店日期" value="" class="form-control dateTime must-fill red" readonly placeholder="请选择巡店日期" oninput="sureRed()" />
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+        </tr>
+
+        <tr>
+            <td>陈列建议</td>
+            <td colspan="8">
+                <textarea name="陈列建议" rows="3" class="form-control"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>奖惩制度提出意见</td>
+            <td colspan="8">
+                <textarea name="奖惩制度提出意见" rows="3" class="form-control"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="9">
+                <input type="button" name="name" value="开始评审" class="startReview btn  btn-primary" onclick="startReview()" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+@*评审明细*@
+<div style="position:relative;width:95%; margin:auto;">
+    <input type="text" class="setID hidden" name="评审表ID" />
+    <input type="text" class="store hidden" name="门店"  />
+    <div class="mask-jsGrid" title="填写上方信息后点击“开始评审”按钮方可评审"></div>
+    <table class="table table-striped table-bordered " id="tab" style="width:100% !important; margin:auto;">
+        <tr class="font-middle">
+            <th>序号</th>
+            <th>评估项目</th>
+            <th width="17%">具体内容</th>
+            <th width="20%">评估标准</th>
+            <th>分值</th>
+            <th width="30%">扣分标准</th>
+            <th>扣分情况</th>
+            <th>实际得分</th>
+            <th style="width:25%;">备注/提升</th>
+            <th>凭证</th>
+        </tr>
+        @foreach (var item in Model.ReviewRecordModels)
+        {
+            <tr style="text-align:center; width:auto !important;">
+                <td class="num">@item.ID</td>
+                <td>@item.评估项目</td>
+                <td>@item.具体内容</td>
+                <td>@item.评估标准</td>
+                <td class="score">@item.分值</td>
+                <td>@item.扣分标准</td>
+                <td class="newNum">
+                    <input type="text" name="扣分" class="num-input minus-num zero"
+                            onkeyup="value=value.replace(/[^\d]/g,'')"
+                            onblur="value=value.replace(/[^\d]/g,'')" value="0" />
+                </td>
+                <td class="newNum">
+                    <input type="text" name="得分" class="num-input sum"
+                            onkeyup="value=value.replace(/[^\d]/g,'')"
+                            onblur="value=value.replace(/[^\d]/g,'')" value="@item.分值" readonly style="background:#ddd;"/>
+                </td>
+                <td>
+                    <textarea name="备注" class="form-control"></textarea>
+                </td>
+                <td>
+                    <form id="upFlie">
+                        <div class="add_div">
+
+                            <div class="file">
+                                <input type="file" name="" class="choose-file" multiple="multiple"/>
+                                @*<a  class="lookImg " style="margin-top:5px;cursor:pointer;">查看</a>*@
+
+                            </div>
+
+                            <ul class="file-list "></ul>
+
+                            <a  style="margin-top:5px;cursor:pointer;" class="upload ">上传 </a><span class="green hidden">上传成功</span>
+
+                        </div>
+                    </form>
+                </td>
+            </tr>
+        }
+    </table>
+    <div class="submit-btns" style="margin-top:10px;">
+        <input type="button" value="提交" class="btn btn-success width-7" onclick="MyformF()">
+        &nbsp;&nbsp;
+        <input type="button" value="取消" class="btn btn-danger width-7" onclick="javascript:history.back(-1);">
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    // 得分计算
+    $(".minus-num").on("input", function () {
+        var numThis = this;
+        var sum = $(numThis).parent().siblings().children(".sum");
+        var score = $(numThis).parent().siblings(".score").text();
+       
+        sum.val(parseInt(score) - numThis.value);
+       
+    })
+    $(function () {
+        // 重新加载文件上传
+        var nullfile = $("div.file");
+        nullfile.each((i, m) => {
+            m.outerHTML = m.outerHTML;
+            //console.log(m.outerHTML)
+
+        })
+        //声明变量
+        var $file = $(".choose-file"),
+            $addDiv = $('.add_div'),
+            //选择要上传的所有文件
+            fileList = [];
+        
+        //当前选择上传的文件
+        var curFile;
+        // 选择按钮change事件，实例化fileReader,调它的readAsDataURL并把原生File对象传给它，
+        // 监听它的onload事件，load完读取的结果就在它的result属性里了。它是一个base64格式的，可直接赋值给一个img的src.
+        // 利用该变量来确定选择的哪个上传
+        var status = false;
+        var num = 0;
+        var numId = 0;
+        var storeId = 0;
+        $file.off("change").on('change', function (e) {
+            // 清空上次选中的文件
+            fileList = [];
+            var _this = this;
+            $fileList = $(_this).parent().next(); // 获取图片显示框
+            $fileList.empty();
+            //console.log($(_this).next())
+            status = true;
+            if (status) {
+
+               
+                //原生的文件对象，相当于$file.get(0).files;//files[0]为第一张图片的信息;
+                curFile = this.files;
+                //将FileList对象变成数组
+                fileList = fileList.concat(Array.from(curFile));
+                console.log(fileList)
+                
+                
+                for (var i = 0, len = curFile.length; i < len; i++) {
+                    reviewFile(curFile[i])
+                }
+                //显示
+                $fileList.fadeIn(2500);
+                /***** 图片预览 *****/
+                function reviewFile(file) {
+
+                    //实例化fileReader,
+                    var fd = new FileReader();
+                    //获取当前选择文件的类型
+                    var fileType = file.type;
+                    //调它的readAsDataURL并把原生File对象传给它，
+                    fd.readAsDataURL(file);//base64
+                    //监听它的onload事件，load完读取的结果就在它的result属性里了
+                    fd.onload = function () {
+                       
+                        if (/^image\/[jpeg|png|jpg|gif]/.test(fileType)) {
+                            var name = '';
+                            if (file.name.length > 15) {
+                                name = file.name.slice(0, 14) + '...';
+                            } else {
+                                name = file.name;
+                            }
+                            $fileList.append('<li style=" margin:5px 5px;" class="file-item"><img src="' + this.result + '" alt="" height="70" style="display:none;"><span class="file-name" title="' + file.name + '">' + name + '</span><span class="file-del">删除</span></li>')/* .children(':last').hide().fadeIn(2500) */;
+                        } else {
+                            $fileList.append('<li class="file-item"><span class="file-name">' + file.name + '</span><span class="file-del">删除</span></li>')
+                        }
+
+                    }
+                }
+               
+                ///***** 查看按钮 *****/
+                //$(_this).next().on('click',function () {
+                   
+                //    if ($fileList.hasClass("show")) {
+                      
+                //        $fileList.removeClass("show");
+                //    } else {
+                       
+                //        $fileList.addClass("show");
+                //    }
+                    
+                    
+                //})
+                
+                /***** 点击上传按钮事件： *****/
+                
+                $fileList.next().off("click").on('click', function () {
+                    console.log("文件上传")
+                    // 获取评审标准序号 -> 用于向后端传参数
+                    num = $(_this).parents("tr").children(".num").text();
+                    // 获取评审主表ID
+                    numId = $(".setID").val();
+                  
+                    // 获取门店ID
+                    storeId = $(".store").val();
+                   
+                    for (var i = 0, len = fileList.length; i < len; i++) {
+                       
+                        var formData = new FormData();
+                        //console.log(fileList[i]);
+                        formData.append('UploadStream', fileList[i]);
+                        formData.append("storeid", storeId);
+                        formData.append("rowid", num);
+                        formData.append("reviewID", numId);
+                        console.log(i);
+                    
+                        $.ajax({
+                            type: 'post',
+                            data: formData,
+                       
+                            url: '@Url.Action("UpFiles", "Review_5S")',
+                            dataType: 'json',
+                        
+                            processData: false,
+                            contentType: false,
+                            success: function (data) {
+                                console.log(data);
+                                // 上传成功
+                               $(_this).parent().siblings(".green").removeClass("hidden");
+                            
+                            },
+                            error: function (err) {
+                                $(_this).parent().siblings(".green").removeClass("hidden green").addClass("red").text("上传失败");
+                                console.log("上传失败！")
+                            }
+                            })
+                        }
+                        //console.log(formData)
+                    })
+            } else {
+                alert("错误！")
+            }
+
+
+
+
+
+        })
+
+
+        //点击删除按钮事件：
+        $(".file-list").on('click', '.file-del', function () {
+            let $parent = $(this).parent();
+            console.log($parent);
+            let index = $parent.index();
+            fileList.splice(index, 1);
+            $parent.fadeOut(850, function () {
+                $parent.remove()
+            });
+            //$parent.remove()
+        });
+
+
+
+    })
+   
+
+
+    
+
+</script>
+
+
+
+

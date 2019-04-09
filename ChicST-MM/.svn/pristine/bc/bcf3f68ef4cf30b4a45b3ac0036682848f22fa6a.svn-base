@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace ChicST_MM.WEB.Controllers
+{
+    /// <summary>
+    /// 门店数据分析
+    /// </summary>
+    public class StoreAnalyzeController : Controller
+    {
+        // GET: StoreAnalyze
+        public ActionResult Index()
+        {
+            return View();
+        }
+    }
+}

@@ -1,0 +1,29 @@
+﻿@model ChicST_MM.WEB.Models.BusinessTripViewModel
+
+@{
+    ViewBag.Title = "添加出差记录";
+}
+
+<h2>AddBusinessTripView</h2>
+<script>
+    function a(){
+     $.ajax({
+                url: 'GetProvince',
+                data: {},
+                cache: false,
+                type: "post",
+                dataType: "json",
+                async: true,
+         success: function (data) {
+             alert(JSON.stringify(data));
+
+                },
+                error: function (err) {
+                    alert("网络连接失败，请检查网络状态，或稍后访问，谢谢！");
+                },
+            })
+    }
+</script>
+<div>
+    <a onclick="a()">000</a>
+</div>

@@ -1,0 +1,7 @@
+﻿
+@{
+    ViewBag.Title = "AddAfterSalesView";
+}
+
+<h2>AddAfterSalesView</h2>
+

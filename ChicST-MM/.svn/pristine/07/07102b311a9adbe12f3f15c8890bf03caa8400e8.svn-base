@@ -1,0 +1,158 @@
+﻿
+@{
+    ViewBag.Title = "接待申请表";
+}
+<script>
+    $(function () {
+
+    //加载关联审核人下拉框数据
+    $.ajax({
+        type: "post",
+        data: {},
+        url: '@Url.Action("GetAssociatedAuditor", "BusinessReceiving")',
+        dataType: "json",
+        cache: false,
+        async: true,
+        success: function (data) {
+            $("#reviewer").empty();
+            $.each(data, (i, m) => {
+                $("#reviewer").append("<option value=" + m[0] + ">" + m[1] + "</option>")
+
+            })
+
+        },
+        error: function(err){
+            console.log(err)
+        }
+
+    })
+    })
+</script>
+<div>
+    <h3>接待申请表</h3>
+</div>
+<form action="@Url.Action("ReceivingRecordsAdd","BusinessReceiving")" method="post">
+    <table class="table table-striped table-bordered table-hover">
+
+        <tr>
+            <td class="bold">申请人</td>
+            <td>
+                <input type="text" name="申请人ID" class="form-control" value="xxx.ID" />
+            </td>
+            <td class="bold">部门</td>
+            <td>
+                <input type="text" name="部门" class="form-control" value="" />
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">入住酒店</td>
+            <td>
+                <input type="text" name="入住酒店" class="form-control" />
+            </td>
+            <td class="bold">航班号</td>
+            <td colspan="3">
+                <input type="text" name="航班号" class="form-control" />
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">关联审核人</td>
+            <td colspan="3">
+                <select name="审核人ID" id="reviewer" class="form-control red" >
+                    <option>-请选择审核人-</option>
+                </select>
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" class="" style="position:relative;">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 start-date">
+                    <span class="bold">抵达日期</span>&nbsp;&nbsp;
+                    <input name="抵达日期" class="dateTime search-input" type='text' placeholder="请选择开始日期" oninput="sureRed()" />
+                    <span class="must" style="color:red;">*该选项为必填项</span>
+                </div>
+
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <span class="bold">离开日期</span>&nbsp;&nbsp;
+                    <input name="离开日期" class="dateTime search-input" type='text' placeholder="请选择结束日期" oninput="sureRed()" />
+                    <span class="must" style="color:red;">*该选项为必填项</span>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">主要沟通内容</td>
+            <td colspan="3">
+                <textarea rows="3" name="主要沟通内容" class="form-control"></textarea>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="bold">费用总预算</td>
+            <td>
+                <input name="费用总预算" type="text" class="form-control"
+                onkeyup="value=value.replace(/[^\d.]/g,'')"
+                onblur="value=value.replace(/[^\d.]/g,'')" value="0" />
+            </td>
+            <td class="bold">配合部门</td>
+            <td>
+                <input name="配合部门" type="text" class="form-control"/>
+            </td>
+        </tr>
+
+    </table>
+    <div class="submit-btns" style="margin-top:10px;">
+        <input type="submit" value="提交" class="btn btn-success width-7">
+        &nbsp;&nbsp;
+        <input type="button" value="取消" class="btn btn-danger width-7" onclick="javascript:history.back(-1);">
+    </div>
+</form>
+@*商务接待计划详情模态框*@
+<div id="recDetailPlan-diolog">
+    <table class="table table-bordered table-hover table-striped">
+        <tr>
+            <td>日期</td>
+            <td>
+                <input type="text" value="" class="search-input dateTime" placeholder="请选择日期" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 start-date">
+                    <span class="bold">开始时间</span>&nbsp;&nbsp;
+                    <input class="timeLay search-input" type='text' placeholder="请选择开始时间" oninput="sureRed()" />
+                    <span class="must" style="color:red;">*该选项为必填项</span>
+                </div>
+
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <span class="bold">结束时间</span>&nbsp;&nbsp;
+                    <input class="timeLay search-input" type='text' placeholder="请选择结束时间" oninput="sureRed()" />
+                    <span class="must" style="color:red;">*该选项为必填项</span>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>行程项目</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>陪同人员</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>准备的资料</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>车辆配备数</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>会谈地点</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>会谈重点项目</td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+

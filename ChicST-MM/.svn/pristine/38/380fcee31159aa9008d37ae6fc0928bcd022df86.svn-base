@@ -1,0 +1,43 @@
+﻿@model JPager.Net.PagerResult<ChicST_MM.WEB.Models.OtherReimburseViewModel> 
+
+@{
+    ViewBag.Title = "其他报销历史记录";
+}
+
+<div>
+    <h3>其他报销历史记录</h3>
+    <a href="@Url.Action("ApplyOtherReimbursementView","Reimbursement")" style="margin-left:2.5%;">其他报销申请</a>
+</div>
+<div>
+    <div style="padding-left:2.5%; margin:10px 0;">
+        <form action="" method="post">
+            根据对象查询：
+            <input name="keyObj" class="search-input" />
+            <input type="submit" value="查询" class="city-sure" style="position: relative;top:0;" />
+
+        </form>
+    </div>
+    <table class="table table-bordered table-striped  " style="text-align:center; table-layout:fixed;">
+        <tr>
+
+            <th>ID</th>
+            <th>报销人</th>
+            <th>用途</th>
+            <th>金额</th>
+            <th>提交日期</th>
+            <th>审批状态</th>
+        </tr>
+        @*@foreach (var item in Model)
+            {*@
+        <tr>
+            <td>ID</td>
+            <td></td>
+            <td class="ellipsis"></td>
+            <td>item.提交日期</td>
+            <td>item.审核状态</td>
+        </tr>
+        @*}*@
+    </table>
+
+</div>
+

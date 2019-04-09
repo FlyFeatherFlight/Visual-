@@ -1,0 +1,20 @@
+﻿@model ChicST_MM.WEB.Models.StoreRecRecordsViewModel
+
+@{
+    ViewBag.Title = "CustomerInfoView";
+}
+
+<h3>跟进客户信息</h3>
+<div style="margin-left:2.5%;margin-bottom:10px;">
+    查询：
+    <select class="search-input" id="store">
+        <option value="">-选择门店-</option>
+    </select>
+    <select class="search-input hidden" id="storeMan">
+        <option value="">-选择员工-</option>
+    </select>
+    <label>显示员工 </label>
+    <input type="radio" onclick="storeSeach()" />
+    <input type="button" onclick="btn_export()" value="导出本页" />
+    @*<input type="button"  @*onclick="btn_exportAll()"value="导出所有" />*@
+</div>

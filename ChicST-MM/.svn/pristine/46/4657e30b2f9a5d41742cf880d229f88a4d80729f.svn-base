@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ChicST_MM.WEB.Models
+{
+    /// <summary>
+    /// 商务接待预算
+    /// </summary>
+    public class BusinessReceiving_BudgetViewModel
+    {
+        public int ID { get; set; }
+        public string 摘要 { get; set; }
+        public decimal? 金额预估 { get; set; }
+        public DateTime? 时间 { get; set; }
+        public int? 接待计划ID { get; set; }
+    }
+}

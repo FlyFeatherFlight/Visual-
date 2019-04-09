@@ -1,0 +1,606 @@
+﻿using ChicST_MM.Model;
+using System.Web.Mvc;
+using ChicST_MM.IBLL;
+using ChicST_MM.WEB.Models;
+using System.Collections.Generic;
+using System.Linq;
+using JPager.Net;
+using System;
+
+namespace ChicST_MM.WEB.Controllers
+{
+    /// <summary>
+    /// 机票报销控制器
+    /// </summary>
+    public class AirFareController : Controller
+    {
+        private IAirFaresBLL airFaresBLL;
+        private IAirfareSharingBLL airfareSharingBLL;
+        private IAccountBLL accountBLL;
+        private IEmployeeInformationBLL employeeInformationBLL;
+        private IBusinessTripBLL businessTripBLL;
+
+        public AirFareController(IAirFaresBLL airFaresBLL, IAirfareSharingBLL airfareSharingBLL, IAccountBLL accountBLL, IEmployeeInformationBLL employeeInformationBLL, IBusinessTripBLL businessTripBLL)
+        {
+            this.airFaresBLL = airFaresBLL;
+            this.airfareSharingBLL = airfareSharingBLL;
+            this.accountBLL = accountBLL;
+            this.employeeInformationBLL = employeeInformationBLL;
+            this.businessTripBLL = businessTripBLL;
+        }
+
+        /// <summary>
+        /// 机票报销列表
+        /// </summary>
+        /// <param name="searchString">搜索关键词</param>
+        /// <param name="pagerInBase">分页</param>
+        /// <returns></returns>
+        // GET: AirFare
+        public ActionResult Index(string searchString, PagerInBase pagerInBase)
+        {
+            var models = BuildAirFaresModels();
+            //根据条件检索
+            models = searchString != null ?
+            models.Where(t => t.订票人.Contains(searchString)).ToList() :
+            models.ToList();
+            //默认倒叙排列
+            models = models.OrderByDescending(p => p.ID).ToList();
+            //分页数据
+            var data = models.Skip(pagerInBase.Skip).Take(pagerInBase.PageSize);
+
+            //总页数
+            var count = models.Count;
+            var res = new PagerResult<AirFaresViewModel>
+            {
+                Code = 0,
+                DataList = data,
+                Total = count,
+                PageSize = pagerInBase.PageSize,
+                PageIndex = pagerInBase.PageIndex,
+                RequestUrl = pagerInBase.RequetUrl
+            };
+            return View(res);
+
+        }
+
+        /// <summary>
+        /// 机票报销添加 视图
+        /// </summary>
+        /// <param name="id">出差ID</param>
+        /// <returns></returns>
+        public ActionResult AddAirFaresView()
+        {
+            AirFaresViewModel model = new AirFaresViewModel();
+            return View(model);
+        }
+
+        /// <summary>
+        /// 机票报销 添加操作
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public ActionResult AirFaresAdd(AirFaresViewModel model)
+        {
+            var ac = GetAccountInfo();
+            财务_机票明细 m = new 财务_机票明细();
+            m.其它费用 = model.其它费用;
+            m.出发地 = model.出发地;
+            m.出发日期 = model.出发日期;
+            m.出差ID = model.出差ID;
+            m.到达日期 = model.到达日期;
+            m.制单人 = ac.用户ID;
+            m.制单日期 = DateTime.Now;
+            m.备注 = model.备注;
+            m.姓名 = model.姓名;
+            m.机票价格 = model.机票价格;
+            m.目的地 = model.目的地;
+            m.订票人ID = ac.用户ID;
+            m.订票日期 = model.订票日期;
+            m.费用小计 = model.费用小计;
+            m.退改费用 = model.退改费用;
+            m.部门 = model.部门;
+
+            if (ModelState.IsValid)
+            {
+                m = airFaresBLL.AddReturnModel(m);
+                Session["View"] = false;
+            }
+
+            else
+            {
+                List<string> sb = new List<string>();
+                //获取所有错误的Key
+                List<string> Keys = ModelState.Keys.ToList();
+                //获取每一个key对应的ModelStateDictionary
+                foreach (var key in Keys)
+                {
+                    var errors = ModelState[key].Errors.ToList();
+                    //将错误描述添加到sb中
+                    foreach (var error in errors)
+                    {
+                        sb.Add(error.ErrorMessage);
+                    }
+                }
+                string log = null;
+                foreach (var item in sb)
+                {
+                    log += item.ToString() + "<br/>";
+                }
+                return Json(new { success = false, msg = log });
+            }
+            return Json(new { success = true, msg = "提交成功！", data = m.ID });
+        }
+
+        /// <summary>
+        /// 机票报销分摊添加视图
+        /// </summary>
+        /// <param name="id">机票报销ID</param>
+        /// <returns></returns>
+        public ActionResult AirFareShareAddView(int id)
+        {
+            AirFaresViewModel model = new AirFaresViewModel();
+            var m = airFaresBLL.GetModel(p => p.ID == id);
+            if (m == null)
+            {
+                return Content("<script>alert('机票报销未添加，请等待财务添加。');window.history.go(-1);</script>");
+            }
+            model = BuildAirFaresModel(m);
+            if (model == null)
+            {
+                return Content("<script>alert('数据不存在！');window.history.go(-1);</script>");
+            }
+            return View(model);
+        }
+
+        /// <summary>
+        /// 机票报销分摊 添加操作
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult AirFareSharingAdd(AirFareSharingViewModel model)
+        {
+            财务_机票明细分摊 m = new 财务_机票明细分摊();
+            m.分摊金额 = model.分摊金额;
+            m.城市 = model.城市;
+            m.备注 = model.备注;
+            m.机票明细ID = model.机票报销ID;
+            if (ModelState.IsValid)
+            {
+                m = airfareSharingBLL.AddReturnModel(m);
+                Session["View"] = false;
+            }
+
+            else
+            {
+                List<string> sb = new List<string>();
+                //获取所有错误的Key
+                List<string> Keys = ModelState.Keys.ToList();
+                //获取每一个key对应的ModelStateDictionary
+                foreach (var key in Keys)
+                {
+                    var errors = ModelState[key].Errors.ToList();
+                    //将错误描述添加到sb中
+                    foreach (var error in errors)
+                    {
+                        sb.Add(error.ErrorMessage);
+                    }
+                }
+                string log = null;
+                foreach (var item in sb)
+                {
+                    log += item.ToString() + "<br/>";
+                }
+                return Json(new { success = false, msg = log });
+            }
+            return Json(new { success = true, msg = "提交成功!", data = m });
+        }
+
+        /// <summary>
+        /// 机票报销详情 视图
+        /// </summary>
+        /// <param name="id">机票报销ID</param>
+        /// <param name="isEdit">是否是修改页面</param>
+        /// <param name="role">是否进行审查</param>
+        /// <returns></returns>
+        public ActionResult AirFareInfoView(int id, bool? isEdit, bool? role)
+        {
+            var model = airFaresBLL.GetModel(p => p.ID == id);
+            var m = BuildAirFaresModel(model);
+            var ac = GetAccountInfo();
+            if (ac.部门 != 3)
+            {
+
+                if (role == true)
+                {
+                    //return Content("<script>alert('您无权进入当前页面！');window.history.go(-1);</script>");
+                }
+            }
+            else
+            {
+                ViewBag.Financing = true;//当前页面角色为财务
+            }
+
+            if (true)
+            {
+
+            }
+            ViewBag.IsEdit = isEdit;
+            ViewBag.ReCheck = role;
+            return View(m);
+        }
+
+        /// <summary>
+        /// 机票报销分摊 详情
+        /// </summary>
+        /// <param name="id">机票报销ID</param>
+        /// <returns>Json数组</returns>
+        public ActionResult AirFareSharingInfo(int id)
+        {
+            var models = BuildAirFareSharingModels(id);
+            return Json(models.ToArray());
+        }
+
+        /// <summary>
+        /// 机票报销修改操作
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public ActionResult AirFareEdit(AirFaresViewModel model)
+        {
+
+            var m = airFaresBLL.GetModel(p => p.ID == model.ID);
+            m.其它费用 = model.其它费用;
+            m.出发地 = model.出发地;
+            m.出发日期 = model.出发日期;
+            m.到达日期 = model.到达日期;
+            m.备注 = model.备注;
+            m.姓名 = model.姓名;
+            m.机票价格 = model.机票价格;
+            m.目的地 = model.目的地;
+            m.订票日期 = model.订票日期;
+            m.费用小计 = model.费用小计;
+            m.退改费用 = model.退改费用;
+
+            try
+            {
+                var n = airfareSharingBLL.GetModels(p => p.机票明细ID == m.ID);
+                if (n.Count() > 0)
+                {
+                    foreach (var item in n)
+                    {
+                        airfareSharingBLL.DelBy(p => p.ID == item.ID);//删除分摊数据
+                    }
+
+                }
+                airFaresBLL.Modify(m);
+            }
+            catch (Exception e)
+            {
+
+                return Json(new { success = false, msg = e.Message });
+            }
+            return Json(new { success = true, msg = "修改成功！" });
+        }
+
+        /// <summary>
+        /// 机票报销费用分摊 修改操作
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public ActionResult AirFareSharingEdit(AirFareSharingViewModel model)
+        {
+            var m = airfareSharingBLL.GetModel(p => p.ID == model.ID);
+            m.分摊金额 = model.分摊金额;
+            m.城市 = model.城市;
+            m.备注 = model.备注;
+            try
+            {
+                airfareSharingBLL.Modify(m);
+            }
+            catch (Exception e)
+            {
+
+                return Json(new { success = false, msg = e.Message });
+            }
+            return Json(new { success = true, msg = "修改成功!" });
+        }
+
+        /// <summary>
+        /// 机票报销费用分摊 删除操作
+        /// </summary>
+        /// <param name="id">费用分摊ID</param>
+        /// <returns></returns>
+        public ActionResult AirFareSharingDel(int id)
+        {
+            try
+            {
+                airfareSharingBLL.DelBy(p => p.ID == id);
+            }
+            catch (Exception e)
+            {
+
+                return Json(new { success = false, msg = e.Message });
+            }
+            return Json(new { success = true, msg = "删除成功!" });
+        }
+
+        /// <summary>
+        /// 机票费用报销审查列表
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult CheckAirFareView(string searchString, PagerInBase pagerInBase)
+        {
+            var ac = GetAccountInfo();
+            //if (ac.部门 != 3)
+            //{
+            //    return Content("<script>alert('您无权进入当前页面！');window.history.go(-1);</script>");
+            //}
+            var models = BuildAirFaresModels();
+            //根据条件检索
+            models = searchString != null ?
+            models.Where(t => t.订票人.Contains(searchString)).ToList() :
+            models.ToList();
+            //默认倒叙排列
+            models = models.OrderByDescending(p => p.ID).ToList();
+            //分页数据
+            var data = models.Skip(pagerInBase.Skip).Take(pagerInBase.PageSize);
+
+            //总页数
+            var count = models.Count;
+            var res = new PagerResult<AirFaresViewModel>
+            {
+                Code = 0,
+                DataList = data,
+                Total = count,
+                PageSize = pagerInBase.PageSize,
+                PageIndex = pagerInBase.PageIndex,
+                RequestUrl = pagerInBase.RequetUrl
+            };
+            return View(res);
+
+        }
+
+        /// <summary>
+        /// 机票报销审核
+        /// </summary>
+        /// <param name="id">机票报销ID</param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        public ActionResult CheckAirFare(int id, bool? result)
+        {
+            var model = airFaresBLL.GetModel(p => p.ID == id);
+            var ac = GetAccountInfo();
+
+            //{
+            //    if (ac.部门 != 3)
+            //    {
+            //        return Json(new { success = false, msg = "无权限！" });
+            //    }
+
+            if (result != null)
+            {
+                model.审核标志 = result.Value;
+                model.审核人ID = ac.用户ID;
+                model.审核日期 = DateTime.Now;
+                try
+                {
+                    airFaresBLL.Modify(model);
+                }
+                catch (Exception e)
+                {
+
+                    return Json(new { success = false, msg = e.Message });
+                }
+
+            }
+            return Json(new { success = true, msg = "提交成功！" });
+        }
+
+
+        /// <summary>
+        /// 获得出差列表
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult BusinessTripList(string searchString, PagerInBase pagerInBase) {
+            var models=BuildBusinessTripList();
+            //根据条件检索
+            models = searchString != null ?
+            models.Where(t => t.出差人姓名.Contains(searchString)).ToList() :
+            models.ToList();
+            //默认倒叙排列
+            models = models.OrderByDescending(p => p.ID).ToList();
+            //分页数据
+            var data = models.Skip(pagerInBase.Skip).Take(pagerInBase.PageSize);
+
+            //总页数
+            var count = models.Count;
+            var res = new PagerResult<BusinessTripViewModel>
+            {
+                Code = 0,
+                DataList = data,
+                Total = count,
+                PageSize = pagerInBase.PageSize,
+                PageIndex = pagerInBase.PageIndex,
+                RequestUrl = pagerInBase.RequetUrl
+            };
+            return View(res);
+
+        }
+
+
+        /// <summary>
+        /// 构建机票报销分摊实体
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        private AirFareSharingViewModel BuildAirFareSharingModel(财务_机票明细分摊 model)
+        {
+            AirFareSharingViewModel airFareSharingViewModel = new AirFareSharingViewModel();
+            airFareSharingViewModel.ID = model.ID;
+            airFareSharingViewModel.分摊金额 = model.分摊金额;
+            airFareSharingViewModel.城市 = model.城市;
+            airFareSharingViewModel.备注 = model.备注;
+            airFareSharingViewModel.机票报销ID = model.机票明细ID.Value;
+            return airFareSharingViewModel;
+
+        }
+
+        /// <summary>
+        /// 构建机票报销分摊实体集
+        /// </summary>
+        /// <param name="id">机票报销ID</param>
+        /// <returns></returns>
+        private List<AirFareSharingViewModel> BuildAirFareSharingModels(int id)
+        {
+            var models = airfareSharingBLL.GetModels(p => p.机票明细ID == id);
+            List<AirFareSharingViewModel> lis = new List<AirFareSharingViewModel>();
+            foreach (var item in models)
+            {
+                var model = BuildAirFareSharingModel(item);
+                lis.Add(model);
+            }
+            return lis;
+        }
+        /// <summary>
+        /// 构建机票报销实体
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        private AirFaresViewModel BuildAirFaresModel(财务_机票明细 model)
+        {
+            AirFaresViewModel airFaresViewModel = new AirFaresViewModel();
+            airFaresViewModel.ID = model.ID;
+            airFaresViewModel.其它费用 = model.其它费用;
+            airFaresViewModel.出发地 = model.出发地;
+            airFaresViewModel.出发日期 = model.出发日期.Value;
+            airFaresViewModel.出差ID = model.出差ID.Value;
+            airFaresViewModel.到达日期 = model.到达日期.Value;
+            airFaresViewModel.制单人 = model.制单人.Value;
+            airFaresViewModel.制单日期 = model.制单日期.Value;
+            airFaresViewModel.备注 = model.备注;
+            airFaresViewModel.姓名 = model.姓名;
+            if (model.审核人ID != null)
+            {
+                airFaresViewModel.审核人ID = model.审核人ID.Value;
+                airFaresViewModel.审核人 = employeeInformationBLL.GetModel(p => p.用户ID == model.审核人ID).姓名;
+                airFaresViewModel.审核日期 = model.审核日期.Value;
+            }
+
+
+            airFaresViewModel.审核标志 = model.审核标志;
+            airFaresViewModel.机票价格 = model.机票价格;
+            airFaresViewModel.目的地 = model.目的地;
+            airFaresViewModel.订票人ID = model.订票人ID.Value;
+            airFaresViewModel.订票人 = employeeInformationBLL.GetModel(p => p.用户ID == model.订票人ID.Value).姓名;
+            airFaresViewModel.订票日期 = model.订票日期.Value;
+            airFaresViewModel.费用小计 = model.费用小计.Value;
+            airFaresViewModel.退改费用 = model.退改费用;
+            airFaresViewModel.部门 = model.部门;
+            return airFaresViewModel;
+        }
+
+        /// <summary>
+        /// 构建单个出差基本信息
+        /// </summary>
+        /// <param name="id">出差记录ID</param>
+        /// <returns></returns>
+        private BusinessTripViewModel BuildBusinessTrip(HR_出差计划 model)
+        {
+            BusinessTripViewModel businessTripViewModel = new BusinessTripViewModel();
+
+            var account = GetAccountInfo();
+
+            businessTripViewModel.ID = model.ID;
+            businessTripViewModel.出差人 = model.出差人.Value;
+            businessTripViewModel.出差人姓名 = employeeInformationBLL.GetModel(p => p.用户ID == model.出差人).姓名;
+            businessTripViewModel.审核状态 = model.审核状态;
+            businessTripViewModel.提交人ID = model.提交人ID;
+            businessTripViewModel.提交人 = employeeInformationBLL.GetModel(p => p.用户ID == model.提交人ID).姓名;
+            businessTripViewModel.部门 = employeeInformationBLL.GetModel(p => p.用户ID == businessTripViewModel.出差人).部门;
+            businessTripViewModel.开始时间 = model.开始时间;
+            businessTripViewModel.提交时间 = model.提交时间;
+            businessTripViewModel.结束时间 = model.结束时间;
+            businessTripViewModel.部门ID = model.部门ID;
+            var m = airFaresBLL.GetModel(p => p.出差ID == model.ID);
+            if (m != null)
+            {
+                businessTripViewModel.是否报销机票 = "已报销";
+                var n = airfareSharingBLL.GetModel(p => p.机票明细ID == m.ID);
+                if (n != null)
+                {
+                    businessTripViewModel.是否分摊机票报销 = "已分摊";
+                }
+                else
+                {
+                    businessTripViewModel.是否分摊机票报销 = "未分摊";
+                }
+            }
+            else
+            {
+                businessTripViewModel.是否报销机票 = "未报销";
+                businessTripViewModel.是否分摊机票报销 = "未分摊";
+            }
+            return businessTripViewModel;
+
+        }
+
+        /// <summary>
+        /// 出差申请列表
+        /// </summary>
+        /// <param name="role">当前用户角色</param>
+        /// <returns></returns>
+        private List<BusinessTripViewModel> BuildBusinessTripList()
+        {
+            List<BusinessTripViewModel> businessTripViewModels = new List<BusinessTripViewModel>();
+            var em = GetAccountInfo();
+
+            var models = businessTripBLL.GetModels(p => true);
+            foreach (var item in models)
+            {
+                businessTripViewModels.Add(BuildBusinessTrip(item));
+            }
+            return businessTripViewModels;
+        }
+
+        /// <summary>
+        /// 构建机票报销实体集
+        /// </summary>
+        /// <returns></returns>
+        private List<AirFaresViewModel> BuildAirFaresModels()
+        {
+            var ac = GetAccountInfo();
+            var models = airFaresBLL.GetModels(p => p.订票人ID == ac.用户ID);
+            List<AirFaresViewModel> lis = new List<AirFaresViewModel>();
+            foreach (var item in models)
+            {
+                var model = BuildAirFaresModel(item);
+                lis.Add(model);
+
+            }
+            return lis;
+        }
+        /// <summary>
+        /// 获取用户信息
+        /// </summary>
+        /// <returns></returns>
+        private AcountInformation GetAccountInfo()
+        {
+
+            string userName = HttpContext.User.Identity.Name;
+            if (userName != null)
+            {
+
+                var account = HttpContext.Session["Account"] as AcountInformation;
+                return account;
+            }
+            else
+            {
+                return null;
+            }
+
+        }
+
+
+
+    }
+}

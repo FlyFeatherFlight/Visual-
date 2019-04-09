@@ -1,0 +1,11 @@
+﻿using ChicST_MM.Model;
+
+namespace ChicST_MM.IBLL
+{
+    /// <summary>
+    /// 出差详情
+    /// </summary>
+    public partial interface IBusinessTrip_DetailsBLL:IBaseServiceBLL<HR_出差计划详细>
+    {
+    }
+}

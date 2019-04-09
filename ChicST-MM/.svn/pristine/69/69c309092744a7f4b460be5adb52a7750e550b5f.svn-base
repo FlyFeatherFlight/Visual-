@@ -1,0 +1,76 @@
+﻿@model ChicST_MM.WEB.Models.OtherReimburseViewModel
+@using Newtonsoft.Json.Linq;
+@using Newtonsoft.Json;
+@using System.Web.Script.Serialization;
+@using System;
+@{
+    ViewBag.Title = "其他报销详情";
+}
+@{
+    var arr = Model.财务_其他报销_副表.ToList();
+    string os= new JavaScriptSerializer().Serialize(arr);
+
+    <script>
+    $(function () {
+        console.log("@os");
+    })
+    $(function () {
+        jQuery("#grid").jqGrid({
+            url: "",
+            data:'@os',
+            datatype: "jsonnp",
+            mtype: "get",
+            colModel: [
+                { label: 'ID', name: 'ID', index: 'ID', width: 60, sorttype: "int" },
+                { label: '其他报销ID', name: '其他报销ID', index: '其他报销ID', width: 60, sorttype: "int" },
+                { label: '金额', name: '金额', index: '其他报销ID', width: 90 },
+                { label: '用途', name: '用途', index: '用途', width: 100, sortable: false },
+
+            ],
+            caption: "其他报销展示",
+            loadonce: true,    //排序翻页等操作在服务端完成
+            rowNum: 5,
+            rowList: [5, 10, 20],  //设置分页下拉列表
+            pager: "#pager",
+            viewrecords: true,
+            width: 500, height: "auto",
+            jsonReader: { repeatitems: false }, //prmNames: { id: "No" },
+            sortorder: "asc",
+            sortname: "No",//传递给服务端的排序字段名
+            autowidth: true
+        });
+        
+            
+
+    });
+    </script>
+}
+<div>
+    <h3>其它报销申请</h3>
+</div>
+<table class="table table-striped table-bordered table-hover">
+    <tr>
+        <td>报销部门</td>
+        <td>@Model.报销部门</td>
+        <td>报销人</td>
+        <td>@Model.报销人</td>
+    </tr>
+    <tr>
+        <td>原借款</td>
+        <td>@Model.原借款</td>
+        <td>应退余额</td>
+        <td>@Model.应退余款</td>
+    </tr>
+    <tr>
+        <td>汇款银行</td>
+        <td>@Model.汇款银行</td>
+        <td>汇款银行卡账号</td>
+        <td>@Model.汇款银行卡账号</td>
+    </tr>
+    <tr>
+        <td colspan="4" style="position:relative;">
+            <table id="grid"></table>
+            <div id="pager"></div>
+        </td>
+    </tr>
+</table>

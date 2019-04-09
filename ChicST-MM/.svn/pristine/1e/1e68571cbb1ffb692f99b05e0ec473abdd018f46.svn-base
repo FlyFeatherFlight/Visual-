@@ -1,0 +1,227 @@
+﻿using ChicST_MM.IBLL;
+using ChicST_MM.Model;
+using ChicST_MM.WEB.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
+
+namespace ChicST_MM.WEB.Controllers
+{
+    public class BusinessTripController : Controller
+    {
+        private readonly IBusinessTripBLL businessTripBLL;
+        private readonly IBusinessTrip_DetailsBLL businessTrip_DetailsBLL;
+        private readonly IBusinessTrip_TypeBLL businessTrip_TypeBLL;
+        private readonly IRegionBLL regionBLL;
+        private readonly IDistributorBLL distributorBLL;
+        private readonly IStoreBLL storeBLL;
+        private readonly IAccountBLL accountBLL;
+
+        public BusinessTripController(IBusinessTripBLL businessTripBLL, IBusinessTrip_DetailsBLL businessTrip_DetailsBLL, IBusinessTrip_TypeBLL businessTrip_TypeBLL, IRegionBLL regionBLL, IDistributorBLL distributorBLL, IStoreBLL storeBLL, IAccountBLL accountBLL)
+        {
+            this.businessTripBLL = businessTripBLL;
+            this.businessTrip_DetailsBLL = businessTrip_DetailsBLL;
+            this.businessTrip_TypeBLL = businessTrip_TypeBLL;
+            this.regionBLL = regionBLL;
+            this.distributorBLL = distributorBLL;
+            this.storeBLL = storeBLL;
+            this.accountBLL = accountBLL;
+        }
+
+
+        // GET: BusinessTrip
+        public ViewResult Index()
+        {
+            Session["View"] = true;
+            return View();
+        }
+
+        public ViewResult AddBusinessTrip() {
+            Session["View"] = true;
+            BusinessTripViewModel model = new BusinessTripViewModel();
+           
+            return View(model);
+        }
+
+        public ViewResult AddBusinessTrip_Details(int id) {
+            Session["View"] = true;
+            BusinessTrip_DetailsViewModel model = new BusinessTrip_DetailsViewModel();
+            model.出差记录ID = id;
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult BusinessTripAdd(BusinessTripViewModel model) {
+            if (Session["View"].ToString()=="false")
+            {
+                return Content ("<script>alert('重复操作！');parent.location.href='Index';</script>");
+            }
+            Session["View"] = false;
+
+            return RedirectToAction("AddBusinessTrip_Details",new {id=0 });
+        }
+
+        /// <summary>
+        /// 添加出差详情
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult BusinessTrip_DetailsAdd() {
+            if (Session["View"].ToString() == "false")
+            {
+                return Content("<script>alert('重复操作！');parent.location.href='Index';</script>");
+            }
+            Session["View"] = false;
+
+            return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// 获取省
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult GetProvince() {
+           var regions= regionBLL.GetModels(p => true).GroupBy(p =>p.省).Select(p=>p.FirstOrDefault());
+  
+            List<String> provinces = new List<String>();
+            foreach (var item in regions)
+            {
+                provinces.Add(item.省);
+            }
+       
+            return Json(provinces);
+
+        }
+        /// <summary>
+        /// 获取地区
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult GetRgion()
+        {
+            var regions = regionBLL.GetModels(p => true).ToList();
+            return Json(regions);
+
+        }
+        /// <summary>
+        /// 获得经销商
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult GetDistributor() {
+            var distributors = distributorBLL.GetModels(p => true).ToList();
+            return Json(distributors);
+        }
+
+        /// <summary>
+        /// 获得店铺
+        /// </summary>
+        /// <param name="id">地区ID</param>
+        /// <returns></returns>
+        public JsonResult GetStore(int id) {
+            var store = storeBLL.GetModels(p => p.地区ID == id);
+            return Json(store);
+        }
+        /// <summary>
+        /// 查询出差详情
+        /// </summary>
+        /// <param name="id">出差记录ID</param>
+        /// <returns></returns>
+        private BusinessTrip_DetailsViewModel BuildBusinessTrip_DetailsViewModel(int id) {
+            var businessTrip = businessTripBLL.GetModel(p => p.ID == id);
+            var businessTripDetails = businessTrip_DetailsBLL.GetModel(p => p.出差记录ID == id);
+            BusinessTrip_DetailsViewModel model = new BusinessTrip_DetailsViewModel();
+            model.ID = businessTripDetails.ID;
+            model.出差记录ID = businessTripDetails.出差记录ID;
+            model.受访者 = businessTripDetails.受访者;
+            model.受访者职务 = businessTripDetails.受访者职务;
+            model.备注 = businessTripDetails.备注;
+            model.拜访时间 = businessTripDetails.拜访时间;
+            model.拜访结果 = businessTripDetails.拜访结果;
+            model.提交时间 = businessTripDetails.提交时间;
+            model.新的问题 = businessTripDetails.新的问题;
+            model.新的问题应对方案 = businessTripDetails.新的问题应对方案;
+            model.计划内容 = businessTripDetails.计划内容;
+            model.计划方案 = businessTripDetails.计划方案;
+            model.计划目标 = businessTripDetails.计划目标;
+            model.预计可能性 = businessTripDetails.预计可能性;
+            model.预计完成日期 = businessTripDetails.预计完成日期;
+            model.BusinessTripView = BuildBusinessTrip(id);
+            
+            return model;
+        }
+
+
+        /// <summary>
+        /// 构建出差基本信息
+        /// </summary>
+        /// <param name="id">出差记录ID</param>
+        /// <returns></returns>
+        private BusinessTripViewModel BuildBusinessTrip(int?id) {
+            BusinessTripViewModel businessTripViewModel = new BusinessTripViewModel();
+           HR_出差记录表 model=new HR_出差记录表 ();
+            var account = GetAccountInfo();
+            if (id > 0)
+            {
+                model = businessTripBLL.GetModel(p => p.ID == id);
+            }
+            else {
+                model = businessTripBLL.GetModel(p => p.提交人ID == account.用户ID);
+            }
+
+            businessTripViewModel.ID = model.ID;
+            businessTripViewModel.关联审核人ID = model.关联审核人ID;
+            businessTripViewModel.关联审核人 = accountBLL.GetModel(p => p.ID == model.关联审核人ID).姓名;
+            businessTripViewModel.出差内容 = model.出差内容;
+            businessTripViewModel.城市ID = model.城市ID;
+            var region=regionBLL.GetModel(p => p.ID == model.城市ID);
+            businessTripViewModel.城市 = region.省+region.市+region.区县;
+            businessTripViewModel.审核状态 = model.审核状态; businessTripViewModel.对象类别ID = model.对象类别ID;
+            businessTripViewModel.对象类别 = businessTrip_TypeBLL.GetModel(p => p.ID == model.ID).对象类型;
+            businessTripViewModel.对象ID = model.对象ID;
+            switch (businessTripViewModel.对象类别)
+            {
+                case "门店":
+                    businessTripViewModel.对象 = storeBLL.GetModel(p => p.ID == model.对象ID).名称;
+                    break;
+                case "经销商":
+                    businessTripViewModel.对象 = distributorBLL.GetModel(p => p.ID == model.对象ID).名称;
+                    break;
+                case "物业":
+                    businessTripViewModel.对象 = storeBLL.GetModel(p => p.ID == model.对象ID).商场;
+                    break;
+                default:
+                    businessTripViewModel.对象 = null;
+                    break;
+            }
+            businessTripViewModel.开始时间 = model.开始时间;
+            businessTripViewModel.提交时间 = model.提交时间;
+            businessTripViewModel.结束时间 = model.结束时间;
+            businessTripViewModel.部门ID = account.部门;
+            businessTripViewModel.提交人ID = model.提交人ID;
+            businessTripViewModel.提交人 = accountBLL.GetModel(p => p.ID == model.提交人ID).姓名;
+            return businessTripViewModel;
+           
+        }
+
+        /// <summary>
+        /// 设置当前的用户信息
+        /// </summary>
+        private AcountInformation GetAccountInfo()
+        {
+
+            string userName = HttpContext.User.Identity.Name;
+            if (userName != null)
+            {
+
+                var account = HttpContext.Session["Account"] as AcountInformation;
+                return account;
+            }
+            else
+            {
+                return null;
+            }
+            
+        }
+
+    }
+}

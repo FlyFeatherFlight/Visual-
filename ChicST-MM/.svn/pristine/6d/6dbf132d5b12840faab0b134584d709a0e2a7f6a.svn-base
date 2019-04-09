@@ -1,0 +1,8 @@
+﻿@model ChicST_MM.WEB.Models.TravelReimbursementViewModel
+
+@{
+    ViewBag.Title = "差/接报销";
+}
+
+<h2>差/接报销</h2>
+

@@ -1,0 +1,163 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - 我的 ASP.NET 应用程序</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet" href="~/Content/common.css">
+    <link rel="stylesheet" href="~/Content/index.css">
+    <link rel="stylesheet" href="~/Content/bootstrap-datepicker3.css">
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    <script src="~/Scripts/bootstrap-datepicker.min.js"></script>
+    <script src="~/Scripts/bootstrap-datepicker.zh-CN.min.js" charset="UTF-8"></script>
+    
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- 缩略导航栏 -->
+            <div class="small-box hidden-lg hidden-md col-sm-12 col-xs-12 clearFix">
+                <span style="margin-left:10px;">信息系统</span>
+                <div class="icon-menus">
+                    <span class="icon-menu"></span>
+                    <span class="icon-menu"></span>
+                    <span class="icon-menu"></span>
+                    <span class="icon-menu"></span>
+                </div>
+                <ul class="small-nav nav-pills nav-stacked col-sm-12 col-xs-12 ">
+                    <li class="active type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        出差
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <div class="nav-second" style="display:none;">
+                        <ul>
+                            <li><a href="@Url.Action("AddBusinessTripView","BusinessTrip")">出差申请表</a></li>
+                            <li>出差审核</li>
+
+                        </ul>
+                    </div>
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        接待
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        报销
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        收款
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        5s评审表
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        售后
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                </ul>
+            </div>
+            <!-- 侧边导航栏 -->
+            <nav class="nav-warpper fl hidden-sm hidden-xs ">
+                <div class="user-warpper">
+                    <span class="glyphicon glyphicon-user "></span>登录者
+                    <br>
+                    <span class="goOut">注销</span>
+                </div>
+                <form action="" class="form-group search-warpper">
+                    <div class="">
+                        <input type="text" class="form-control" placeholder="Search">
+                    </div>
+                </form>
+                <ul class="nav nav-pills nav-stacked col-sm-12 col-xs-12 ">
+                    <li class="active type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        出差
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <div class="nav-second" style="display:none;">
+                        <ul>
+                            <li><a href="@Url.Action("AddBusinessTripView","BusinessTrip")">出差申请</a></li>
+                            <li><a href="">出差记录表</a></li>
+                            <li>出差审核</li>
+                        </ul>
+                    </div>
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        接待
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        报销
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        收款
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        5s评审表
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        售后
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="row">
+            <div class="content-warpper col-sm-12 col-xs-12 sm-width">
+                <div class="logo hidden-sm hidden-xs">
+                    CHIC店面管理系统
+                </div>
+                @RenderBody()
+                <footer class="foot-copy ">
+                    <p>Copyright &copy; @DateTime.Now.Year -CHIC店面管理系统 by至尚至美信息部</p>
+                </footer>
+
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        /* 缩略导航 */
+        $('.icon-menus').click(function () {
+            $('.small-nav').toggleClass('show');
+        })
+        /* 二级菜单 */
+        $('.type-list').each((i, li) => {
+            li.onclick = function () {
+                $(this).next('.nav-second').slideToggle();
+                $(this).children('.glyphicon-menu-left').toggleClass('running');
+                $(this).addClass('active').siblings().removeClass('active');
+
+            }
+        })
+        /* 日期 */
+        $(function () {
+            $('.datepicker').datepicker({
+                language: 'zh-CN'
+            });
+        })
+    </script>
+
+</body>
+</html>

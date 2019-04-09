@@ -1,0 +1,7 @@
+﻿
+@{
+    ViewBag.Title = "ReviewRecordAddView";
+}
+
+<h2>ReviewRecordAddView</h2>
+

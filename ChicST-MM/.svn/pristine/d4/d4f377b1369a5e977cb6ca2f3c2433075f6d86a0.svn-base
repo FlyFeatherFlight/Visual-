@@ -1,0 +1,8 @@
+﻿@model ChicST_MM.WEB.Models.AfterSales_CostComputationViewModel
+
+@{
+    ViewBag.Title = "AfterSales_CostComputationInfoView";
+}
+
+<h2>AfterSales_CostComputationInfoView</h2>
+

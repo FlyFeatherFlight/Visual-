@@ -1,0 +1,127 @@
+﻿@model List<ChicST_MM.WEB.Models.StoreCustomer_TrackViewModel>
+
+@{
+    ViewBag.Title = "客户跟进";
+}
+<style>
+    .table tbody tr td:nth-child(2n-1) {
+        text-align: center;
+        width: auto;
+    }
+</style>
+<h3>客户跟进</h3>
+<div style="margin-left:2.5%;">
+    <select class="search-input" id="storeMan">
+        <option value="" class="active">-选择员工-</option>
+    </select>
+    <input type="button" onclick="Excel_export()" value="导出本页" />
+    <p>当前跟进人数:@ViewBag.TrackCount</p>
+</div>
+
+<table class="table table-bordered table-hover " id="Table">
+    <tr>
+        
+        <th>店铺</th>
+        <th>客户姓名</th>
+        <th>跟进方式</th>
+        <th>跟进内容</th>
+        <th>跟进时间</th>
+        <th>跟进人</th>
+        <th>跟进结果</th>
+        <th>是否申请设计师</th>
+
+    </tr>
+    @foreach (var item in Model)
+    {
+    <tr>
+        
+        <td>@item.店铺</td>
+        <td>@Html.ActionLink(item.客户姓名, "CustomerTrackListView", "StoreAnalyze", new { storeid = item.店铺ID, emid = item.跟进人ID, recid = item.接待ID},new { }) </td>
+        <td>@item.跟进方式</td>
+        <td>@item.跟进内容</td>
+        <td>@item.跟进时间</td>
+        <td>@item.跟进人</td>
+        <td>@item.跟进结果</td>
+        <td>
+            @if (item.是否申请设计师 == true)
+            {
+                <span>申请</span>
+            }
+            else if (item.是否申请设计师 == false)
+            {
+                <span>未申请</span>
+            }
+            else
+            {
+                <span>未确认</span>
+            }
+        </td>
+       
+    </tr>
+    }
+</table>
+<script>
+    var nowStoreData = sessionStorage.getItem("nowStore");
+    function Excel_export() {
+        var str = JSON.parse(nowStoreData).nowStoreName + '-' + sessionStorage.getItem("tarckManName")+'-'+'跟进表';
+       
+        btn_export(str);
+           
+    
+    }
+    $(function () {
+        //获取店铺ID
+       
+        var storeid = JSON.parse(nowStoreData).nowStoreid;
+        //console.log(nowStoreData);
+        //console.log(storeid)
+         $.ajax({
+            
+            type: "post",
+            data: { storeid: storeid},
+            url: '@Url.Action("GetStoreEmployees", "StoreAnalyze")',
+            dataType: "json",
+            cache: false,
+            async: true,
+                success: function (data) {
+                    console.log(data);
+                    
+                $.each(data, (i, m) => {
+
+                    $("#storeMan").append("<option value=" + m.ID + ">" + m.姓名 + "</option>")
+
+                })
+            },
+            error: function(err){
+                console.log(err)
+            }
+
+        })
+        //选择员工后跳转
+        $("#storeMan").change(function () {
+            var Manid = $("#storeMan").val();
+            var Jopts = $("#storeMan");
+            var value = Jopts.val();//这个值就是你获取的值;
+
+            if (value != "") {
+                for (var i = 0; i < Jopts.find("option").length; i++) {
+                    if (value == Jopts.find("option")[i].value) {
+                        console.log(Jopts.find("option")[i]);
+                        if ($(Jopts.find("option")[i]).hasClass("active")) {
+                            return;
+                        } else {
+                            $(Jopts.find("option")[i]).siblings().removeClass("active")
+                            $(Jopts.find("option")[i]).addClass("active");
+
+                        }
+                        break;
+                    }
+                }
+            }
+            var tarckManName = $("#storeMan").find(".active").text();
+            sessionStorage.setItem("tarckManName", tarckManName);
+            window.location.href = "@Url.Action("CustomerTrackView", "StoreAnalyze")?storeID=" + storeid + "&emID=" + Manid;
+        
+        })
+    })
+</script>

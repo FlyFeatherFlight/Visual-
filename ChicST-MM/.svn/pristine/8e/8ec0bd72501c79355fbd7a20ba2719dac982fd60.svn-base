@@ -1,0 +1,94 @@
+﻿@model List<ChicST_MM.WEB.Models.StoreCustomer_TrackViewModel>
+
+@{
+    ViewBag.Title = "客户跟进";
+}
+<style>
+    .table tbody tr td:nth-child(2n-1) {
+        text-align: center;
+        width: auto;
+    }
+</style>
+<h3>客户跟进</h3>
+
+<select class="search-input" id="storeMan">
+    <option value="">-选择员工-</option>
+</select>
+<p>当前跟进人数:@ViewBag.TrackCount</p>
+<table class="table table-bordered table-hover " >
+    <tr>
+        
+        <th>店铺</th>
+        <th>客户姓名</th>
+        <th>跟进方式</th>
+        <th>跟进内容</th>
+        <th>跟进时间</th>
+        <th>跟进人</th>
+        <th>跟进结果</th>
+        <th>是否申请设计师</th>
+
+    </tr>
+    @foreach (var item in Model)
+    {
+    <tr>
+        
+        <td>@item.店铺</td>
+        <td>@Html.ActionLink(item.客户姓名, "CustomerTrackListView", "StoreAnalyze", new { storeID=item.店铺ID,emID=item.跟进人ID,id =item.接待ID}) </td>
+        <td>@item.跟进方式</td>
+        <td>@item.跟进内容</td>
+        <td>@item.跟进时间</td>
+        <td>@item.跟进人</td>
+        <td>@item.跟进结果</td>
+        <td>
+            @if (item.是否申请设计师 == true)
+            {
+                <span>申请</span>
+            }
+            else if (item.是否申请设计师 == false)
+            {
+                <span>未申请</span>
+            }
+            else
+            {
+                <span>未确认</span>
+            }
+        </td>
+       
+    </tr>
+    }
+</table>
+<script>
+    $(function () {
+        //获取店铺ID
+     
+       var storeid=@Model.FirstOrDefault().店铺ID;
+         $.ajax({
+            
+            type: "post",
+            data: { storeid: storeid},
+            url: '@Url.Action("GetStoreEmployees", "StoreAnalyze")',
+            dataType: "json",
+            cache: false,
+            async: true,
+                success: function (data) {
+                    console.log(data);
+                    
+                $.each(data, (i, m) => {
+
+                    $("#storeMan").append("<option value=" + m.ID + ">" + m.姓名 + "</option>")
+
+                })
+            },
+            error: function(err){
+                console.log(err)
+            }
+
+        })
+        //选择员工后跳转
+        $("#storeMan").change(function () {
+            var Manid = $("#storeMan").val();
+            window.location.href = "@Url.Action("CustomerTrackView", "StoreAnalyze")?storeID=" + storeid + "&emID=" + Manid;
+        
+        })
+    })
+</script>

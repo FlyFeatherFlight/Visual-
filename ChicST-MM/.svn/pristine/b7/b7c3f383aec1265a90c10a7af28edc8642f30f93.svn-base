@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ChicST_MM.WEB.Models
+{
+    /// <summary>
+    /// 商务会谈事项
+    /// </summary>
+    public class BusinessReceiving_MattersViewModel
+    {
+        public int ID { get; set; }
+        public string 主要问题 { get; set; }
+        public string 计划应对方案 { get; set; }
+        public string 预计成果 { get; set; }
+        public string 需要的协助 { get; set; }
+        public int 接待计划ID { get; set; }
+    }
+}

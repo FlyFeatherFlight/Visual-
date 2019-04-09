@@ -1,0 +1,9 @@
+﻿namespace ChicST_MM.IDAL
+{
+    /// <summary>
+    /// HR_出差记录表
+    /// </summary>
+    public partial interface IBusinessTripDAL:IBaseDAL<HR_出差记录表>
+    {
+    }
+}

@@ -1,0 +1,154 @@
+﻿@model ChicST_MM.WEB.Models.TravelReimbursementViewModel
+
+@{
+    ViewBag.Title = "出差报销详情";
+}
+@*判断数据是否异常*@
+@if (Model == null)
+{
+    <script>
+        alert("数据异常！");
+        window.history.go(-1);
+    </script>
+}
+else
+{
+    <h3>出差报销详情</h3>
+    <table class="table table-striped table-bordered table-hover">
+        <tr>
+            <td class="bold">报销人</td>
+            <td colspan="4">@Model.报销人</td>
+            <td class="bold">报销部门</td>
+            <td colspan="4">@Model.部门</td>
+        </tr>
+        <tr>
+            <td class="bold">出差日期</td>
+            <td colspan="4">@Model.出差日期</td>
+            <td class="bold">出差事由</td>
+            <td colspan="4">@Model.出差事由</td>
+        </tr>
+      
+        <tr>
+            <td class="bold">原借款</td>
+            <td colspan="4">@Model.借款金额</td>
+            <td class="bold">应退补余额</td>
+            <td colspan="4">@Model.应退补金额</td>
+        </tr>
+        <tr>
+            <td class="bold">汇款银行</td>
+            <td colspan="4">@Model.汇款银行</td>
+            <td class="bold">户名</td>
+            <td colspan="4">@Model.户名</td>
+        </tr>
+        <tr>
+            <td class="bold">汇款账号</td>
+            <td colspan="10">@Model.汇款账号</td>
+        </tr>
+        <tr>
+            <td colspan="10" class="bold">报销详情内容</td>
+        </tr>
+        <tr>
+            <th>ID</th>
+            <th>日期</th>
+            <th>起讫地点</th>
+            <th>城市</th>
+            <th>住宿费</th>
+            <th>车船费</th>
+            <th>市内交通费</th>
+            <th>生活补助费</th>
+            <th>同行人</th>
+            <th>提交时间 </th>
+        </tr>
+        @if (Model.财务_出差报销详细 != null)
+        {
+            foreach (var item in Model.财务_出差报销详细)
+            {
+        <tr>
+            <td>@item.ID</td>
+            <td>@item.日期.Value.ToString("d")</td>
+            <td class="text-center">@item.起讫地点</td>
+            <td>@item.城市</td>
+            <td>@item.住宿费</td>
+            <td class="text-center">@item.车船费</td>
+            <td>@item.交通费</td>
+            <td class="text-center">@item.生活补助</td>
+            <td>@item.同行人</td>
+            <td class="text-center">@item.提交时间</td>
+
+        </tr>
+            }
+        }
+        <tr>
+            <td class="bold">总计</td>
+            @{
+                decimal total = 0;
+                if (Model.财务_出差报销详细 == null)
+                {
+                    <td colspan="9">@total</td>
+                }
+                else
+                {
+                    foreach (var money in Model.财务_出差报销详细)
+                    {
+                        if (money.交通费 == null)
+                        {
+                            money.交通费 = 0;
+                        }
+                        if (money.住宿费 == null)
+                        {
+                            money.住宿费 = 0;
+                        }
+                        if (money.生活补助 == null)
+                        {
+                            money.生活补助 = 0;
+                        }
+                        if (money.车船费 == null)
+                        {
+                            money.车船费 = 0;
+                        }
+                        else
+                        {
+                            total += money.住宿费.Value + money.交通费.Value + money.生活补助.Value + money.车船费.Value;
+                        }
+
+
+                    }
+                    <td colspan="9">@total</td>
+                }
+
+            }
+        </tr>
+        <tr>
+            <td class="bold">审核状态</td>
+            <td colspan="9">
+                @if (Model.审核状态 == null)
+                {
+                    <span>未审核</span>
+                }
+                else if (Model.审核状态.Value == true)
+                {
+                    <span>通过</span>
+                }
+                else
+                {
+                    <span>驳回</span>
+                }
+        </tr>
+    </table>
+    <div style="text-align:center;">
+        @if (ViewBag.ReCheck == true)
+        {
+            using (Html.BeginForm("ReimbursementCheck", "Reimbursement", FormMethod.Post))
+            {
+
+                <input type="text" name="id" value="@Model.ID" class="hidden" />
+                <input type="text" name="dataType" value="0" class="hidden" />
+                <input type="radio" value="通过" name="result" />
+                <label>通过</label>
+                <input type="radio" value="驳回" name="result" />
+                <label>驳回</label>
+                <input type="submit" value="提交" />  
+            }
+        }
+    </div>
+}

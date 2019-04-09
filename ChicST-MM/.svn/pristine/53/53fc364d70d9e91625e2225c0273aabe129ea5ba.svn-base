@@ -1,0 +1,702 @@
+﻿@model ChicST_MM.WEB.Models.AfterSalesViewModel
+
+<style>
+    /*售后受理附件上传*/
+    .file-list {
+        height: 125px;
+        display: none;
+        list-style-type: none;
+    }
+
+        .file-list img {
+            max-width: 70px;
+            vertical-align: middle;
+        }
+
+        .file-list .file-item {
+            margin-bottom: 10px;
+            float: left;
+            margin-left: 20px;
+        }
+
+
+            .file-list .file-item .file-del {
+                display: block;
+                margin-left: 20px;
+                margin-top: 5px;
+                cursor: pointer;
+            }
+
+
+    .file {
+        position: relative;
+        display: inline-block;
+        background: #D0EEFF;
+        border: 1px solid #99D3F5;
+        border-radius: 4px;
+        padding: 6px 12px;
+        overflow: hidden;
+        color: #1E88C7;
+        text-decoration: none;
+        text-indent: 0;
+        line-height: 20px;
+    }
+
+        .file input {
+            position: absolute;
+            font-size: 100px;
+            right: 0;
+            top: 0;
+            opacity: 0;
+        }
+
+        .file:hover {
+            background: #AADFFD;
+            border-color: #78C3F3;
+            color: #004974;
+            text-decoration: none;
+        }
+    .tab tbody tr td:nth-child(2n-1) {
+        text-align: center;
+        width: auto;
+    }
+</style>
+
+@if (ViewBag.IsEdit == true)
+{
+    {
+        ViewBag.Title = "售后受理单修改";
+    }
+    <h3>售后受理单修改</h3>
+
+    <label style="margin-left:2.5%;">售后单号：@Model.售后单号</label>
+    <div class="hidden outMask" style="position:absolute;width:100%;height:100%;background: #fff;z-index: 2;text-align: center;font-size: 16px;">提交成功，正在跳转...</div>
+    <table class="table table-striped table-bordered table-hover tab">
+
+        <tr class="hidden">
+            <td>
+                <input type="text" value="@Model.售后单号" class="form-control afterNum" />
+                <input type="text" value="@Model.ID" class="form-control numID" />
+            </td>
+        </tr>
+        <tr>
+            <th>投诉日期</th>
+            <th>订货单号</th>
+            <th>发货日期</th>
+            <th>送货安装日期</th>
+            <th>产品型号</th>
+            <th>尺寸</th>
+            <th>产品描述</th>
+        </tr>
+        <tr>
+
+            <td>
+                <input type="text" class=" dateTime form-control red tellDate" value="@Model.客诉日期.ToString("yyyy-MM-dd")" oninput="sureRed()" readonly />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>
+                <input type="text" value="@Model.订货单号" class="form-control red orderNum" oninput="sureRed()" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>
+                <input type="text" class=" dateTime form-control red pullDate" value="@Model.发货日期.ToString("yyyy-MM-dd")" oninput="sureRed()" readonly />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>
+                <input type="text" class=" dateTime form-control red sendDate" value="@Model.送货安装日期.ToString("yyyy-MM-dd")" oninput="sureRed()" readonly />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>
+                <input type="text" value="@Model.产品型号" class="form-control red productModel" oninput="sureRed()" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>
+                <input type="text" value="@Model.尺寸" class="form-control red size" oninput="sureRed()" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>
+                <input class="form-control red productDes" oninput="sureRed()" value="@Model.产品描述" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">店铺</td>
+            <td colspan="2">
+                <select class="form-control red" id="shop" oninput="sureRed()">
+                    <option value="@Model.店铺ID" selected>@Model.店铺</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td class="bold">销售人员</td>
+            <td colspan="4">
+                <select class="form-control red" id="salesman" oninput="sureRed()">
+                    <option value="@Model.销售人员ID" selected>@Model.销售人员</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">售后描述</td>
+            <td colspan="6">
+                <textarea cols="3" class="form-control red saleDes" oninput="sureRed()">@Model.售后描述</textarea>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">照片附件</td>
+            <td colspan="6">
+
+                <div class="file">
+                    选择文件
+                    <input type="file" name="" id="choose-file" multiple="multiple" oninput="sureRed()" class="red" />
+                </div>
+                <ul class="file-list "></ul>
+                <hr style="margin:5px 0;" />
+                <button style="cursor: pointer;" href="javascript:;" id="upload" class="btn btn-success">上传</button>
+                <span class="green hidden">上传成功</span>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">初审意见</td>
+            <td colspan="6">
+                <textarea cols="3" class="form-control red CheckIdea" oninput="sureRed()">@Model.初审意见</textarea>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">提交人</td>
+            <td colspan="4">
+                <input type="text" class="form-control" value="@Model.提交人" readonly />
+                <input type="text" class="form-control hidden submitter " value="@Model.提交人ID" />
+            </td>
+            <td class="bold">制单日期</td>
+            <td colspan="4">
+                <input type="text" class=" dateTime form-control makeDate" value="@Model.制单日期.ToString("yyyy-MM-dd")" readonly />
+            </td>
+        </tr>
+    </table>
+    <div class="submit-btns" style="margin-top:10px;">
+        <input type="button" value="提交" class="btn btn-success width-7" id="submit-myform" onclick="submitMyform()">
+        &nbsp;&nbsp;
+        <input type="button" value="取消" class="btn btn-danger width-7" onclick="javascript:history.back(-1);">
+    </div>
+
+
+}
+else
+{
+    {
+        ViewBag.Title = "售后受理单详情";
+    }
+    <h3>售后受理单详情</h3>
+    if (ViewBag.Sharing == true)
+    {
+        @Html.ActionLink("查看费用分摊", "AfterSales_CostComputationInfoView", new { id = Model.ID, isEdit = "false" }, new { style = "margin-left:2.5%;" })
+    }else
+	{
+    <span style="color: #337ab7;text-decoration: none; margin-left:2.2%;cursor:pointer; padding:6px;" id="costPoint">添加费用分摊</span>
+	}
+    @*添加费用分摊*@
+    <form id="cost-form" action="@Url.Action("AfterSales_CostCostComputationAdd", "AfterSales")" method="post">
+        <input type="text" name="营销售后ID" value="@Model.ID"  />
+        <table class="table table-striped table-bordered table-hover">
+
+            <tr>
+                <td>责任判定</td>
+                <td>
+                    <select name="责任判定ID" id="dutyClass" class="form-control red" oninput="sureRed()">
+                        <option value="">-请选择分类-</option>
+                    </select>
+                    <span class="must" style="color:red;">*该选项为必填项</span>
+                </td>
+                <td>问题分类</td>
+                <td>
+                    <select name="问题分类ID" id="questionClass" class="form-control red " oninput="sureRed()">
+                        <option value="">-请选择分类-</option>
+                    </select>
+                    <span class="must" style="color:red;">*该选项为必填项</span>
+                </td>
+                <td>材质分类</td>
+                <td>
+                    <select name="材质分类ID" id="textureClass" class="form-control red" oninput="sureRed()">
+                        <option value="">-请选择分类-</option>
+                    </select>
+                    <span class="must" style="color:red;">*该选项为必填项</span>
+                </td>
+            </tr>
+            <tr>
+                <td>工厂费用判定</td>
+                <td colspan="5">
+                    <input type="text" name="工厂费用判定" value="" class="form-control"
+                           onkeyup="value=value.replace(/[^\d.]/g,'')"
+                           onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字" />
+                </td>
+            </tr>
+            <tr>
+                <td>经销商费用判定</td>
+                <td colspan="5">
+                    <input type="text" name="经销商费用判定" value="" class="form-control"
+                           onkeyup="value=value.replace(/[^\d.]/g,'')"
+                           onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字" />
+                </td>
+            </tr>
+            <tr>
+                <td>公司费用判定</td>
+                <td colspan="5">
+                    <input type="text" name="公司费用判定" value="" class="form-control"
+                           onkeyup="value=value.replace(/[^\d.]/g,'')"
+                           onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字" />
+                </td>
+            </tr>
+        </table>
+    </form>
+    <table class="table table-striped table-bordered table-hover " style="margin-top:10px;">
+        <tr>
+            <td class="bold">售后单号</td>
+            <td colspan="9">@Model.售后单号</td>
+            <td class="hidden downID">@Model.ID</td>
+        </tr>
+        <tr>
+            <th>投诉日期</th>
+            <th colspan="2">订货单号</th>
+            <th>发货日期</th>
+            <th>送货安装日期</th>
+            <th colspan="2">产品型号</th>
+            <th>尺寸</th>
+            <th>产品描述</th>
+        </tr>
+        <tr>
+
+            <td>@Model.客诉日期.ToString("d")</td>
+            <td class="text-center" colspan="2">@Model.订货单号</td>
+            <td>@Model.发货日期.ToString("d")</td>
+            <td class="text-center">@Model.送货安装日期.ToString("d")</td>
+            <td colspan="2">@Model.产品型号</td>
+            <td class="text-center">@Model.尺寸</td>
+            <td>@Model.产品描述</td>
+        </tr>
+        <tr>
+            <td class="bold">店铺</td>
+            <td colspan="3">@Model.店铺</td>
+            <td class="bold">销售人员</td>
+            <td colspan="4">@Model.销售人员</td>
+        </tr>
+        <tr>
+            <td class="bold">售后描述</td>
+            <td colspan="9">@Model.售后描述</td>
+        </tr>
+        <tr>
+            <td class="bold">照片附件</td>
+            <td colspan="9">
+                @if (Model.proof != null && Model.proof.Count() >0)
+                {
+                    <span>@Model.proof</span>
+                    <a href="#" class="downFile">下载</a>
+                    <table class="files-tab hidden">
+                        @foreach (var ite in Model.proof)
+                        {
+                            <tr><td>@ite.ToString()</td></tr>
+                        }
+                    </table>
+
+                }
+                else
+                {
+                    <a href="#" style="color:gray;">无照片附件</a>
+                }
+
+
+
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">初审意见</td>
+            <td colspan="9">@Model.初审意见</td>
+        </tr>
+        <tr>
+            <td class="bold">提交人</td>
+            <td colspan="3">@Model.提交人</td>
+            <td class="bold">制单日期</td>
+            <td colspan="4">@Model.制单日期.ToString("d")</td>
+        </tr>
+        <tr>
+            <td class="bold">更新人</td>
+            <td colspan="3">@Model.更新人</td>
+            <td class="bold">更新日期</td>
+            <td colspan="4">@Model.更新日期.ToString("d")</td>
+        </tr>
+        <tr>
+            <td colspan="9" class="bold">跟进日志</td>
+        </tr>
+        <tr>
+            <th>日期</th>
+            <th>责任判定</th>
+            <th>内容</th>
+            <th>公司投入预估</th>
+            <th>经销投入预估</th>
+            <th>工厂投入预估</th>
+            <th>问题分类</th>
+            <th>材质分类</th>
+            <th>跟进人</th>
+
+        </tr>
+        @foreach (var item in Model.afterSales_TrackInfoViewModels)
+        {
+            <tr>
+                <td>@item.日期.ToString("d")</td>
+                <td class="text-center">@item.责任判定</td>
+                <td>@item.内容</td>
+                <td class="text-center">@item.公司投入预估</td>
+                <td>@item.经销投入预估</td>
+                <td class="text-center">@item.工厂投入预估</td>
+                <td>@item.问题分类</td>
+                <td class="text-center">@item.材质分类</td>
+                <td>@item.跟进人</td>
+
+            </tr>
+        }
+    </table>
+
+}
+
+<script>
+
+    /***** 费用分摊模态框******/
+    $("#costPoint")
+        .click(function () {
+            $("#cost-form").dialog("option", "title", "添加费用分摊").dialog("open");
+        });
+    //配置模态框  添加数据
+
+    $("#cost-form").dialog({
+            autoOpen: false,
+            //height: 600,
+            width: 960,
+            modal: true,
+            buttons: {
+
+                "取消": function () { $(this).dialog("close") },
+                "提交": function () {
+
+                    var status = false;
+
+                    $("#cost-form .red").each((i,m) => {
+                        if (m.value == null || m.value=="") {
+                            return status = true;
+                        }
+                    })
+                    if (status) {
+                        alert("请完善信息！")
+                    }
+                    else {
+                        $("#cost-form").dialog("close");
+                        //提交模态框的数据
+                        $("#cost-form").submit();
+                    }
+
+                }
+            }
+    });
+    /***** 修改后的提交 *****/
+    //点击提交后判断是否有空的
+    function submitMyform() {
+        let postdata = {
+            "售后单号": $(".afterNum").val(),
+            "ID": $(".numID").val(),
+            "客诉日期": $(".tellDate").val(),
+            "订货单号": $(".orderNum").val(),
+            "发货日期": $(".pullDate").val(),
+            "送货安装日期": $(".sendDate").val(),
+            "产品型号": $(".productModel ").val(),
+            "尺寸": $(".size").val(),
+            "产品描述": $(".productDes").val(),
+            "店铺ID": $("#shop").val(),
+            "销售人员ID": $("#salesman").val(),
+            "售后描述": $(".saleDes").val(),
+            "初审意见": $(".CheckIdea").val(),
+            "提交人ID": $(".submitter ").val(),
+            "制单日期":$(".makeDate").val()
+        }
+        console.log(postdata)
+        var status = false;
+        $(".red").each((i, m) => {
+            if (m.value == null || m.value == "") {
+                return status = true;
+            }
+        })
+        if (status) {
+            alert("请完善信息！");
+        } else {
+            console.log("我要提交了")
+            //修改之后提交操作
+            $.ajax({
+                url: '@Url.Action("AfterSales_Edit", "AfterSales")',
+                type: 'post',
+                dataType: 'json',
+                data: { afterSalesViewModel: postdata },
+                async: true,
+                success: (data) => {
+                    console.log(data)
+                    $(".outMask").removeClass("hidden");
+                    // 跳转到详情
+
+                    window.location.href =  '@Url.Action("AfterSales_RecordInfoView", "AfterSales")'+"?id=" + data.id;
+
+                },
+                error: (err) => {
+                    console.log(err)
+                }
+
+            })
+
+        }
+    }
+    $(function () {
+         //加载责任判定下拉框数据
+        $.ajax({
+            type: "post",
+            data: {type:"责任判定"},
+            url: '@Url.Action("GetClassify", "AfterSales")',
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                console.log(data)
+                $("#dutyClass").empty();
+                $.each(data, (i, m) => {
+                    $("#dutyClass").append("<option value=" + m.ID + ">" + m.分类数据 + "</option>");
+                })
+            },
+            error: function(err){
+                console.log(err)
+            }
+
+        })
+        //加载问题分类下拉框数据
+        $.ajax({
+            type: "post",
+            data: { type:"问题分类"},
+            url: '@Url.Action("GetClassify", "AfterSales")',
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                console.log(data)
+                $("#questionClass").empty();
+                $.each(data, (i, m) => {
+                    $("#questionClass").append("<option value=" + m.ID + ">" + m.分类数据 + "</option>");
+                })
+            },
+            error: function(err){
+                console.log(err)
+            }
+
+        })
+        //加载材质分类下拉框数据
+        $.ajax({
+            type: "post",
+            data: { type:"材质分类"},
+            url: '@Url.Action("GetClassify", "AfterSales")',
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                console.log(data)
+                $("#textureClass").empty();
+
+                $.each(data, (i, m) => {
+                    $("#textureClass").append("<option value=" + m.ID + ">" + m.分类数据 + "</option>");
+                })
+            },
+            error: function(err){
+                console.log(err)
+            }
+
+        })
+        //多文件下载
+        $(".downFile").click(function () {
+            var _this = this;
+            var fileIds = $(_this).next().find("td");
+           for (var i = 0; i < fileIds.length; i++) {
+            //var downID = $(".downID").text()
+                var fileId = $(fileIds[i]).text();
+                var action = '@Url.Action("DownLoadFiles", "AfterSales")' ;
+                var form = $("<form>");
+                form.attr("style", "display:none");
+                form.attr("target", "_blank");
+                form.attr("method", "get");
+                form.attr("action", action );
+                var input1 = $("<input>");
+                input1.attr("type", "hidden");
+                input1.attr("name", "id");
+               input1.attr("value", fileId);
+                $("body").append(form);
+                form.append(input1);
+                form.submit();
+                form.remove();
+            }
+        })
+
+        /****************** 售后单修改相关 **********************/
+        //字符串转日期格式
+        $(".dateTime").each((i, m) => {
+            var strTime = m.value;
+            strTime = strTime.replace(/-/g, '/')
+            var date = new Date(Date.parse(strTime));
+            //console.log(date)
+            //console.log(strTime)
+
+        })
+
+
+     //加载店铺下拉框数据
+        $.ajax({
+            type: "post",
+            data: {},
+            url: '@Url.Action("GetTripObj", "AfterSales")',
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                //console.log(data)
+
+
+                $.each(data, (i, m) => {
+                    $("#shop").append("<option value=" + m[0] + ">" + m[1] + "</option>");
+                })
+            },
+            error: function(err){
+                console.log(err)
+            }
+
+        })
+        //根据店铺加载销售员数据
+        $("#shop").change(function () {
+            //获取dian
+            var shopID = $("#shop").val();
+            $.ajax({
+                type: "post",
+                data: {id:shopID},
+                url: '@Url.Action("GetEmployeesObj", "AfterSales")',
+                dataType: "json",
+                cache: false,
+                async: true,
+                success: function (data) {
+                    //console.log(data)
+                    $("#salesman").empty();
+                    $.each(data, (i, m) => {
+                        $("#salesman").append("<option value=" + m[0] + ">" + m[1] + "</option>");
+                    })
+                },
+                error: function(err){
+                    console.log(err)
+                }
+            })
+        })
+
+        /********* 文件上传 *********/
+        // 重新加载文件上传
+        var nullfile = $("div.file");
+        nullfile.each((i, m) => {
+            m.outerHTML = m.outerHTML;
+
+        })
+        //声明变量
+        var $button = $('#upload'),
+            //选择文件按钮
+            $file = $("#choose-file"),
+            //回显的列表
+            $list = $('.file-list'),
+            //选择要上传的所有文件
+            fileList = [];
+        //当前选择上传的文件
+        var curFile;
+        // 选择按钮change事件，实例化fileReader,调它的readAsDataURL并把原生File对象传给它，
+        // 监听它的onload事件，load完读取的结果就在它的result属性里了。它是一个base64格式的，可直接赋值给一个img的src.
+        $file.on('change', function (e) {
+            $('.file-list').empty();
+            //原生的文件对象，相当于$file.get(0).files;//files[0]为第一张图片的信息;
+            curFile = this.files;
+            //curFile = $file.get(0).files;
+            //console.log(curFile);
+            //将FileList对象变成数组
+            fileList = fileList.concat(Array.from(curFile));
+            //console.log(fileList);
+            for (var i = 0, len = curFile.length; i < len; i++) {
+                reviewFile(curFile[i])
+            }
+            $('.file-list').fadeIn(200);
+        })
+
+        //文件预览
+        function reviewFile(file) {
+            //实例化fileReader,
+            var fd = new FileReader();
+            //获取当前选择文件的类型
+            var fileType = file.type;
+            //调它的readAsDataURL并把原生File对象传给它，
+            fd.readAsDataURL(file);//base64
+            //监听它的onload事件，load完读取的结果就在它的result属性里了
+            fd.onload = function () {
+                if (/^image\/[jpeg|png|jpg|gif]/.test(fileType)) {
+                    $list.append('<li style="border:solid red px; margin:5px 5px;" class="file-item"><img src="' + this.result + '" alt="" height="70"><span class="file-del">删除</span></li>').children(':last').hide().fadeIn(200);
+                } else {
+                    $list.append('<li class="file-item"><span class="file-name">' + file.name + '</span><span class="file-del">删除</span></li>')
+                }
+
+            }
+        }
+
+        //点击删除按钮事件：
+        $(".file-list").on('click', '.file-del', function () {
+            let $parent = $(this).parent();
+
+            let index = $parent.index();
+            fileList.splice(index, 1);
+            $parent.fadeOut(850, function () {
+                $parent.remove()
+            });
+
+        });
+        //点击上传按钮事件：
+        $button.on('click', function () {
+
+            var afterNum = $(".afterNum").val();// 单号
+            var shopID = $("#shop").val();//店铺
+
+            for (var i = 0, len = fileList.length; i < len; i++) {
+                //console.log(fileList[i]);
+                var formData = new FormData();
+                formData.append('UploadStream', fileList[i]);
+                formData.append('storeid', shopID);
+                formData.append('afterSalesCode', afterNum);
+
+                $.ajax({
+                    url: '@Url.Action("UpFiles", "AfterSales")',
+                    type: 'post',
+                    data: formData,
+                    dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        console.log(data)
+                        $("#upload").siblings(".green").removeClass("hidden");
+
+                    },
+                    error: function (err) {
+                        $("#upload").siblings(".green").removeClass("hidden green").addClass("red").text("上传失败");
+                        console.log("上传失败！")
+                        console.log(err)
+                    }
+
+                    })
+            }
+
+
+        })
+
+
+
+    })
+</script>

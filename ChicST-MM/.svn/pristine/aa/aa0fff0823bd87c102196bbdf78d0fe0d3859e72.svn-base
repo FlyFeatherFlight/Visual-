@@ -1,0 +1,406 @@
+﻿using ChicST_MM.IBLL;
+using ChicST_MM.WEB.Models;
+using JPager.Net;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
+using ChicST_MM.IBLL;
+
+namespace ChicST_MM.WEB.Controllers
+{
+    /// <summary>
+    /// 商务接待
+    /// </summary>
+    public class BusinessReceivingController : Controller
+    {
+
+        private readonly IBusinessReceptionBLL businessReceptionBLL;
+        private readonly IBusinessReception_BudgetBLL businessReception_BudgetBLL;
+        private readonly IBusinessReception_GuestBLL businessReception_GuestBLL;
+        private readonly IBusinessReception_MattersBLL businessReception_MattersBLL;
+        private readonly IBusinessReception_PlansBLL businessReception_PlansBLL;
+        private readonly IAccountBLL accountBLL;
+        private readonly IDistributorBLL distributorBLL;
+     
+        private readonly IStoreBLL storeBLL;
+        private readonly IDepartmentBLL departmentBLL;
+        private readonly IEmployeeInformationBLL employeeInformationBLL;
+
+        public BusinessReceivingController(IBusinessReceptionBLL businessReceptionBLL, IBusinessReception_BudgetBLL businessReception_BudgetBLL, IBusinessReception_GuestBLL businessReception_GuestBLL, IBusinessReception_MattersBLL businessReception_MattersBLL, IBusinessReception_PlansBLL businessReception_PlansBLL, IAccountBLL accountBLL, IDistributorBLL distributorBLL, IStoreBLL storeBLL, IDepartmentBLL departmentBLL, IEmployeeInformationBLL employeeInformationBLL)
+        {
+            this.businessReceptionBLL = businessReceptionBLL;
+            this.businessReception_BudgetBLL = businessReception_BudgetBLL;
+            this.businessReception_GuestBLL = businessReception_GuestBLL;
+            this.businessReception_MattersBLL = businessReception_MattersBLL;
+            this.businessReception_PlansBLL = businessReception_PlansBLL;
+            this.accountBLL = accountBLL;
+            this.distributorBLL = distributorBLL;
+            this.storeBLL = storeBLL;
+            this.departmentBLL = departmentBLL;
+            this.employeeInformationBLL = employeeInformationBLL;
+        }
+
+
+
+
+        // GET: ReceivingRecords
+        /// <summary>
+        /// 接待记录查询页
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ReceivingRecordsIndex(string searchString,PagerInBase pagerInBase)
+        {
+            Session["View"] = true;
+            //获得数据
+            var models = BuildReceivingRecords(0).OrderByDescending(p=>p.ID).ToList();
+            //搜索数据
+            var query = searchString != null ?
+                models.Where(t => t.提交人.Contains(searchString)).ToList() :
+                models.ToList();
+            //默认倒叙排列
+
+            query = query.OrderByDescending(p => p.ID).ToList();
+            //分页数据
+            var data = query.Skip(pagerInBase.Skip).Take(pagerInBase.PageSize);
+
+            var count = models.Count;
+            var res = new PagerResult<BusinessReceiving_RecordsViewModel>
+            {
+                Code = 0,
+                DataList = data,
+                Total = count,
+                PageSize = pagerInBase.PageSize,
+                PageIndex = pagerInBase.PageIndex,
+                RequestUrl = pagerInBase.RequetUrl
+            };
+            return View(res);
+        }
+
+
+        /// <summary>
+        /// 添加商务接待计划
+        /// </summary>
+        /// <returns></returns>
+        public ViewResult AddReceivingRecordsView() {
+            Session["View"] = true;
+            
+
+            return View();
+        }
+
+        /// <summary>
+        /// 商务接待计划提交
+        /// </summary>
+        /// <param name="receivingRecordsViewModel"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult ReceivingRecordsAdd(BusinessReceiving_RecordsViewModel receivingRecordsViewModel) {
+            if (Session["View"].ToString() == "false")
+            {
+                return Content("<script>alert('重复操作！');parent.location.href='ReceivingRecordsIndex';</script>");
+            }
+            var ac = GetAccountInfo();
+            Session["View"] = false;
+            营销_接待计划 model = new 营销_接待计划();
+            model.主要沟通内容 = receivingRecordsViewModel.主要沟通内容;
+            model.入住酒店 = receivingRecordsViewModel.入住酒店;
+            model.抵达日期 = receivingRecordsViewModel.抵达日期;
+            model.审核人ID = receivingRecordsViewModel.审核人ID;
+            model.抵达日期 = receivingRecordsViewModel.抵达日期;
+            model.提交人ID = ac.用户ID;
+            model.提交日期 =DateTime.Now;
+            model.更新人ID = ac.用户ID;
+            model.更新日期 = DateTime.Now;
+            model.申请人ID = receivingRecordsViewModel.申请人ID;
+            model.申请日期=DateTime.Now;
+            model.离开日期 = receivingRecordsViewModel.离开日期;
+            model.航班号 = receivingRecordsViewModel.航班号;
+            model.费用总预算 = receivingRecordsViewModel.费用总预算;
+            model.部门 = receivingRecordsViewModel.部门;
+            model.配合部门 = receivingRecordsViewModel.配合部门;
+
+            if (ModelState.IsValid)
+            {
+                model = businessReceptionBLL.AddReturnModel(model);
+                Session["View"] = false;
+            }
+
+            else
+            {
+                List<string> sb = new List<string>();
+                //获取所有错误的Key
+                List<string> Keys = ModelState.Keys.ToList();
+                //获取每一个key对应的ModelStateDictionary
+                foreach (var key in Keys)
+                {
+                    var errors = ModelState[key].Errors.ToList();
+                    //将错误描述添加到sb中
+                    foreach (var error in errors)
+                    {
+                        sb.Add(error.ErrorMessage);
+                    }
+                }
+                string msg = null;
+                foreach (var item in sb)
+                {
+                    msg += item.ToString() + "<br/>";
+                }
+                return Content("<script>alert('" + msg + "');window.history.go(-1);</script>");
+            }
+            return RedirectToAction("ReceivingRecords_DetailsView", new {id=model.ID });
+        }
+
+        /// <summary>
+        /// 商务接待计划明细提交
+        /// </summary>
+        /// <param name="businessReceiving_PlansViewModel"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult BusinessRec_PlanAdd(BusinessReceiving_PlansViewModel businessReceiving_PlansViewModel) {
+
+            return Json("");
+
+        }
+
+        /// <summary>
+        /// 商务接待详情页
+        /// </summary>
+        /// <returns></returns>
+        public ViewResult ReceivingRecords_DetailsView(int id,string role)
+        {
+            Session["View"] = true;
+
+            var model = businessReceptionBLL.GetModel(p => p.ID == id);
+            BusinessReceiving_RecordsViewModel receivingRecordsViewModel = new BusinessReceiving_RecordsViewModel();
+            receivingRecordsViewModel = BuildReceivingRecord(model);
+
+            ViewBag.Role = role;
+            return View(receivingRecordsViewModel);
+        }
+
+        /// <summary>
+        /// 接待记录审核
+        /// </summary>
+        /// <returns></returns>
+        public ViewResult ReceivingRecords_CheckView(string searchString,PagerInBase pagerInBase)
+        {
+            Session["View"] = true;
+            var models = BuildReceivingRecords(1).OrderByDescending(p => p.ID).ToList();
+            //搜索数据
+            var query = searchString != null ?
+                models.Where(t => t.提交人.Contains(searchString)).ToList() :
+                models.ToList();
+            //默认倒叙排列
+            query = query.OrderByDescending(p => p.ID).ToList();
+            //分页数据
+            var data = query.Skip(pagerInBase.Skip).Take(pagerInBase.PageSize);
+
+            var count = models.Count;
+            var res = new PagerResult<BusinessReceiving_RecordsViewModel>
+            {
+                Code = 0,
+                DataList = data,
+                Total = count,
+                PageSize = pagerInBase.PageSize,
+                PageIndex = pagerInBase.PageIndex,
+                RequestUrl = pagerInBase.RequetUrl
+            };
+            return View(res);
+
+        }
+
+        /// <summary>
+        /// 接待审核
+        /// </summary>
+        /// <param name="id">记录ID</param>
+        /// <param name="checkString">审核状态</param>
+        /// <returns></returns>
+        public ActionResult CheckRecord(int id,string checkString) {
+            var model = businessReceptionBLL.GetModel(p => p.ID == id);
+            int n = int.Parse(checkString);
+            if (model==null)
+            {
+                return Content("<script>alert('数据异常！');parent.location.href='ReceivingRecords_CheckView';</script>");
+            }
+            if (n ==0)
+            {
+                model.审核状态 = false;
+                
+            }
+            if (n == 1)
+            {
+                model.审核状态 = true;
+
+            }
+            try
+            {
+                string[] property = new string[1];
+                property[0] = "审批状态";
+                businessReceptionBLL.Modify(model, property);
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+           
+            return RedirectToAction("ReceivingRecords_CheckView");
+        }
+
+
+
+
+        /// <summary>
+        /// 获取关联审核人
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult GetAssociatedAuditor()
+        {
+            var models = GetCompanyStaff();
+            if (models.Count() <= 0)
+            {
+                return Json("");
+            }
+            var tripObj = new ArrayList();
+            foreach (var item in models)
+            {
+
+                var Auditor = new string[] { item.用户ID.ToString(), item.姓名 };
+                tripObj.Add(Auditor);
+            }
+            return Json(tripObj);
+        }
+
+        /// <summary>
+        /// 构造接待数据
+        /// </summary>
+        /// <param name="role"></param>
+        /// <returns></returns>
+        private List<BusinessReceiving_RecordsViewModel> BuildReceivingRecords(int role) {
+            var ac = GetAccountInfo();
+            List<营销_接待计划> models = new List<营销_接待计划>();
+            if (role==0)//查看自己提交
+            {
+                models = businessReceptionBLL.GetModels(p => p.提交人ID == ac.用户ID).ToList() ;
+            }
+            if (role==1)//审核
+            {
+                models = businessReceptionBLL.GetModels(p => p.审核人ID == ac.用户ID).ToList();
+            }
+            List<BusinessReceiving_RecordsViewModel> receivingRecordsViewModels = new List<BusinessReceiving_RecordsViewModel>();
+            BusinessReceiving_RecordsViewModel receivingRecordsViewModel = new BusinessReceiving_RecordsViewModel();
+            foreach (var item in models)
+            {
+                receivingRecordsViewModel = BuildReceivingRecord(item);
+                receivingRecordsViewModels.Add(receivingRecordsViewModel);
+            }
+
+            return receivingRecordsViewModels;
+
+        }
+
+        /// <summary>
+        /// 构造单个接待数据
+        /// </summary>
+        /// <param name="id">接待ID</param>
+        /// <returns></returns>
+        private BusinessReceiving_RecordsViewModel BuildReceivingRecord(营销_接待计划 model) {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+
+            BusinessReceiving_RecordsViewModel receivingRecord = new BusinessReceiving_RecordsViewModel();
+            receivingRecord.ID = model.ID;
+            receivingRecord.主要沟通内容 = model.主要沟通内容;
+            receivingRecord.入住酒店 = model.入住酒店;
+            receivingRecord.审核人ID = model.审核人ID;
+            if (model.审核人ID!=null)
+            {
+                receivingRecord.审核人 = employeeInformationBLL.GetModel(p => p.用户ID == model.审核人ID).姓名;
+
+            }
+            receivingRecord.审核状态 = model.审核状态;
+           
+            receivingRecord.抵达日期 = model.抵达日期;
+            receivingRecord.提交人ID = model.提交人ID;
+            receivingRecord.提交人 = employeeInformationBLL.GetModel(p => p.用户ID == model.提交人ID).姓名;
+            receivingRecord.提交日期 = model.提交日期;
+            receivingRecord.更新人ID = model.更新人ID.Value;
+            receivingRecord.更新人 = employeeInformationBLL.GetModel(p => p.用户ID == model.更新人ID.Value).姓名;
+            receivingRecord.更新日期 = model.更新日期.Value;
+            receivingRecord.申请人ID = model.申请人ID;
+            receivingRecord.申请人 = employeeInformationBLL.GetModel(p => p.用户ID == model.申请人ID).姓名;
+            receivingRecord.申请日期 = model.申请日期;
+            receivingRecord.离开日期 = model.离开日期;
+            receivingRecord.航班号 = model.航班号;
+            receivingRecord.费用总预算 = model.费用总预算;
+            receivingRecord.部门 = model.部门;
+            receivingRecord.配合部门 = model.配合部门;
+            return receivingRecord;
+
+
+        }
+
+        /// <summary>
+        /// 获取公司员工信息
+        /// </summary>
+        /// <returns></returns>
+        private List<CompanyStaffViewModel> GetCompanyStaff()
+        {
+            List<CompanyStaffViewModel> companyStaffViewModel = new List<CompanyStaffViewModel>();
+
+            var accounts = accountBLL.GetModels(p => true).ToList();
+            var employees = employeeInformationBLL.GetModels(p => true).ToList();
+            for (int i = 0; i < accounts.Count(); i++)
+            {
+                HR_人员信息表 m = new HR_人员信息表();
+                try
+                {
+                    var id = accounts.ElementAt(i).ID;
+                    m = employeeInformationBLL.GetModel(p => p.用户ID == id);
+                }
+                catch (Exception e)
+                {
+
+                    throw e;
+                }
+                CompanyStaffViewModel ac = new CompanyStaffViewModel();
+                if (m != null)
+                {
+                    ac.ID = m.ID;
+                    ac.上级部门 = m.上级部门;
+                    ac.姓名 = m.姓名;
+                    ac.岗位 = m.岗位;
+                    ac.用户ID = m.用户ID;
+                    ac.职级 = m.职级;
+                    ac.部门 = m.部门;
+                    companyStaffViewModel.Add(ac);
+                }
+            }
+            return companyStaffViewModel;
+        }
+
+        /// <summary>
+        /// 设置当前的用户信息
+        /// </summary>
+        private AcountInformation GetAccountInfo()
+        {
+
+            string userName = HttpContext.User.Identity.Name;
+            if (userName != null)
+            {
+
+                var account = HttpContext.Session["Account"] as AcountInformation;
+                return account;
+            }
+            else
+            {
+                return null;
+            }
+
+        }
+    }
+}

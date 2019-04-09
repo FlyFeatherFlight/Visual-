@@ -1,0 +1,601 @@
+﻿@model ChicST_MM.WEB.Models.BusinessTripViewModel
+
+@{
+    ViewBag.Title = "出差申请";
+}
+
+
+@*<script type="text/javascript">
+        $(function () {
+            $(".showT").attr("disabled", "disabled");
+            //获取对象类型
+            function targetTYpe() {
+                $.ajax({
+                type: "post",
+                data: {},
+                url: "@Url.Action("GetBusinessTripType", "BusinessTrip")",
+                cache: false,
+                async: true,
+                    success: function (data) {
+                    $.each(data, (i, m) => {
+                        $("#target-type").append("<option value=" + m[0] + ">" + m[1] + "</option>")
+
+                    })
+
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            })
+            }
+            //获取对象
+            $("#target-type").change(function () {
+                var targetType = $("#target-type").val();
+                var code = $("#qu").val();
+                if (targetType == 3 || targetType == 5) {
+                    if (code == "") {
+                        $("#target").empty();
+                        return alert("请选择地区")
+                    }
+                }
+                $.ajax({
+                    type: "post",
+                    data: { type: targetType,id:code},
+                    url: "@Url.Action("GetTripObj", "BusinessTrip")",
+                    cache: false,
+                    async: true,
+                    success: function (data) {
+                        $("#target").empty();
+                        if (data.length == 0) {
+                            return alert("该地区不存在门店或物业或经销商")
+                        }
+                        $.each(data, (i, m) => {
+
+                            $("#target").append("<option value=" + m[0] + ">" + m[1] + "</option>")
+
+
+                        })
+                    },
+                    error: function (err) {
+                        console.log(err)
+                    }
+                })
+            })
+            //获取省份数据
+             $.ajax({
+                type: "post",
+                data: {},
+                url: '@Url.Action( "GetProvince", "BusinessTrip")',
+                dataType: "json",
+                cache: false,
+                async: true,
+                success: function (data) {
+                    $.each(data, (i, m) => {
+
+                        $("#sheng").append("<option value=" + m + ">" + m + "</option>")
+
+                    })
+
+                },
+               error: function(err){
+                   console.log(err)
+                }
+
+            })
+            //根据选择的省份，获取市数据
+            $("#sheng").change(function () {
+                var province = $("#sheng").val();
+                $("#shi").empty();
+                $("#qu").empty();
+                $.ajax({
+                    type: "post",
+                    data: { province: province },
+                    url: '@Url.Action("GetRgion", "BusinessTrip")',
+                    dataType: "json",
+                    cache: false,
+                    async: true,
+                    success: function (data) {
+
+                        $.each(data, (i, m) => {
+
+                            $("#shi").append("<option value=" + m[0] + ">" + m[1]  + "</option>")
+
+                        }),
+                            $("#qu").append("<option value=''>-请选择区/县-</option>")
+                    },
+                    error: function (err) {
+                        console.log(err)
+                    }
+
+                })
+            })
+            //根据选择的市，获取区县/数据
+               $("#shi").change(function () {
+                   var city = $("#shi").val();
+                   $("#qu").empty();
+                    $.ajax({
+                        type: "post",
+                        data: { code: city },
+                        url: '@Url.Action("GetArea", "BusinessTrip")',
+                        dataType: "json",
+                        cache: false,
+                        async: true,
+                        success: function (data) {
+                            $.each(data, (i, m) => {
+                                $("#qu").append("<option value=" + m[0] + ">" + m[1]  + "</option>")
+                            })
+
+                        },
+                        error: function (err) {
+                            console.log('1')
+                        }
+
+                    })
+            })
+
+            //加载关联审核人下拉框数据
+            $.ajax({
+                type: "post",
+                data: {},
+                url: '@Url.Action("GetAssociatedAuditor", "BusinessTrip")',
+                dataType: "json",
+                cache: false,
+                async: true,
+                success: function (data) {
+                    $("#reviewer").empty();
+                    $.each(data, (i, m) => {
+                        $("#reviewer").append("<option value=" + m[0] + ">" + m[1] + "</option>")
+
+                    })
+
+                },
+               error: function(err){
+                   console.log(err)
+                }
+
+            })
+            //点击确认后判断选择的城市是否有空值
+            $("#showAddr ").click(function () {
+
+                if ($("#sheng").val() == "") {
+                    return alert("请选择省份")
+                }
+                if ($("#shi").val() == "") {
+                    return alert("请选择市")
+                }
+                if ($("#qu").val() == "") {
+                    return alert("请选择区/县")
+                }
+                else {
+                    $(".block-infos").val($("#qu").val());
+                    $(".showT").removeAttr("disabled");
+                    $("#target-type").empty();
+                    targetTYpe();
+                    return;
+                }
+            })
+        })
+    </script>
+
+    <div>
+        <h3>出差申请</h3>
+        <span style="color:orange;display:inline-block;margin-left:2.5%;margin-bottom:10px;">温馨提示：选择城市后需点击“确定”按钮才能选择对象</span>
+    </div>
+    <form action="@Url.Action( "BusinessTripAdd","BusinessTrip")" method="POST">
+        <table class="table table-striped table-bordered table-hover">
+            <tr>
+                <td class="bold">城市</td>
+                <td colspan="3">
+
+                    <select id="sheng" class="city-sel red" oninput="sureRed()">
+                        <option value="" selected>-请选择省-</option>
+                    </select>
+                    <select id="shi" class="city-sel red" oninput="sureRed()">
+                        <option value="" selected>-请选择市-</option>
+
+                    </select>
+                    <select id="qu" class="city-sel red" oninput="sureRed()">
+                        <option value="" selected>-请选择区/县-</option>
+
+                    </select>
+                    <span id="showAddr" class="city-sure inline-block city-sure-center">确定</span>
+                    <span class="must" style="color:red;">*该项为必填项</span>
+                    <div class="choose-show" style="display:none;">
+                        你选择的是：<input name="城市ID" type="text" class="city-sel block-infos" placeholder="显示您选择的城市" />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="bold">对象类别</td>
+                <td>
+                    <select name="对象类别ID" id="target-type" class="form-control red showT" oninput="sureRed()">
+                        <option value="" selected>-请选择对象类别-</option>
+                    </select>
+                    <span class="must" style="color:red;">*该项为必填项</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="bold">对象</td>
+                <td>
+                    <select name="对象ID" id="target" class="form-control red showT" oninput="sureRed()">
+                        <option value="" selected>-请选择对象-</option>
+                    </select>
+                    <span class="must" style="color:red;">*该项为必填项</span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" class="" style="position:relative;">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 start-date">
+                        <span class="bold">开始日期</span>&nbsp;&nbsp;
+                        <input name="开始时间" data-provide="datepicker" class="search-input datepicker red" type='text' placeholder="请选择开始日期" oninput="sureRed()" readonly />
+                        <span class="must" style="color:red;">*该项为必填项</span>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <span class="bold">结束日期</span>&nbsp;&nbsp;
+                        <input name="结束时间" data-provide="datepicker" class="search-input datepicker red" type='text' placeholder="请选择结束日期" oninput="sureRed()" readonly />
+                        <span class="must" style="color:red;">*该项为必填项</span>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="bold">关联审核人</td>
+                <td colspan="3">
+                    <select name="关联审核人ID" id="reviewer" class="form-control red">
+                        <option>-请选择审核人-</option>
+                    </select>
+                    <span class="must" style="color:red;">*该项为必填项</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="bold">出差内容</td>
+                <td colspan="3">
+                    <textarea name="出差内容" id="" class="form-control red" rows="5" oninput="sureRed()"></textarea>
+                    <span class="must" style="color:red;">*该项为必填项</span>
+                </td>
+            </tr>
+        </table>
+        <div class="submit-btns">
+            <input type="submit" value="下一页" />
+
+        </div>
+    </form>*@
+
+
+@*最新的方案*@
+
+<div>
+    <h3>出差计划</h3>
+    <span style="color:orange;display:inline-block;margin-left:2.5%;margin-bottom:10px;">温馨提示：选择城市后需点击“确定”按钮才能选择对象</span>
+</div>
+@*@Url.Action("BusinessTripAdd", "BusinessTrip")*@
+<form action="" id="planBusiness">
+    <table class="table table-striped table-bordered table-hover">
+        <tr>
+            <td class="bold">部门</td>
+            <td colspan="2">XXX</td>
+            <td class="bold">出差人</td>
+            <td colspan="3">XXX</td>
+        </tr>
+        <tr>
+            <td colspan="7" class="" style="position:relative;">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 start-date">
+                    <span class="bold">开始日期</span>&nbsp;&nbsp;
+                    <input name="开始时间" data-provide="datepicker" class="search-input datepicker red primary-table " type='text' placeholder="请选择开始日期" oninput="sureRed()" readonly />
+                    <span class="must" style="color:red;">*该项为必填项</span>
+                </div>
+
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <span class="bold">结束日期</span>&nbsp;&nbsp;
+                    <input name="结束时间" data-provide="datepicker" class="search-input datepicker red primary-table" type='text' placeholder="请选择结束日期" oninput="sureRed()" readonly />
+                    <span class="must" style="color:red;">*该项为必填项</span>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">关联审核人</td>
+            <td colspan="6">
+                <select name="关联审核人ID" id="reviewer" class="form-control red primary-table">
+                    <option>-请选择审核人-</option>
+                    <option>大名</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">备注</td>
+            <td colspan="6">
+                <textarea cols="2" class="form-control"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold" rowspan="3">费用预估</td>
+        </tr>
+        <tr>
+            <td>车船费</td>
+            <td>
+                <input type="text" name="name" value="0" class="form-control" id="fare"
+                       onkeyup="value=value.replace(/[^\d.]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" oninput="priceTotal()" />
+            </td>
+            <td>住宿费</td>
+            <td>
+                <input type="text" name="name" value="0" class="form-control" id="room"
+                       onkeyup="value=value.replace(/[^\d.]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" oninput="priceTotal()" />
+            </td>
+            <td>餐补</td>
+            <td>
+                <input type="text" name="name" value="0" class="form-control" id="eat"
+                       onkeyup="value=value.replace(/[^\d.]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" oninput="priceTotal()" />
+            </td>
+        </tr>
+        <tr>
+            <td>合计</td>
+            <td colspan="5" class="total">0</td>
+        </tr>
+        <tr>
+            <td colspan="7">
+                <input type="button" name="" value="开始计划行程" class="btn btn-primary " onclick="planBusiness()" />
+            </td>
+
+        </tr>
+        <tr>
+            <td colspan="7" style="position:relative;">
+                <div class="mask-jsGrid" title="点击填写报销详情后方可操作"></div>
+                <div style="text-align:start; margin-bottom:10px;">
+                    <input id="create-user" type="button" value="添加" class="btn " />
+                    <sapn style="color: orange;display: block;margin: 5px 0 5px 0;">温馨提示：添加后请点击确定</sapn>
+                </div>
+                <table id="grid"></table>
+                <div id="pager"></div>
+                <div style="margin-top:10px;color:#333;">
+                    <input type="button" value="确认" onclick="goDetail()" class="btn btn-success">
+                </div>
+            </td>
+        </tr>
+    </table>
+
+</form>
+@**模态框*@
+<div id="dialog-form" style="text-align:center;">
+    <form>
+        <table class="table table-striped table-bordered table-hover">
+            <tr>
+                <td style="width:20% !important;">日期:</td>
+                <td>
+                    <input type="text" id="Cdate" data-provide="datepicker" class="datepicker search-input form-control red" name="日期" oninput="sureRed()" placeholder="请选择日期" readonly />
+                    <span class="must" style="color:red;">*该选项为必填项</span>
+                </td>
+                <td>同行人:</td>
+                <td>
+                    <input type="text" id="person" class="search-input form-control" name="" />
+                </td>
+            </tr>
+            <tr>
+
+                <td>城市</td>
+                <td>
+                    <select id="city"class="form-control">
+                        <option value="value">text</option>
+                    </select>
+                </td>
+                <td>对象</td>
+                <td>
+                    <input type="text" id="object" class="search-input form-control" name="" />
+                </td>
+            </tr>
+            <tr>
+                <td style="vertical-align: top">工作内容:</td>
+                <td colspan="3">
+                    <textarea type="text" id="CreatedOn" class="search-input form-control" name="内容"></textarea>
+                </td>
+            </tr>
+
+        </table>
+    </form>
+</div>
+<script>
+    // 点击开始行程计划按钮操作
+    function planBusiness() {
+        // 遮罩
+        var status = false;
+        $(".primary-table").each((i, m) => {
+            
+            if (m.value == null || m.value == "") {
+                return status = true;
+            }
+        })
+        if (status) {
+            alert("请先完善信息!");
+            return;
+        } else {
+            $(".mask-jsGrid").css("display", "none");
+            alert("提交成功，请填写下方信息！")
+        }
+        //开始行程计划向后端传出差数据并从后端获取ID数据
+        @*$.ajax({
+            url: '@Url.Action("", "")',
+            type: 'post',
+            dataType: 'json',
+            data: $("#planBusiness").serialize(),
+            async: true,
+            success: (data) => {
+
+                console.log(data)
+            },
+            error: (err) => {
+                console.log(err)
+            }
+
+        })*@
+
+    }
+    // 费用预估合计
+    function priceTotal() {
+        var fare = $("#fare").val();
+        var room = $("#room").val();
+        var eat = $("#eat").val();
+        var total = 0
+        total = parseFloat(fare) + parseFloat(room) + parseFloat(eat);
+        $(".total").text(total+'元')
+
+    }
+    
+    //添加的模态框
+    var setid;
+    // 跳转详情
+    function goDetail() {
+        setid = $(".setID").val();
+        window.location.href = '@Url.Action("", "")?id=' + setid;
+    }
+    
+    $(function () {
+        jQuery("#grid").jqGrid({
+            url: "",
+            datatype: "json",
+            mtype: "get",
+            colModel: [
+                { label: 'ID', name: 'ID', index: 'ID',  sorttype: "int",width:50,align:"center" },
+                { label: '日期', name: '日期', index: '日期', align: "center" },
+                { label: '城市', name: '城市', index: '城市',  align: "center" },
+                { label: '对象', name: '对象', index: '对象',  sortable: false, align: "center" },
+                { label: '同行人', name: '同行人', index: '同行人',  sortable: false, align: "center" },
+                { label: '工作内容', name: '工作内容', index: '工作内容',  sortable: false, align: "center"  },
+                { label: '操作', name: 'Delete', index: 'id',  sortable: false, align: "center" },
+
+            ],
+            caption: "出差行程计划展示",
+            loadonce: true,    //排序翻页等操作在服务端完成
+            rowNum: 5,
+            rowList: [5, 10, 20],  //设置分页下拉列表
+            pager: "#pager",
+            viewrecords: true,
+            width: 500, height: "auto",
+            jsonReader: { repeatitems: false }, //prmNames: { id: "No" },
+            sortorder: "asc",
+            sortname: "No",//传递给服务端的排序字段名
+            autowidth: true,
+            gridComplete: function () {  //在此事件中循环为每一行添加删除链接
+                var ids = jQuery("#grid").jqGrid('getDataIDs');
+                for (var i = 0; i < ids.length; i++) {
+                    var id = ids[i];
+                    del = "<a href='#'  style='color:#f60' onclick='Delete(" + id + ")' >删除</a>";
+                    jQuery("#grid").jqGrid('setRowData', ids[i], { Delete: del });
+                }
+            }
+        });
+        // 配置对话框(使用Jquery-UI的dialog插件)
+        $('#dialog-form').dialog({ title: '出差行程计划详细内容' });
+
+    });
+
+   //配置模态框
+    $("#dialog-form").dialog({
+        autoOpen: false,
+        height: 400,
+        width: 850,
+        modal: true,
+        buttons: {
+
+            "取消": function () { $(this).dialog("close") },
+            "提交": function () {
+                setid = $(".setID").val();
+                var Cdate = $.trim($("#Cdate").val());//日期
+                var city = $.trim($("#city").val()); //城市
+                var Object = $.trim($("#object").val());//对象
+                var person = $.trim($("#person").val());//同行人
+                var content = $.trim($("#CreatedOn").val());//工作内容
+              
+
+
+                var selectedId = $("#grid").jqGrid("getGridParam", "selrow");
+                var actionUrl = "@Url.Action("TravelReimbursement_DetailsApply", "Reimbursement")";
+                var params = {
+
+                    "报销ID": setid,
+                    "日期": Cdate,
+                    "城市": city,
+                    "对象": Object,
+                    "同行人": person,
+                    "工作内容": content,
+                   
+                   
+
+                };
+                $.ajax({
+                    url: actionUrl,
+                    type: "post",   //默认为get
+                    data: params,   //传递给服务端的数据
+                    dataType: "json",
+                    cache: false,
+                    error: function (textStatus, errorThrown) {
+                        alert("系统ajax交互错误: " + JSON.stringify(textStatus));
+                    },
+                    success: function (data, textStatus) {
+                        if (data.ID != null) {
+                            var dataRow = {
+                                "ID":data.ID,
+                                "报销ID": setid,
+                                "日期": Cdate,
+                                "城市": city,
+                                "对象": Object,
+                                "同行人": person,
+                                "工作内容": content,
+                            };
+
+                            if (selectedId) {
+                                $("#grid").jqGrid("addRowData", data.ID,dataRow, "before", selectedId);//如果有选定行则添加在选定行前面
+                            } else {
+                                $("#grid").jqGrid("addRowData",data.ID, dataRow, "last");//没有选定行则添加在第一行
+                            }
+                            $("#dialog-form").dialog("close");
+                            alert("报销添加操作成功!");
+                        } else {
+                            alert("添加操作失败!");
+                        }
+
+                    }
+                });
+            }
+        }
+    });
+    $("#create-user")
+        .button()
+        .click(function () {
+            $("#dialog-form").dialog("open");
+        });
+
+
+        // 行删除
+        function Delete(id) {
+            if (confirm("确定删除当前数据?")) {
+                $.ajax({
+                url: "@Url.Action("DelReimbursement_Details", "Reimbursement")",
+                type: "POST",
+                data: { id: id },
+                dataType: 'json',
+                cache: false,
+                error: function (textStatus, errorThrown) { alert("交互错误" + JSON.stringify(textStatus)); },
+                    success: function (data) {
+                    if (data) {
+                        $("#grid").jqGrid("delRowData", id);
+                        alert("删除成功！");
+                    } else {
+                        alert("删除失败！");
+                    }
+                }
+            });
+            }
+        };
+
+
+  
+   
+</script>
+
+
+
+
+

@@ -1,0 +1,129 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.BusinessTrip_ReportViewModel>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.出差记录ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.出差关联计划项ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.巡店开始时间)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.巡店结束时间)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.工作成果)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.实际遇到的问题)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.解决的方案)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.需要的协助)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.预计完成时间)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.备注)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.是否包含附件)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.提交时间)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.提交人ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.提交人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.更新时间)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.更新人ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.更新人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.是否为新增项)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.出差记录ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.出差关联计划项ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.巡店开始时间)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.巡店结束时间)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.工作成果)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.实际遇到的问题)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.解决的方案)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.需要的协助)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.预计完成时间)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.备注)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.是否包含附件)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.提交时间)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.提交人ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.提交人)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.更新时间)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.更新人ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.更新人)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.是否为新增项)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

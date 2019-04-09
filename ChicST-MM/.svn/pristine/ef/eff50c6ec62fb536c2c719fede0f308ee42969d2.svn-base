@@ -1,0 +1,40 @@
+﻿
+<table class="table table-hover table-striped table-bordered" style="margin-bottom:0;">
+    <tr class="hidden">
+        <td>出差计划详情ID</td>
+        <td>
+            <input type="text" name="出差关联计划项ID" value="" class="detailID" />
+        </td>
+
+    </tr>
+    <tr>
+        <td>巡店时间</td>
+        <td>XXX.巡店开始时间-XXX巡店结束时间</td>
+        <td>预计完成时间</td>
+        <td>XXX.预计完成时间</td>
+    </tr>
+    <tr>
+        <td>工作成果</td>
+        <td colspan="3">XXX.工作成果</td>
+        <td>实际遇到的问题</td>
+        <td colspan="3">XXX.实际遇到的问题</td>
+    </tr>
+    <tr>
+        <td>解决的方案</td>
+        <td colspan="3">XXX.解决的方案</td>
+        <td>需要的协助</td>
+        <td colspan="3">XXX.需要的协助</td>
+    </tr>
+
+    <tr>
+        <td>是否为新增项</td>
+        <td>XXX.是否为新增项</td>
+        <td>附件</td>
+        <td colspan="3">下载</td>
+    </tr>
+    <tr>
+        <td>备注</td>
+        <td colspan="3">XXX.备注</td>
+    </tr>
+   
+</table>

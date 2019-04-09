@@ -1,0 +1,447 @@
+﻿using ChicST_MM.IBLL;
+using ChicST_MM.WEB.Models;
+using MoreLinq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
+
+namespace ChicST_MM.WEB.Controllers
+{
+    /// <summary>
+    /// 门店数据分析
+    /// </summary>
+    public class StoreAnalyzeController : Controller
+    {
+        private readonly IStoreEmployeesBLL storeEmployeesBLL;
+        private readonly IStoreBLL storeBLL;
+        private readonly ITrackGoalBLL trackGoalBLL;
+        private readonly ICustomerInfoBLL customerInfoBLL;
+        private readonly ICustomerTrackingBLL customerTrackingBLL;
+        private static List<StoreRecRecordsViewModel> storeRecViewModels;
+
+        public StoreAnalyzeController(IStoreEmployeesBLL storeEmployeesBLL, IStoreBLL storeBLL, ITrackGoalBLL trackGoalBLL, ICustomerInfoBLL customerInfoBLL, ICustomerTrackingBLL customerTrackingBLL)
+        {
+            this.storeEmployeesBLL = storeEmployeesBLL ?? throw new ArgumentNullException(nameof(storeEmployeesBLL));
+            this.storeBLL = storeBLL ?? throw new ArgumentNullException(nameof(storeBLL));
+            this.trackGoalBLL = trackGoalBLL ?? throw new ArgumentNullException(nameof(trackGoalBLL));
+            this.customerInfoBLL = customerInfoBLL ?? throw new ArgumentNullException(nameof(customerInfoBLL));
+            this.customerTrackingBLL = customerTrackingBLL ?? throw new ArgumentNullException(nameof(customerTrackingBLL));
+        }
+
+
+
+        /// <summary>
+        /// 首页
+        /// </summary>
+        /// <returns></returns>
+        // GET: StoreAnalyze
+        public ActionResult Index()
+        {
+
+            storeRecViewModels = BuildCustomerInfos();
+            return View(storeRecViewModels);
+
+
+
+        }
+
+        /// <summary>
+        /// 单个用户具体信息
+        /// </summary>
+        /// <param name="id">接待ID</param>
+        /// <returns></returns>
+        public ActionResult CustomerInfoView(int id)
+        {
+            var model = customerInfoBLL.GetModel(p => p.ID == id);
+            var m = BuildRecRecordsViewModel(model);
+            return View(m);
+        }
+
+        /// <summary>
+        /// 当前客户的跟进列表
+        /// </summary>
+        /// <param name="storeID">店铺ID</param>
+        /// <param name="emID">员工ID</param>
+        /// <param name="id">接待ID</param>
+        /// <returns></returns>
+      
+        public ActionResult CustomerTrackListView(int storeID, int emID, int id)
+        {
+            List<StoreCustomer_TrackViewModel> models = new List<StoreCustomer_TrackViewModel>();
+            models = BuildStoreCustomer_TackModels(storeID, emID);
+            models = models.Where(p => p.接待ID == id).ToList();
+            models.OrderByDescending(p => p.Id);
+            return View(models);
+        }
+
+        /// <summary>
+        /// 客户跟进具体信息
+        /// </summary>
+        /// <param name="id">客户跟进ID</param>
+        /// <returns></returns>
+        public ActionResult CustomerTrackInfoView(int id)
+        {
+            var m = customerTrackingBLL.GetModel(p=>p.id==id);
+            var model = BuildStoreCustomer_TackModel(m);
+            return View(model);
+        }
+        /// <summary>
+        /// 当前店铺及员工的跟进
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult CustomerTrackView(int storeID, int? emID)
+        {
+            List<StoreCustomer_TrackViewModel> models = new List<StoreCustomer_TrackViewModel>();
+            if (emID > 0)
+            {
+                models = BuildStoreCustomer_TackModels(storeID, emID);
+            }
+            else
+            {
+                models = BuildStoreCustomer_TackModels(storeID, null);
+            }
+
+            models = models.DistinctBy(p => p.接待ID).ToList();
+            var tackCount = models.Count();
+            ViewBag.TrackCount = tackCount;
+            models.OrderByDescending(p => p.Id);
+            return View(models);
+        }
+        /// <summary>
+        /// 门店对象
+        /// </summary>
+        public class StoreClass
+        {
+            public string Name { get; set; }
+            public int ID { get; set; }
+
+        }
+
+        /// <summary>
+        /// 获取门店目录
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult Getstores()
+        {
+            var stores = BuildStores();
+
+
+            StoreClass[] arr = new StoreClass[stores.Count];
+
+            for (int i = 0; i < stores.Count; i++)
+            {
+
+                StoreClass myClass = new StoreClass() { };
+                myClass.Name = stores.ElementAt(i).名称;
+                myClass.ID = stores.ElementAt(i).ID;
+                arr[i] = myClass;
+
+            }
+            var lis = arr.ToList();
+            return Json(lis, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 获取门店及员工接待数据
+        /// </summary>
+        /// <param name="storeid">门店ID</param>
+        /// <param name="emid">员工id</param>
+        /// <returns></returns>
+        public ActionResult GetRecving(int storeid, int? emid)
+        {
+            var models = storeRecViewModels.Where(p => p.店铺ID == storeid);
+            int RecCount = 0;//接待总人数
+            int TrackCount = models.Where(p => p.跟进人ID != null).Count();//跟进总人数
+            int ExcCount = 0;//该店铺意向确认人数
+            ExcCount = models.Where(p => p.是否有意向 == true).Count();
+            if (emid > 0)
+            {
+                TrackCount = models.Where(p => p.跟进人ID == emid).Count();//员工跟进人数
+                models = models.Where(p => p.接待人ID == emid);
+                models.OrderByDescending(p => p.ID);
+                RecCount = models.Count();//员工接待人数
+                ExcCount = models.Where(p => p.是否有意向 == true).Count();////员工意向确认人数
+            }
+
+            return Json(new { data = models.ToArray(), recCount = RecCount, trackCount = TrackCount, excCount = ExcCount });
+        }
+
+        /// <summary>
+        /// 获得门店员工名录
+        /// </summary>
+        /// <param name="storeid"></param>
+        /// <returns></returns>
+        public ActionResult GetStoreEmployees(int storeid)
+        {
+            var models = BuildEmployees(storeid);
+            models.Where(p => p.停用标志 != true);
+            return Json(models);
+
+        }
+
+        /// <summary>
+        /// 所有门店信息
+        /// </summary>
+        /// <returns></returns>
+        private List<StoreViewModel> BuildStores()
+        {
+            var models = storeBLL.GetModels(p => true);
+            List<StoreViewModel> lis = new List<StoreViewModel>();
+            foreach (var item in models)
+            {
+                var model = BuildStore(item);
+                lis.Add(model);
+            }
+            return lis;
+
+
+        }
+
+        /// <summary>
+        /// 单个门店信息
+        /// </summary>
+        /// <returns></returns>
+        private StoreViewModel BuildStore(销售_店铺档案 model)
+        {
+            StoreViewModel storeViewModel = new StoreViewModel();
+            storeViewModel.ID = model.ID;
+            storeViewModel.使用面积 = model.使用面积;
+            storeViewModel.停用标志 = model.停用标志;
+            storeViewModel.制单人 = model.制单人;
+            storeViewModel.制单日期 = model.制单日期;
+            storeViewModel.名称 = model.名称;
+            storeViewModel.品牌ID = model.品牌ID;
+            storeViewModel.商场 = model.商场;
+            storeViewModel.地区ID = model.地区ID;
+            storeViewModel.地址 = model.地址;
+            storeViewModel.密码 = model.密码;
+            storeViewModel.收货人 = model.收货人;
+            storeViewModel.收货人电话 = model.收货人电话;
+            storeViewModel.收货地址 = model.收货地址;
+            storeViewModel.等级 = model.等级;
+            storeViewModel.经销商ID = model.经销商ID;
+            storeViewModel.编号 = model.编号;
+            storeViewModel.联系人 = model.联系人;
+            storeViewModel.联系人电话 = model.联系人电话;
+            storeViewModel.负责人 = model.负责人;
+            storeViewModel.负责人电话 = model.负责人电话;
+
+            return storeViewModel;
+
+
+        }
+
+        /// <summary>
+        /// 构造员工信息
+        /// </summary>
+        /// <param name="storeid">店铺ID</param>
+        /// <returns></returns>
+        private List<StoreEmployeesViewModel> BuildEmployees(int storeid)
+        {
+            var models = storeEmployeesBLL.GetModels(p => p.店铺ID == storeid);
+            List<StoreEmployeesViewModel> lis = new List<StoreEmployeesViewModel>();
+            foreach (var item in models)
+            {
+                var model = BuildEmployee(item);
+                lis.Add(model);
+            }
+            return lis;
+        }
+
+
+        /// <summary>
+        /// 构造单个员工信息
+        /// </summary>
+        /// <returns></returns>
+        private StoreEmployeesViewModel BuildEmployee(销售_店铺员工档案 model)
+        {
+            StoreEmployeesViewModel employeeViewModel = new StoreEmployeesViewModel();
+            employeeViewModel.ID = model.ID;
+            employeeViewModel.停用标志 = model.停用标志;
+            employeeViewModel.制单人 = model.制单人;
+            employeeViewModel.制单日期 = model.制单日期;
+
+            employeeViewModel.姓名 = model.姓名;
+
+            employeeViewModel.店铺ID = model.店铺ID;
+            employeeViewModel.店铺 = storeBLL.GetModel(p => p.ID == model.店铺ID).名称;
+            employeeViewModel.性别 = model.性别;
+            employeeViewModel.是否店长 = model.是否店长;
+            employeeViewModel.是否设计师 = model.是否设计师;
+            employeeViewModel.是否销售 = model.是否销售;
+            employeeViewModel.等级 = model.等级;
+            employeeViewModel.编号 = model.编号;
+            employeeViewModel.职务ID = model.职务ID;
+            employeeViewModel.联系方式 = model.联系方式;
+            employeeViewModel.跟进目标计划数 = model.跟进目标计划数;
+            return employeeViewModel;
+        }
+
+        /// <summary>
+        /// 构建单个店铺接待信息
+        /// </summary>
+        /// <returns></returns>
+        private StoreRecRecordsViewModel BuildRecRecordsViewModel(销售_接待记录 model)
+        {
+            StoreRecRecordsViewModel receivingRecordsViewModel = new StoreRecRecordsViewModel();
+            try
+            {
+                receivingRecordsViewModel.ID = model.ID;
+                receivingRecordsViewModel.不喜欢产品 = model.不喜欢产品;
+                receivingRecordsViewModel.不喜欢元素 = model.不喜欢元素;
+                receivingRecordsViewModel.主导者 = model.主导者;
+                receivingRecordsViewModel.主导者喜好风格 = model.主导者喜好风格;
+                receivingRecordsViewModel.使用空间 = model.使用空间;
+                receivingRecordsViewModel.关闭备注 = model.关闭备注;
+                receivingRecordsViewModel.其它空间备注 = model.其它空间备注;
+                receivingRecordsViewModel.其它空间家具 = model.其它空间家具;
+                receivingRecordsViewModel.其它空间预算 = model.其它空间预算;
+                receivingRecordsViewModel.出店时间 = model.出店时间;
+                receivingRecordsViewModel.制单日期 = model.制单日期;
+                receivingRecordsViewModel.卧室预算备注 = model.卧室预算备注;
+                receivingRecordsViewModel.卧室预算家具 = model.卧室预算家具;
+                receivingRecordsViewModel.卧室预算金额 = model.卧室预算金额;
+                receivingRecordsViewModel.同行人 = model.同行人;
+                receivingRecordsViewModel.喜欢产品 = model.喜欢产品;
+                receivingRecordsViewModel.喜欢元素 = model.喜欢元素;
+                receivingRecordsViewModel.如何得知品牌 = model.如何得知品牌;
+                receivingRecordsViewModel.安装地址 = model.安装地址;
+                receivingRecordsViewModel.客厅预算备注 = model.客厅预算备注;
+                receivingRecordsViewModel.客厅预算家具 = model.客厅预算家具;
+                receivingRecordsViewModel.客厅预算金额 = model.客厅预算金额;
+                receivingRecordsViewModel.客户姓名 = model.客户姓名;
+                receivingRecordsViewModel.客户建议 = model.客户建议;
+                receivingRecordsViewModel.客户来源 = model.客户来源;
+                receivingRecordsViewModel.客户电话 = model.客户电话;
+                receivingRecordsViewModel.客户目的 = model.客户目的;
+                receivingRecordsViewModel.客户着装 = model.客户着装;
+                receivingRecordsViewModel.客户类别 = model.客户类别;
+                receivingRecordsViewModel.客户类型 = model.客户类型;
+                receivingRecordsViewModel.客户职业 = model.客户职业;
+                receivingRecordsViewModel.家庭成员 = model.家庭成员;
+                receivingRecordsViewModel.年龄段 = model.年龄段;
+                receivingRecordsViewModel.店铺ID = model.店铺ID;
+                receivingRecordsViewModel.店铺 = storeBLL.GetModel(p => p.ID == model.店铺ID).名称;
+                receivingRecordsViewModel.性别 = model.性别;
+                receivingRecordsViewModel.户型大小 = model.户型大小;
+                receivingRecordsViewModel.接待人ID = model.接待人ID;
+                if (model.接待人ID != 0)
+                {
+                    receivingRecordsViewModel.接待人 = storeEmployeesBLL.GetModel(p => p.ID == model.接待人ID).姓名;
+
+                }
+                receivingRecordsViewModel.接待序号 = model.接待序号;
+                receivingRecordsViewModel.接待日期 = model.接待日期;
+                receivingRecordsViewModel.是否关闭 = model.是否关闭;
+                receivingRecordsViewModel.是否有意向 = model.是否有意向;
+                receivingRecordsViewModel.更新人 = model.更新人;
+                if (model.更新人 != null)
+                {
+                    receivingRecordsViewModel.更新人姓名 = storeEmployeesBLL.GetModel(p => p.ID == model.更新人).姓名;
+
+                }
+                receivingRecordsViewModel.更新日期 = model.更新日期;
+                receivingRecordsViewModel.来店次数 = model.来店次数;
+                receivingRecordsViewModel.比较品牌 = model.比较品牌;
+                receivingRecordsViewModel.比较品牌产品 = model.比较品牌产品;
+                receivingRecordsViewModel.比较品牌产品备注 = model.比较品牌产品备注;
+                receivingRecordsViewModel.特征 = model.特征;
+                receivingRecordsViewModel.社交软件 = model.社交软件;
+                receivingRecordsViewModel.装修情况 = model.装修情况;
+                receivingRecordsViewModel.装修进度 = model.装修进度;
+                receivingRecordsViewModel.装修风格 = model.装修风格;
+                receivingRecordsViewModel.设计师 = model.设计师;
+                receivingRecordsViewModel.跟进人ID = model.跟进人ID;
+                if (model.跟进人ID != null)
+                {
+                    receivingRecordsViewModel.跟进人 = storeEmployeesBLL.GetModel(p => p.ID == model.跟进人ID).姓名;
+
+                }
+                receivingRecordsViewModel.返点 = model.返点;
+                receivingRecordsViewModel.进店时长 = model.进店时长;
+                receivingRecordsViewModel.进店时间 = model.进店时间;
+                receivingRecordsViewModel.销售讲解 = model.销售讲解;
+                receivingRecordsViewModel.预报价折扣 = model.预报价折扣;
+                receivingRecordsViewModel.预算金额 = model.预算金额;
+                receivingRecordsViewModel.预计使用时间 = model.预计使用时间;
+                receivingRecordsViewModel.餐厅预算备注 = model.餐厅预算备注;
+                receivingRecordsViewModel.餐厅预算家具 = model.餐厅预算家具;
+                receivingRecordsViewModel.餐厅预算金额 = model.餐厅预算金额;
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+
+            return receivingRecordsViewModel;
+        }
+
+        /// <summary>
+        /// 构造所有店铺客户信息
+        /// </summary>
+        /// <param name="storeid">店铺ID</param>
+        /// <returns></returns>
+        private List<StoreRecRecordsViewModel> BuildCustomerInfos()
+        {
+            var models = customerInfoBLL.GetModels(p => true);
+
+            List<StoreRecRecordsViewModel> lis = new List<StoreRecRecordsViewModel>();
+            foreach (var item in models)
+            {
+                var model = BuildRecRecordsViewModel(item);
+                lis.Add(model);
+            }
+            return lis;
+        }
+
+        /// <summary>
+        /// 构建单个客户的跟进
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        private StoreCustomer_TrackViewModel BuildStoreCustomer_TackModel(销售_意向追踪日志 model)
+        {
+
+            StoreCustomer_TrackViewModel storeCustomer = new StoreCustomer_TrackViewModel();
+            var m = customerInfoBLL.GetModel(p => p.ID == model.接待记录ID);
+            storeCustomer.Id = model.id;
+            storeCustomer.备注 = model.备注;
+            storeCustomer.跟进结果 = model.跟进结果;
+            storeCustomer.跟进时间 = model.跟进时间;
+            storeCustomer.跟进方式 = model.跟进方式;
+            storeCustomer.跟进内容 = model.跟进内容;
+            storeCustomer.店铺ID = model.店铺ID;
+            storeCustomer.跟进人ID = model.跟进人;
+            storeCustomer.跟进人 = storeEmployeesBLL.GetModel(p => p.ID == model.跟进人).姓名;
+            storeCustomer.是否申请设计师 = model.是否申请设计师;
+            storeCustomer.接待ID = model.接待记录ID;
+            storeCustomer.店长审核 = model.店长审核;
+            storeCustomer.店铺 = storeBLL.GetModel(p => p.ID == model.店铺ID).名称;
+            storeCustomer.客户姓名 = m.客户姓名;
+            return storeCustomer;
+        }
+
+        /// <summary>
+        /// 当前店铺所有跟进记录
+        /// </summary>
+        /// <returns></returns>
+        private List<StoreCustomer_TrackViewModel> BuildStoreCustomer_TackModels(int storeID, int? emid)
+        {
+            var models = customerTrackingBLL.GetModels(p => p.店铺ID == storeID);
+            if (emid > 0)
+            {
+                models = models.Where(p => p.跟进人 == emid);
+            }
+            List<StoreCustomer_TrackViewModel> lis = new List<StoreCustomer_TrackViewModel>();
+            foreach (var item in models)
+            {
+                var model = BuildStoreCustomer_TackModel(item);
+                lis.Add(model);
+            }
+            return lis;
+        }
+    }
+}

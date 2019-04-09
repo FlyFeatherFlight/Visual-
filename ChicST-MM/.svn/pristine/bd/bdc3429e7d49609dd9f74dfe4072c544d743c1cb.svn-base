@@ -1,0 +1,11 @@
+﻿using ChicST_MM.Model;
+
+namespace ChicST_MM.IBLL
+{
+    /// <summary>
+    /// 接待记录
+    /// </summary>
+    public partial interface IReceivingRecordsBLL:IBaseServiceBLL<HR_接待记录>
+    {
+    }
+}

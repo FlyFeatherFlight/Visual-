@@ -1,0 +1,362 @@
+/*侧边栏样式*/
+.nav-warpper {
+    width: 15%;
+    height: 100%;
+    background-color: #f8f8f8;
+    overflow: hidden;
+    position: fixed;
+    color: #337ab7;
+}
+
+.active {
+    background-color: #eee;
+}
+
+.nav {
+    padding-right: 0;
+}
+
+.nav > li {
+    border-bottom: 1px solid #eee;
+    padding: 15px;
+    position: relative;
+    cursor: pointer;
+}
+.nav > li:hover {
+    color:#fff;
+    background:#337ab7;
+}
+.container-fluid {
+    height: 100%;
+    padding: 0 !important;
+}
+
+.user-warpper {
+    margin-bottom: 34px;
+    margin-left:5%;
+    width: 100%;
+    cursor: pointer;
+    position: relative;
+    padding-top: 20px;
+}
+
+
+
+.glyphicon-user {
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+.goOut {
+    display: block;
+    background: #ddd;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 5px;
+    text-align: center;
+    width: 50px;
+}
+.goOut:hover {
+    background: #d9534f;
+    color: #fff;
+}
+
+.search-warpper {
+    padding: 10px;
+}
+
+.glyphicon-menu-left {
+    font-size: 12px !important;
+}
+
+.row {
+    margin: 0 !important;
+}
+
+.running {
+    transform: rotate(-90deg);
+}
+
+.run {
+    transform: rotate(0deg);
+}
+
+.nav-second {
+    height: auto;
+}
+
+.nav-second > ul {
+    margin-left: 48px;
+}
+
+.nav-second > ul > li {
+    margin-top: 3px;
+    cursor: pointer;
+}
+.nav-second > ul > li >a {
+    width:100%;
+    height:100%;
+    display:block;
+    padding: 8px 0;
+}
+
+.nav-second > ul > li:hover {
+    background-color: #eeeeee;
+}
+/* 缩略菜单样式 */
+.small-box {
+    height: 46px;
+    background-color: #f8f8f8;
+    line-height: 46px;
+    color: #337ab7;
+    font-size: 1.3em;
+    padding: 0 !important;
+    position: fixed !important;
+    z-index: 5;
+}
+
+.icon-menus {
+    float: right;
+    background-color: #eee;
+    padding: 6px 8px;
+    margin-top: 7px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.icon-menu {
+    display: block;
+    height: 1px;
+    width: 20px;
+    border: 1px solid #337ab7;
+}
+
+.icon-menu:not(:last-child) {
+    margin-bottom: 3px;
+}
+
+.small-nav {
+    font-size: 14px;
+    z-index: 1;
+    background-color: #f8f8f8;
+    display: none;
+    transition: 1s;
+}
+
+.small-nav > .type-list {
+    line-height: 34px;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+.small-nav > .nav-second > ul > li {
+    margin-top: 1px;
+    padding: 4px 0;
+    line-height: 15px;
+    cursor: pointer;
+}
+
+.small-nav .glyphicon-menu-left {
+    top: 12px;
+}
+
+/* 大屏幕上的部分样式 */
+@media screen and (min-width: 992px) {
+    .width-7 {
+        width: 7%;
+    }
+    .content-warpper {
+        width: calc(100% - 15%) !important;
+        /* height: 2000px; */
+        background-color: #fff;
+        margin-left: 15%;
+        overflow-y: scroll;
+        overflow: hidden;
+        /* padding: 10px; */
+        margin-bottom: 60px;
+    }
+
+    .navbar-collapse {
+        width: 15% !important;
+        border-top: 0;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+
+    .foot-copy {
+        width: 85%;
+        height: 60px;
+        line-height: 60px;
+        text-align: center;
+        font-size: 14px;
+        position: fixed;
+        bottom: 0;
+        left: 15%;
+        background-color: #fff;
+        z-index:5;
+    }
+    .city-sel {
+        width: 15%;
+    }
+    .logo-aim {
+        width: 20%;
+        font-size: 20px;
+    }
+}
+/*平板及手机小屏幕下的部分样式*/
+@media screen and (max-width: 991px) {
+    
+    .content-warpper {
+        background-color: #fff;
+        overflow: hidden;
+        margin-top: 46px;
+        margin-bottom: 60px;
+    }
+
+    .foot-copy {
+        width: 100%;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        font-size: 12px;
+        position: fixed;
+        bottom: 0;
+        background-color: #fff;
+        z-index:5;
+    }
+
+    .start-date {
+        margin-bottom: 10px;
+    }
+
+    table {
+        font-size: 12px;
+    }
+    .city-sel {
+        width:100%;
+        margin-bottom:5px;
+    }
+    .city-sure-center {
+        left: 40%;
+        top: 3px !important;
+    }
+    .logo-aim {
+        width:50%;
+        font-size: 16px;
+      
+    }
+   
+}
+.hidden {
+    display:none;
+}
+.show {
+    display: block;
+    height: auto;
+}
+/* 右边内容部分 */
+.logo {
+    width: 100%;
+    height: 50px;
+    background-color: #337ab7;
+    color: #FFF;
+    padding: 10px 20px 10px 10px ;
+    font-size: 24px;
+   
+}
+
+.col-xs-12, .col-sm-12 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.submit-btns {
+    text-align: center;
+}
+
+.table tbody tr td {
+    vertical-align: middle !important;
+}
+
+.table tbody tr td:nth-child(2n-1) {
+    text-align: center;
+    width: 11%;
+}
+
+.city-sel {
+    padding: 6px 8px;
+    border-radius: 4px;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    line-height: 1.42857143;
+}
+
+.city-sure {
+    padding: 4px 6px;
+    background-color: #337ab7;
+    border-radius: 4px;
+    color: #FFF;
+    position: relative;
+    top: -2px;
+    cursor: pointer;
+    border:none;
+}
+.city-sure:active {
+    opacity:.8;
+}
+
+.choose-show {
+    margin-top: 10px;
+}
+input, select, textarea {
+    max-width: 100% !important;
+}
+.table {
+    width: 95% !important;
+    margin: 0 auto 20px;
+    color: #848282;
+}
+.form-control {
+    color: #848282 !important;
+}
+/*首页logo*/
+.index-bg {
+    width: 100%;
+    height: 100%;
+    background: url("../images/index-bg.jpg") no-repeat center center /cover;
+    overflow: hidden;
+    position: relative;
+}
+.mask {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #dddddd42;
+}
+.logo-warpper {
+    margin: 5%;
+    position:relative;
+}
+.logo-img{
+    width:120px;
+    margin:0 auto;
+}
+.logo-aim {
+    margin: 2% auto 0;
+    text-align: center;
+    background: whitesmoke;
+    border-radius: 5px;
+}
+/*遮罩*/
+.mask-jsGrid,
+.review-mask {
+    background: #b9b8b87d;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+}

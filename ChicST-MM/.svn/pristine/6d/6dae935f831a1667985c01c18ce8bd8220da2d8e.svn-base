@@ -1,0 +1,949 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="stmmModels.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="HR_出差对象类型">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="对象类型" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="数据表名" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="HR_出差记录表">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="部门ID" Type="int" Nullable="false" />
+          <Property Name="对象类别ID" Type="int" Nullable="false" />
+          <Property Name="对象ID" Type="int" />
+          <Property Name="城市ID" Type="int" Nullable="false" />
+          <Property Name="出差内容" Type="nvarchar" MaxLength="600" Nullable="false" />
+          <Property Name="开始时间" Type="date" Nullable="false" />
+          <Property Name="结束时间" Type="datetime" Nullable="false" />
+          <Property Name="提交人ID" Type="int" Nullable="false" />
+          <Property Name="关联审核人ID" Type="int" />
+          <Property Name="审核状态" Type="nvarchar" MaxLength="15" />
+          <Property Name="提交时间" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="HR_出差详情">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="出差记录ID" Type="int" Nullable="false" />
+          <Property Name="受访者" Type="nvarchar" MaxLength="25" Nullable="false" />
+          <Property Name="受访者职务" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="计划目标" Type="nvarchar" MaxLength="200" />
+          <Property Name="计划内容" Type="nvarchar" MaxLength="600" />
+          <Property Name="计划方案" Type="nvarchar" MaxLength="600" />
+          <Property Name="拜访时间" Type="datetime" />
+          <Property Name="拜访结果" Type="nvarchar" MaxLength="50" />
+          <Property Name="新的问题" Type="nvarchar" MaxLength="200" />
+          <Property Name="新的问题应对方案" Type="nvarchar" MaxLength="600" />
+          <Property Name="预计完成日期" Type="date" />
+          <Property Name="预计可能性" Type="nvarchar" MaxLength="50" />
+          <Property Name="备注" Type="nvarchar" MaxLength="600" />
+          <Property Name="提交时间" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="HR_接待记录">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="部门ID" Type="int" Nullable="false" />
+          <Property Name="接待对象所属类型ID" Type="int" Nullable="false" />
+          <Property Name="接待对象所属ID" Type="int" Nullable="false" />
+          <Property Name="接待对象" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="接待对象职务" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="接待开始时间" Type="datetime" Nullable="false" />
+          <Property Name="接待结束时间" Type="datetime" Nullable="false" />
+          <Property Name="接待目的" Type="nvarchar" MaxLength="500" />
+          <Property Name="接待计划" Type="nvarchar" MaxLength="1000" />
+          <Property Name="接待大概内容" Type="nvarchar" MaxLength="1000" />
+          <Property Name="新的问题" Type="nvarchar" MaxLength="500" />
+          <Property Name="新的问题应对方案" Type="nvarchar" MaxLength="1000" />
+          <Property Name="预计完成可能性" Type="nvarchar" MaxLength="100" />
+          <Property Name="预计完成日期" Type="date" />
+          <Property Name="备注" Type="nvarchar" MaxLength="500" />
+          <Property Name="提交时间" Type="datetime" Nullable="false" />
+          <Property Name="关联审核人ID" Type="int" Nullable="false" />
+          <Property Name="提交人ID" Type="int" Nullable="false" />
+          <Property Name="接待地点" Type="nvarchar" MaxLength="200" />
+        </EntityType>
+        <EntityType Name="HR_人员信息表">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="姓名" Type="nvarchar" MaxLength="255" />
+          <Property Name="部门" Type="nvarchar" MaxLength="255" />
+          <Property Name="上级部门" Type="nvarchar" MaxLength="255" />
+          <Property Name="岗位" Type="nvarchar" MaxLength="255" />
+          <Property Name="职级" Type="nvarchar" MaxLength="255" />
+          <Property Name="用户ID" Type="int" />
+        </EntityType>
+        <EntityType Name="HR_职务">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="部门ID" Type="int" Nullable="false" />
+          <Property Name="职务名称" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="地区">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="分类" Type="nvarchar" MaxLength="50" />
+          <Property Name="国家" Type="nvarchar" MaxLength="50" />
+          <Property Name="省" Type="nvarchar" MaxLength="100" />
+          <Property Name="市" Type="nvarchar" MaxLength="50" />
+          <Property Name="区县" Type="nvarchar" MaxLength="50" />
+          <Property Name="拼音" Type="nvarchar" MaxLength="50" />
+          <Property Name="区号" Type="nvarchar" MaxLength="50" />
+          <Property Name="邮编" Type="nvarchar" MaxLength="50" />
+          <Property Name="简称" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="系统_部门">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="所属中心" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="名称" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="管理者" Type="int" />
+          <Property Name="上级ID" Type="int" />
+        </EntityType>
+        <EntityType Name="系统功能">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="F_ID" Type="int" />
+          <Property Name="功能编号" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="功能名称" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="类别" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="FormName" Type="nvarchar" MaxLength="50" />
+          <Property Name="FunName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Url" Type="nvarchar" MaxLength="50" />
+          <Property Name="Is_BasicForm" Type="bit" />
+          <Property Name="Is_Menu" Type="bit" />
+          <Property Name="Is_OP" Type="bit" />
+          <Property Name="排序" Type="int" />
+        </EntityType>
+        <EntityType Name="系统用户">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="编号" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="姓名" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="密码" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="邮箱" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="停用标志" Type="bit" Nullable="false" />
+          <Property Name="注册日期" Type="datetime" />
+          <Property Name="注册IP" Type="nvarchar" MaxLength="50" />
+          <Property Name="经销商ID" Type="int" />
+          <Property Name="店铺ID" Type="int" />
+        </EntityType>
+        <EntityType Name="销售_店铺档案">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="经销商ID" Type="int" />
+          <Property Name="品牌ID" Type="int" />
+          <Property Name="编号" Type="nvarchar" MaxLength="50" />
+          <Property Name="名称" Type="nvarchar" MaxLength="100" />
+          <Property Name="地址" Type="nvarchar" MaxLength="200" />
+          <Property Name="商场" Type="nvarchar" MaxLength="50" />
+          <Property Name="地区ID" Type="int" />
+          <Property Name="负责人" Type="nvarchar" MaxLength="50" />
+          <Property Name="负责人电话" Type="nvarchar" MaxLength="50" />
+          <Property Name="联系人" Type="nvarchar" MaxLength="50" />
+          <Property Name="联系人电话" Type="nvarchar" MaxLength="50" />
+          <Property Name="收货人" Type="nvarchar" MaxLength="50" />
+          <Property Name="收货地址" Type="nvarchar" MaxLength="200" />
+          <Property Name="收货人电话" Type="nvarchar" MaxLength="50" />
+          <Property Name="使用面积" Type="int" />
+          <Property Name="等级" Type="nvarchar" MaxLength="50" />
+          <Property Name="停用标志" Type="bit" />
+          <Property Name="制单人" Type="int" />
+          <Property Name="制单日期" Type="datetime" />
+          <Property Name="密码" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="销售_经销商档案">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="编号" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="名称" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="负责人" Type="nvarchar" MaxLength="50" />
+          <Property Name="联系电话" Type="nvarchar" MaxLength="50" />
+          <Property Name="证件号码" Type="nvarchar" MaxLength="50" />
+          <Property Name="制单人" Type="int" />
+          <Property Name="制单日期" Type="datetime" />
+        </EntityType>
+        <Association Name="FK_HR_出差记录表_HR_出差对象类型">
+          <End Role="HR_出差对象类型" Type="Self.HR_出差对象类型" Multiplicity="1" />
+          <End Role="HR_出差记录表" Type="Self.HR_出差记录表" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="HR_出差对象类型">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="HR_出差记录表">
+              <PropertyRef Name="对象类别ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HR_出差详情_HR_出差记录表">
+          <End Role="HR_出差记录表" Type="Self.HR_出差记录表" Multiplicity="1" />
+          <End Role="HR_出差详情" Type="Self.HR_出差详情" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="HR_出差记录表">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="HR_出差详情">
+              <PropertyRef Name="出差记录ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HR_接待记录_HR_出差对象类型">
+          <End Role="HR_出差对象类型" Type="Self.HR_出差对象类型" Multiplicity="1" />
+          <End Role="HR_接待记录" Type="Self.HR_接待记录" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="HR_出差对象类型">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="HR_接待记录">
+              <PropertyRef Name="接待对象所属类型ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HR_接待记录_系统_部门">
+          <End Role="系统_部门" Type="Self.系统_部门" Multiplicity="1" />
+          <End Role="HR_接待记录" Type="Self.HR_接待记录" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="系统_部门">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="HR_接待记录">
+              <PropertyRef Name="部门ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HR_接待记录_系统用户">
+          <End Role="系统用户" Type="Self.系统用户" Multiplicity="1" />
+          <End Role="HR_接待记录" Type="Self.HR_接待记录" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="系统用户">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="HR_接待记录">
+              <PropertyRef Name="关联审核人ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HR_职务_系统_部门">
+          <End Role="系统_部门" Type="Self.系统_部门" Multiplicity="1" />
+          <End Role="HR_职务" Type="Self.HR_职务" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="系统_部门">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="HR_职务">
+              <PropertyRef Name="部门ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_系统用户_销售_经销商档案">
+          <End Role="销售_经销商档案" Type="Self.销售_经销商档案" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="系统用户" Type="Self.系统用户" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="销售_经销商档案">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="系统用户">
+              <PropertyRef Name="经销商ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_销售_店铺档案_地区">
+          <End Role="地区" Type="Self.地区" Multiplicity="0..1" />
+          <End Role="销售_店铺档案" Type="Self.销售_店铺档案" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="地区">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="销售_店铺档案">
+              <PropertyRef Name="地区ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_销售_店铺档案_销售_经销商档案">
+          <End Role="销售_经销商档案" Type="Self.销售_经销商档案" Multiplicity="0..1" />
+          <End Role="销售_店铺档案" Type="Self.销售_店铺档案" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="销售_经销商档案">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="销售_店铺档案">
+              <PropertyRef Name="经销商ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="stmmModelsStoreContainer">
+          <EntitySet Name="HR_出差对象类型" EntityType="Self.HR_出差对象类型" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HR_出差记录表" EntityType="Self.HR_出差记录表" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HR_出差详情" EntityType="Self.HR_出差详情" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HR_接待记录" EntityType="Self.HR_接待记录" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HR_人员信息表" EntityType="Self.HR_人员信息表" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HR_职务" EntityType="Self.HR_职务" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="地区" EntityType="Self.地区" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="系统_部门" EntityType="Self.系统_部门" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="系统功能" EntityType="Self.系统功能" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="系统用户" EntityType="Self.系统用户" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="销售_店铺档案" EntityType="Self.销售_店铺档案" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="销售_经销商档案" EntityType="Self.销售_经销商档案" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_HR_出差记录表_HR_出差对象类型" Association="Self.FK_HR_出差记录表_HR_出差对象类型">
+            <End Role="HR_出差对象类型" EntitySet="HR_出差对象类型" />
+            <End Role="HR_出差记录表" EntitySet="HR_出差记录表" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HR_出差详情_HR_出差记录表" Association="Self.FK_HR_出差详情_HR_出差记录表">
+            <End Role="HR_出差记录表" EntitySet="HR_出差记录表" />
+            <End Role="HR_出差详情" EntitySet="HR_出差详情" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HR_接待记录_HR_出差对象类型" Association="Self.FK_HR_接待记录_HR_出差对象类型">
+            <End Role="HR_出差对象类型" EntitySet="HR_出差对象类型" />
+            <End Role="HR_接待记录" EntitySet="HR_接待记录" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HR_接待记录_系统_部门" Association="Self.FK_HR_接待记录_系统_部门">
+            <End Role="系统_部门" EntitySet="系统_部门" />
+            <End Role="HR_接待记录" EntitySet="HR_接待记录" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HR_接待记录_系统用户" Association="Self.FK_HR_接待记录_系统用户">
+            <End Role="系统用户" EntitySet="系统用户" />
+            <End Role="HR_接待记录" EntitySet="HR_接待记录" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HR_职务_系统_部门" Association="Self.FK_HR_职务_系统_部门">
+            <End Role="系统_部门" EntitySet="系统_部门" />
+            <End Role="HR_职务" EntitySet="HR_职务" />
+          </AssociationSet>
+          <AssociationSet Name="FK_系统用户_销售_经销商档案" Association="Self.FK_系统用户_销售_经销商档案">
+            <End Role="销售_经销商档案" EntitySet="销售_经销商档案" />
+            <End Role="系统用户" EntitySet="系统用户" />
+          </AssociationSet>
+          <AssociationSet Name="FK_销售_店铺档案_地区" Association="Self.FK_销售_店铺档案_地区">
+            <End Role="地区" EntitySet="地区" />
+            <End Role="销售_店铺档案" EntitySet="销售_店铺档案" />
+          </AssociationSet>
+          <AssociationSet Name="FK_销售_店铺档案_销售_经销商档案" Association="Self.FK_销售_店铺档案_销售_经销商档案">
+            <End Role="销售_经销商档案" EntitySet="销售_经销商档案" />
+            <End Role="销售_店铺档案" EntitySet="销售_店铺档案" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="stmmModels" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="HR_出差对象类型">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="对象类型" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="数据表名" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="HR_出差记录表" Relationship="Self.FK_HR_出差记录表_HR_出差对象类型" FromRole="HR_出差对象类型" ToRole="HR_出差记录表" />
+          <NavigationProperty Name="HR_接待记录" Relationship="stmmModels.FK_HR_接待记录_HR_出差对象类型" FromRole="HR_出差对象类型" ToRole="HR_接待记录" />
+        </EntityType>
+        <EntityType Name="HR_出差记录表">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="部门ID" Type="Int32" Nullable="false" />
+          <Property Name="对象类别ID" Type="Int32" Nullable="false" />
+          <Property Name="对象ID" Type="Int32" />
+          <Property Name="城市ID" Type="Int32" Nullable="false" />
+          <Property Name="出差内容" Type="String" MaxLength="600" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="开始时间" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="结束时间" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="提交人ID" Type="Int32" Nullable="false" />
+          <Property Name="关联审核人ID" Type="Int32" />
+          <Property Name="审核状态" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="提交时间" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="HR_出差对象类型" Relationship="Self.FK_HR_出差记录表_HR_出差对象类型" FromRole="HR_出差记录表" ToRole="HR_出差对象类型" />
+          <NavigationProperty Name="HR_出差详情" Relationship="stmmModels.FK_HR_出差详情_HR_出差记录表" FromRole="HR_出差记录表" ToRole="HR_出差详情" />
+        </EntityType>
+        <EntityType Name="HR_人员信息表">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="姓名" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="部门" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="上级部门" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="岗位" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="职级" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="用户ID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="HR_职务">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="部门ID" Type="Int32" Nullable="false" />
+          <Property Name="职务名称" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="系统_部门" Relationship="Self.FK_HR_职务_系统_部门" FromRole="HR_职务" ToRole="系统_部门" />
+        </EntityType>
+        <EntityType Name="系统_部门">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="所属中心" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="名称" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="管理者" Type="Int32" />
+          <Property Name="上级ID" Type="Int32" />
+          <NavigationProperty Name="HR_职务" Relationship="Self.FK_HR_职务_系统_部门" FromRole="系统_部门" ToRole="HR_职务" />
+          <NavigationProperty Name="HR_接待记录" Relationship="stmmModels.FK_HR_接待记录_系统_部门" FromRole="系统_部门" ToRole="HR_接待记录" />
+        </EntityType>
+        <EntityType Name="系统功能">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="F_ID" Type="Int32" />
+          <Property Name="功能编号" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="功能名称" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="类别" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FormName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FunName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Url" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Is_BasicForm" Type="Boolean" />
+          <Property Name="Is_Menu" Type="Boolean" />
+          <Property Name="Is_OP" Type="Boolean" />
+          <Property Name="排序" Type="Int32" />
+        </EntityType>
+        <EntityType Name="系统用户">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="编号" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="姓名" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="密码" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="邮箱" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="停用标志" Type="Boolean" Nullable="false" />
+          <Property Name="注册日期" Type="DateTime" Precision="3" />
+          <Property Name="注册IP" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="经销商ID" Type="Int32" />
+          <Property Name="店铺ID" Type="Int32" />
+          <NavigationProperty Name="销售_经销商档案" Relationship="stmmModels.FK_系统用户_销售_经销商档案" FromRole="系统用户" ToRole="销售_经销商档案" />
+          <NavigationProperty Name="HR_接待记录" Relationship="stmmModels.FK_HR_接待记录_系统用户" FromRole="系统用户" ToRole="HR_接待记录" />
+        </EntityType>
+        <Association Name="FK_HR_出差记录表_HR_出差对象类型">
+          <End Role="HR_出差对象类型" Type="Self.HR_出差对象类型" Multiplicity="1" />
+          <End Role="HR_出差记录表" Type="Self.HR_出差记录表" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="HR_出差对象类型">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="HR_出差记录表">
+              <PropertyRef Name="对象类别ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HR_职务_系统_部门">
+          <End Role="系统_部门" Type="Self.系统_部门" Multiplicity="1" />
+          <End Role="HR_职务" Type="Self.HR_职务" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="系统_部门">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="HR_职务">
+              <PropertyRef Name="部门ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="stmmEntity" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="HR_出差对象类型" EntityType="Self.HR_出差对象类型" />
+          <EntitySet Name="HR_出差记录表" EntityType="Self.HR_出差记录表" />
+          <EntitySet Name="HR_人员信息表" EntityType="Self.HR_人员信息表" />
+          <EntitySet Name="HR_职务" EntityType="Self.HR_职务" />
+          <EntitySet Name="系统_部门" EntityType="Self.系统_部门" />
+          <EntitySet Name="系统功能" EntityType="Self.系统功能" />
+          <EntitySet Name="系统用户" EntityType="Self.系统用户" />
+          <AssociationSet Name="FK_HR_出差记录表_HR_出差对象类型" Association="Self.FK_HR_出差记录表_HR_出差对象类型">
+            <End Role="HR_出差对象类型" EntitySet="HR_出差对象类型" />
+            <End Role="HR_出差记录表" EntitySet="HR_出差记录表" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HR_职务_系统_部门" Association="Self.FK_HR_职务_系统_部门">
+            <End Role="系统_部门" EntitySet="系统_部门" />
+            <End Role="HR_职务" EntitySet="HR_职务" />
+          </AssociationSet>
+          <EntitySet Name="地区" EntityType="stmmModels.地区" />
+          <EntitySet Name="销售_店铺档案" EntityType="stmmModels.销售_店铺档案" />
+          <EntitySet Name="销售_经销商档案" EntityType="stmmModels.销售_经销商档案" />
+          <AssociationSet Name="FK_销售_店铺档案_地区" Association="stmmModels.FK_销售_店铺档案_地区">
+            <End Role="地区" EntitySet="地区" />
+            <End Role="销售_店铺档案" EntitySet="销售_店铺档案" />
+          </AssociationSet>
+          <AssociationSet Name="FK_系统用户_销售_经销商档案" Association="stmmModels.FK_系统用户_销售_经销商档案">
+            <End Role="销售_经销商档案" EntitySet="销售_经销商档案" />
+            <End Role="系统用户" EntitySet="系统用户" />
+          </AssociationSet>
+          <AssociationSet Name="FK_销售_店铺档案_销售_经销商档案" Association="stmmModels.FK_销售_店铺档案_销售_经销商档案">
+            <End Role="销售_经销商档案" EntitySet="销售_经销商档案" />
+            <End Role="销售_店铺档案" EntitySet="销售_店铺档案" />
+          </AssociationSet>
+          <EntitySet Name="HR_出差详情" EntityType="stmmModels.HR_出差详情" />
+          <AssociationSet Name="FK_HR_出差详情_HR_出差记录表" Association="stmmModels.FK_HR_出差详情_HR_出差记录表">
+            <End Role="HR_出差记录表" EntitySet="HR_出差记录表" />
+            <End Role="HR_出差详情" EntitySet="HR_出差详情" />
+          </AssociationSet>
+          <EntitySet Name="HR_接待记录" EntityType="stmmModels.HR_接待记录" />
+          <AssociationSet Name="FK_HR_接待记录_HR_出差对象类型" Association="stmmModels.FK_HR_接待记录_HR_出差对象类型">
+            <End Role="HR_出差对象类型" EntitySet="HR_出差对象类型" />
+            <End Role="HR_接待记录" EntitySet="HR_接待记录" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HR_接待记录_系统_部门" Association="stmmModels.FK_HR_接待记录_系统_部门">
+            <End Role="系统_部门" EntitySet="系统_部门" />
+            <End Role="HR_接待记录" EntitySet="HR_接待记录" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HR_接待记录_系统用户" Association="stmmModels.FK_HR_接待记录_系统用户">
+            <End Role="系统用户" EntitySet="系统用户" />
+            <End Role="HR_接待记录" EntitySet="HR_接待记录" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="地区">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="分类" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="国家" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="省" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="市" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="区县" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="拼音" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="区号" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="邮编" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="简称" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="销售_店铺档案" Relationship="stmmModels.FK_销售_店铺档案_地区" FromRole="地区" ToRole="销售_店铺档案" />
+        </EntityType>
+        <EntityType Name="销售_店铺档案">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="经销商ID" Type="Int32" />
+          <Property Name="品牌ID" Type="Int32" />
+          <Property Name="编号" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="名称" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="地址" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="商场" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="地区ID" Type="Int32" />
+          <Property Name="负责人" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="负责人电话" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="联系人" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="联系人电话" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="收货人" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="收货地址" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="收货人电话" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="使用面积" Type="Int32" />
+          <Property Name="等级" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="停用标志" Type="Boolean" />
+          <Property Name="制单人" Type="Int32" />
+          <Property Name="制单日期" Type="DateTime" Precision="3" />
+          <Property Name="密码" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="地区" Relationship="stmmModels.FK_销售_店铺档案_地区" FromRole="销售_店铺档案" ToRole="地区" />
+          <NavigationProperty Name="销售_经销商档案" Relationship="stmmModels.FK_销售_店铺档案_销售_经销商档案" FromRole="销售_店铺档案" ToRole="销售_经销商档案" />
+        </EntityType>
+        <EntityType Name="销售_经销商档案">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="编号" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="名称" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="负责人" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="联系电话" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="证件号码" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="制单人" Type="Int32" />
+          <Property Name="制单日期" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="系统用户" Relationship="stmmModels.FK_系统用户_销售_经销商档案" FromRole="销售_经销商档案" ToRole="系统用户" />
+          <NavigationProperty Name="销售_店铺档案" Relationship="stmmModels.FK_销售_店铺档案_销售_经销商档案" FromRole="销售_经销商档案" ToRole="销售_店铺档案" />
+        </EntityType>
+        <Association Name="FK_销售_店铺档案_地区">
+          <End Type="stmmModels.地区" Role="地区" Multiplicity="0..1" />
+          <End Type="stmmModels.销售_店铺档案" Role="销售_店铺档案" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="地区">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="销售_店铺档案">
+              <PropertyRef Name="地区ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_系统用户_销售_经销商档案">
+          <End Type="stmmModels.销售_经销商档案" Role="销售_经销商档案" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="stmmModels.系统用户" Role="系统用户" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="销售_经销商档案">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="系统用户">
+              <PropertyRef Name="经销商ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_销售_店铺档案_销售_经销商档案">
+          <End Type="stmmModels.销售_经销商档案" Role="销售_经销商档案" Multiplicity="0..1" />
+          <End Type="stmmModels.销售_店铺档案" Role="销售_店铺档案" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="销售_经销商档案">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="销售_店铺档案">
+              <PropertyRef Name="经销商ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="HR_出差详情">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="出差记录ID" Type="Int32" Nullable="false" />
+          <Property Name="受访者" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="受访者职务" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="计划目标" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="计划内容" Type="String" MaxLength="600" FixedLength="false" Unicode="true" />
+          <Property Name="计划方案" Type="String" MaxLength="600" FixedLength="false" Unicode="true" />
+          <Property Name="拜访时间" Type="DateTime" Precision="3" />
+          <Property Name="拜访结果" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="新的问题" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="新的问题应对方案" Type="String" MaxLength="600" FixedLength="false" Unicode="true" />
+          <Property Name="预计完成日期" Type="DateTime" Precision="0" />
+          <Property Name="预计可能性" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="备注" Type="String" MaxLength="600" FixedLength="false" Unicode="true" />
+          <Property Name="提交时间" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="HR_出差记录表" Relationship="stmmModels.FK_HR_出差详情_HR_出差记录表" FromRole="HR_出差详情" ToRole="HR_出差记录表" />
+        </EntityType>
+        <Association Name="FK_HR_出差详情_HR_出差记录表">
+          <End Type="stmmModels.HR_出差记录表" Role="HR_出差记录表" Multiplicity="1" />
+          <End Type="stmmModels.HR_出差详情" Role="HR_出差详情" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="HR_出差记录表">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="HR_出差详情">
+              <PropertyRef Name="出差记录ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="HR_接待记录">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="部门ID" Type="Int32" Nullable="false" />
+          <Property Name="接待对象所属类型ID" Type="Int32" Nullable="false" />
+          <Property Name="接待对象所属ID" Type="Int32" Nullable="false" />
+          <Property Name="接待对象" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="接待对象职务" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="接待开始时间" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="接待结束时间" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="接待目的" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="接待计划" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="接待大概内容" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="新的问题" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="新的问题应对方案" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="预计完成可能性" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="预计完成日期" Type="DateTime" Precision="0" />
+          <Property Name="备注" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="提交时间" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="关联审核人ID" Type="Int32" Nullable="false" />
+          <Property Name="提交人ID" Type="Int32" Nullable="false" />
+          <Property Name="接待地点" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="HR_出差对象类型" Relationship="stmmModels.FK_HR_接待记录_HR_出差对象类型" FromRole="HR_接待记录" ToRole="HR_出差对象类型" />
+          <NavigationProperty Name="系统_部门" Relationship="stmmModels.FK_HR_接待记录_系统_部门" FromRole="HR_接待记录" ToRole="系统_部门" />
+          <NavigationProperty Name="系统用户" Relationship="stmmModels.FK_HR_接待记录_系统用户" FromRole="HR_接待记录" ToRole="系统用户" />
+        </EntityType>
+        <Association Name="FK_HR_接待记录_HR_出差对象类型">
+          <End Type="stmmModels.HR_出差对象类型" Role="HR_出差对象类型" Multiplicity="1" />
+          <End Type="stmmModels.HR_接待记录" Role="HR_接待记录" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="HR_出差对象类型">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="HR_接待记录">
+              <PropertyRef Name="接待对象所属类型ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HR_接待记录_系统_部门">
+          <End Type="stmmModels.系统_部门" Role="系统_部门" Multiplicity="1" />
+          <End Type="stmmModels.HR_接待记录" Role="HR_接待记录" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="系统_部门">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="HR_接待记录">
+              <PropertyRef Name="部门ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HR_接待记录_系统用户">
+          <End Type="stmmModels.系统用户" Role="系统用户" Multiplicity="1" />
+          <End Type="stmmModels.HR_接待记录" Role="HR_接待记录" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="系统用户">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="HR_接待记录">
+              <PropertyRef Name="关联审核人ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="stmmModelsStoreContainer" CdmEntityContainer="stmmEntity">
+          <EntitySetMapping Name="HR_出差对象类型">
+            <EntityTypeMapping TypeName="stmmModels.HR_出差对象类型">
+              <MappingFragment StoreEntitySet="HR_出差对象类型">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="对象类型" ColumnName="对象类型" />
+                <ScalarProperty Name="数据表名" ColumnName="数据表名" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HR_出差记录表">
+            <EntityTypeMapping TypeName="stmmModels.HR_出差记录表">
+              <MappingFragment StoreEntitySet="HR_出差记录表">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="部门ID" ColumnName="部门ID" />
+                <ScalarProperty Name="对象类别ID" ColumnName="对象类别ID" />
+                <ScalarProperty Name="对象ID" ColumnName="对象ID" />
+                <ScalarProperty Name="城市ID" ColumnName="城市ID" />
+                <ScalarProperty Name="出差内容" ColumnName="出差内容" />
+                <ScalarProperty Name="开始时间" ColumnName="开始时间" />
+                <ScalarProperty Name="结束时间" ColumnName="结束时间" />
+                <ScalarProperty Name="提交人ID" ColumnName="提交人ID" />
+                <ScalarProperty Name="关联审核人ID" ColumnName="关联审核人ID" />
+                <ScalarProperty Name="审核状态" ColumnName="审核状态" />
+                <ScalarProperty Name="提交时间" ColumnName="提交时间" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HR_人员信息表">
+            <EntityTypeMapping TypeName="stmmModels.HR_人员信息表">
+              <MappingFragment StoreEntitySet="HR_人员信息表">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="姓名" ColumnName="姓名" />
+                <ScalarProperty Name="部门" ColumnName="部门" />
+                <ScalarProperty Name="上级部门" ColumnName="上级部门" />
+                <ScalarProperty Name="岗位" ColumnName="岗位" />
+                <ScalarProperty Name="职级" ColumnName="职级" />
+                <ScalarProperty Name="用户ID" ColumnName="用户ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HR_职务">
+            <EntityTypeMapping TypeName="stmmModels.HR_职务">
+              <MappingFragment StoreEntitySet="HR_职务">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="部门ID" ColumnName="部门ID" />
+                <ScalarProperty Name="职务名称" ColumnName="职务名称" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="系统_部门">
+            <EntityTypeMapping TypeName="stmmModels.系统_部门">
+              <MappingFragment StoreEntitySet="系统_部门">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="所属中心" ColumnName="所属中心" />
+                <ScalarProperty Name="名称" ColumnName="名称" />
+                <ScalarProperty Name="管理者" ColumnName="管理者" />
+                <ScalarProperty Name="上级ID" ColumnName="上级ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="系统功能">
+            <EntityTypeMapping TypeName="stmmModels.系统功能">
+              <MappingFragment StoreEntitySet="系统功能">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="F_ID" ColumnName="F_ID" />
+                <ScalarProperty Name="功能编号" ColumnName="功能编号" />
+                <ScalarProperty Name="功能名称" ColumnName="功能名称" />
+                <ScalarProperty Name="类别" ColumnName="类别" />
+                <ScalarProperty Name="FormName" ColumnName="FormName" />
+                <ScalarProperty Name="FunName" ColumnName="FunName" />
+                <ScalarProperty Name="Url" ColumnName="Url" />
+                <ScalarProperty Name="Is_BasicForm" ColumnName="Is_BasicForm" />
+                <ScalarProperty Name="Is_Menu" ColumnName="Is_Menu" />
+                <ScalarProperty Name="Is_OP" ColumnName="Is_OP" />
+                <ScalarProperty Name="排序" ColumnName="排序" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="系统用户">
+            <EntityTypeMapping TypeName="stmmModels.系统用户">
+              <MappingFragment StoreEntitySet="系统用户">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="编号" ColumnName="编号" />
+                <ScalarProperty Name="姓名" ColumnName="姓名" />
+                <ScalarProperty Name="密码" ColumnName="密码" />
+                <ScalarProperty Name="邮箱" ColumnName="邮箱" />
+                <ScalarProperty Name="停用标志" ColumnName="停用标志" />
+                <ScalarProperty Name="注册日期" ColumnName="注册日期" />
+                <ScalarProperty Name="注册IP" ColumnName="注册IP" />
+                <ScalarProperty Name="经销商ID" ColumnName="经销商ID" />
+                <ScalarProperty Name="店铺ID" ColumnName="店铺ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="地区">
+            <EntityTypeMapping TypeName="stmmModels.地区">
+              <MappingFragment StoreEntitySet="地区">
+                <ScalarProperty Name="简称" ColumnName="简称" />
+                <ScalarProperty Name="邮编" ColumnName="邮编" />
+                <ScalarProperty Name="区号" ColumnName="区号" />
+                <ScalarProperty Name="拼音" ColumnName="拼音" />
+                <ScalarProperty Name="区县" ColumnName="区县" />
+                <ScalarProperty Name="市" ColumnName="市" />
+                <ScalarProperty Name="省" ColumnName="省" />
+                <ScalarProperty Name="国家" ColumnName="国家" />
+                <ScalarProperty Name="分类" ColumnName="分类" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="销售_店铺档案">
+            <EntityTypeMapping TypeName="stmmModels.销售_店铺档案">
+              <MappingFragment StoreEntitySet="销售_店铺档案">
+                <ScalarProperty Name="密码" ColumnName="密码" />
+                <ScalarProperty Name="制单日期" ColumnName="制单日期" />
+                <ScalarProperty Name="制单人" ColumnName="制单人" />
+                <ScalarProperty Name="停用标志" ColumnName="停用标志" />
+                <ScalarProperty Name="等级" ColumnName="等级" />
+                <ScalarProperty Name="使用面积" ColumnName="使用面积" />
+                <ScalarProperty Name="收货人电话" ColumnName="收货人电话" />
+                <ScalarProperty Name="收货地址" ColumnName="收货地址" />
+                <ScalarProperty Name="收货人" ColumnName="收货人" />
+                <ScalarProperty Name="联系人电话" ColumnName="联系人电话" />
+                <ScalarProperty Name="联系人" ColumnName="联系人" />
+                <ScalarProperty Name="负责人电话" ColumnName="负责人电话" />
+                <ScalarProperty Name="负责人" ColumnName="负责人" />
+                <ScalarProperty Name="地区ID" ColumnName="地区ID" />
+                <ScalarProperty Name="商场" ColumnName="商场" />
+                <ScalarProperty Name="地址" ColumnName="地址" />
+                <ScalarProperty Name="名称" ColumnName="名称" />
+                <ScalarProperty Name="编号" ColumnName="编号" />
+                <ScalarProperty Name="品牌ID" ColumnName="品牌ID" />
+                <ScalarProperty Name="经销商ID" ColumnName="经销商ID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="销售_经销商档案">
+            <EntityTypeMapping TypeName="stmmModels.销售_经销商档案">
+              <MappingFragment StoreEntitySet="销售_经销商档案">
+                <ScalarProperty Name="制单日期" ColumnName="制单日期" />
+                <ScalarProperty Name="制单人" ColumnName="制单人" />
+                <ScalarProperty Name="证件号码" ColumnName="证件号码" />
+                <ScalarProperty Name="联系电话" ColumnName="联系电话" />
+                <ScalarProperty Name="负责人" ColumnName="负责人" />
+                <ScalarProperty Name="名称" ColumnName="名称" />
+                <ScalarProperty Name="编号" ColumnName="编号" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HR_出差详情">
+            <EntityTypeMapping TypeName="stmmModels.HR_出差详情">
+              <MappingFragment StoreEntitySet="HR_出差详情">
+                <ScalarProperty Name="提交时间" ColumnName="提交时间" />
+                <ScalarProperty Name="备注" ColumnName="备注" />
+                <ScalarProperty Name="预计可能性" ColumnName="预计可能性" />
+                <ScalarProperty Name="预计完成日期" ColumnName="预计完成日期" />
+                <ScalarProperty Name="新的问题应对方案" ColumnName="新的问题应对方案" />
+                <ScalarProperty Name="新的问题" ColumnName="新的问题" />
+                <ScalarProperty Name="拜访结果" ColumnName="拜访结果" />
+                <ScalarProperty Name="拜访时间" ColumnName="拜访时间" />
+                <ScalarProperty Name="计划方案" ColumnName="计划方案" />
+                <ScalarProperty Name="计划内容" ColumnName="计划内容" />
+                <ScalarProperty Name="计划目标" ColumnName="计划目标" />
+                <ScalarProperty Name="受访者职务" ColumnName="受访者职务" />
+                <ScalarProperty Name="受访者" ColumnName="受访者" />
+                <ScalarProperty Name="出差记录ID" ColumnName="出差记录ID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HR_接待记录">
+            <EntityTypeMapping TypeName="stmmModels.HR_接待记录">
+              <MappingFragment StoreEntitySet="HR_接待记录">
+                <ScalarProperty Name="接待地点" ColumnName="接待地点" />
+                <ScalarProperty Name="提交人ID" ColumnName="提交人ID" />
+                <ScalarProperty Name="关联审核人ID" ColumnName="关联审核人ID" />
+                <ScalarProperty Name="提交时间" ColumnName="提交时间" />
+                <ScalarProperty Name="备注" ColumnName="备注" />
+                <ScalarProperty Name="预计完成日期" ColumnName="预计完成日期" />
+                <ScalarProperty Name="预计完成可能性" ColumnName="预计完成可能性" />
+                <ScalarProperty Name="新的问题应对方案" ColumnName="新的问题应对方案" />
+                <ScalarProperty Name="新的问题" ColumnName="新的问题" />
+                <ScalarProperty Name="接待大概内容" ColumnName="接待大概内容" />
+                <ScalarProperty Name="接待计划" ColumnName="接待计划" />
+                <ScalarProperty Name="接待目的" ColumnName="接待目的" />
+                <ScalarProperty Name="接待结束时间" ColumnName="接待结束时间" />
+                <ScalarProperty Name="接待开始时间" ColumnName="接待开始时间" />
+                <ScalarProperty Name="接待对象职务" ColumnName="接待对象职务" />
+                <ScalarProperty Name="接待对象" ColumnName="接待对象" />
+                <ScalarProperty Name="接待对象所属ID" ColumnName="接待对象所属ID" />
+                <ScalarProperty Name="接待对象所属类型ID" ColumnName="接待对象所属类型ID" />
+                <ScalarProperty Name="部门ID" ColumnName="部门ID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="无" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,22 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ChicST_MM.WEB.Models
+{
+    /// <summary>
+    /// 商务接待来宾信息
+    /// </summary>
+    public class BusinessReceiving_GuestViewModel
+    {
+        public int ID { get; set; }
+        public string 身份 { get; set; }
+        public string 姓名 { get; set; }
+        public string 性别 { get; set; }
+        public string 电话 { get; set; }
+        public string 备注 { get; set; }
+        public int 接待计划ID { get; set; }
+
+    }
+}

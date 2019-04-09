@@ -1,0 +1,71 @@
+﻿@model JPager.Net.PagerResult<ChicST_MM.WEB.Models.BusinessTripViewModel>
+
+@{
+    ViewBag.Title = "出差列表";
+}
+
+<h3>出差列表</h3>
+<div>
+    <div style="padding-left:2.5%; margin:10px 0;">
+        <form method="get" action="~/AirFare/BusinessTripList">
+            根据出差人查询：
+            <input name="searchString" class="search-input" />
+            <input type="submit" value="查询" class="city-sure" style="position: relative;top: 0;" />
+        </form>
+    </div>
+    <table class="table table-bordered table-striped table-hover " style="text-align:center;table-layout:fixed;" id="Table">
+        <tr>
+            <th>ID</th>
+            <th>出差人</th>
+            <th>部门</th>
+            <th>开始时间</th>
+            <th>结束时间</th>
+            <th>出差内容</th>
+            <th>总预算</th>
+            <th>是否报销机票</th>
+            <th>是否分摊机票报销</th>
+            <th>提交时间</th>
+            <th>操作</th>
+        </tr>
+        @foreach (var item in Model.DataList)
+        {
+        <tr>
+            <td>@item.ID</td>
+            <td>@item.出差人姓名</td>
+            <td>@item.部门</td>
+            <td>@item.开始时间.ToString("d")</td>
+            <td>@item.结束时间.ToString("d")</td>
+            <td class="ellipsis">@item.出差内容</td>
+            <td>@if (item.合计 == null)
+                {
+                <span>0</span>
+                }
+            </td>
+            <td>@item.是否报销机票</td>
+            <td>@item.是否分摊机票报销</td>
+            <td>@item.提交时间</td>
+            <td>
+                @if (item.审核状态 == "通过")
+                {
+                    <span>通过</span>
+                    @Html.ActionLink("添加机票报销", "AddAirFaresView", new { id = item.ID })
+                }
+                else if (item.审核状态 == "不通过")
+                {
+                    <span>驳回</span>
+                }
+                else
+                {
+                    <span>未审核</span>
+                }
+            </td>
+        </tr>
+        }
+    </table>
+
+</div>
+<div style="padding-left:2.5%; margin:10px 0; text-align:center;">
+    @Html.Raw(Model.PagerHtml()) 共 @Model.Total 条
+</div>
+
+

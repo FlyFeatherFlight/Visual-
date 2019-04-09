@@ -1,0 +1,11 @@
+﻿using ChicST_MM.Model;
+
+namespace ChicST_MM.IDAL
+{
+    /// <summary>
+    /// 店铺档案
+    /// </summary>
+  public partial  interface IStoreDAL:IBaseDAL<销售_店铺档案>
+    {
+    }
+}

@@ -1,0 +1,45 @@
+﻿@model JPager.Net.PagerResult<ChicST_MM.WEB.Models.AfterSalesViewModel>
+@{
+    ViewBag.Title = "售后记录";
+}
+<h3>售后记录</h3>
+<div>
+    <div style="padding-left:2.5%; margin:10px 0;">
+        <form method="get" action="~/BusinessTrip/Index">
+            根据对象查询：
+            <input name="searchString" class="search-input" />
+            <input type="submit" value="查询" class="city-sure" style="position: relative;top: 0;" />
+        </form>
+    </div>
+    <table class="table table-bordered table-striped  " style="text-align:center;table-layout:fixed;">
+        <tr>
+
+            <th>订货单号</th>
+            <th>店铺</th>
+            <th>客诉日期</th>
+            <th>产品型号</th>
+            <th>制单日期</th>
+            <th>操作</th>
+        </tr>
+        @foreach (var item in Model.DataList)
+        {
+        <tr>
+
+            <td>@Html.ActionLink(item.订货单号, "AfterSales_RecordInfoView", new { id = item.ID })</td>
+            <td>@item.店铺</td>
+            <td>@item.客诉日期.ToString("d")</td>
+            <td>@item.产品型号</td>
+            <td>@item.制单日期.ToString("d")</td>
+            <td>
+                @Html.ActionLink("修改", "AfterSales_RecordInfoView", new { id = item.ID, isEdit = "true" })
+                @Html.ActionLink("添加跟进日志", "AfterSales_TrackAddView", new { afterID = item.ID })
+            </td>
+        </tr>
+        }
+    </table>
+
+</div>
+<div style="padding-left:2.5%; margin:10px 0; text-align:center;">
+    @Html.Raw(Model.PagerHtml()) 共 @Model.Total 条
+</div>
+

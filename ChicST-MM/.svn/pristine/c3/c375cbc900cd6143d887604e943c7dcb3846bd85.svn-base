@@ -1,0 +1,483 @@
+﻿@model ChicST_MM.WEB.Models.BusinessTrip_DetailsViewModel
+@{
+    ViewBag.Title = "添加出差详情";
+}
+
+<link href="~/Content/StyleSheet1.css" rel="stylesheet" />
+
+
+<h3>出差记录表</h3>
+<div class="table" >
+    <div style="text-align:start; margin-bottom:10px;">
+        <input id="create-user" type="button" value="添加" class="btn " />
+        <sapn style="color: orange;display: block;margin: 5px 0 5px 0;">温馨提示：添加后请点击确定</sapn>
+    </div>
+    <table id="grid"></table>
+    <div id="pager"></div>
+    <div class="submit-btns" style="margin-top:10px;">
+        <input type="submit" value="提交" class="btn btn-success width-7">
+        &nbsp;&nbsp;
+        <input type="button" value="取消" class="btn btn-danger width-7" onclick="javascript:history.back(-1);">
+    </div>
+</div>
+
+@**模态框*@
+<div id="dialog-form" style="text-align:center;">
+        <table class="table table-striped table-bordered table-hover">
+            <tr class="hidden">
+                <td>
+                    <input type="text" value="@Model.出差记录ID" class="setID"/>
+                </td>
+            </tr>
+            <tr>
+                <td>城市</td>
+                <td>
+                    <select id="city" class="form-control ">
+                        <option value="">-请选择城市-</option>
+                    </select>
+                </td>
+                <td style="width:20% !important;">出差时间</td>
+                <td>
+                    <input type="text" id="Cdate" data-provide="datepicker" class="datepicker search-input form-control red"  oninput="sureRed()" placeholder="请选择日期" readonly />
+                    <span class="must" style="color:red;">*该选项为必填项</span>
+                </td>
+
+            </tr>
+            <tr>
+                <td>出差对象</td>
+                <td colspan="3">
+                    <select  class="choose form-control"  onclick="chooseObj()">
+                        <option value="经销商"  selected>经销商</option>
+                        <option value="门店">门店</option>
+                        <option value="商场">商场</option>
+                       
+                    </select>
+
+                </td>
+            </tr>
+            <tr class="dealerName">
+                <td>经销商名称</td>
+                <td colspan="3">
+                    <select id="dealerName" class=" form-control" >
+                        <option value="" class="active" selected>-请选择经销商-</option>
+                    </select>
+
+                </td>
+            </tr>
+            <tr class="shopName hidden">
+                <td>门店名称</td>
+                <td colspan="3">
+                    <select id="shopName" class=" form-control" >
+                        <option value="" class="active" selected>-请选择门店-</option>
+                    </select>
+
+                </td>
+            </tr>
+            <tr class="storeName hidden">
+                <td>商场名称</td>
+                <td colspan="3">
+                    <select id="storeName" class=" form-control">
+                        <option value=""class="active"  selected>-请选择商场-</option>
+                    </select>
+
+                </td>
+            </tr>
+            <tr >
+                <td>同行人</td>
+                <td colspan="3">
+                    <input type="text" id="person" class="search-input form-control"  />
+                </td>
+            </tr>
+
+            <tr>
+                <td style="vertical-align: top">巡店目的</td>
+                <td colspan="3">
+                    <textarea type="text" id="visitAim" class=" form-control"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td style="vertical-align: top">计划方案</td>
+                <td colspan="3">
+                    <textarea type="text" id="workPlan" class=" form-control" ></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td style="vertical-align: top">计划内容</td>
+                <td colspan="3">
+                    <textarea type="text" id="workContent" class=" form-control" ></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>备注</td>
+                <td colspan="3">
+                    <input type="text" id="notes" class=" form-control" />
+                </td>
+            </tr>
+        </table>
+   
+</div>
+
+<script> 
+    //经销商
+    var Jopts = $("#dealerName");
+    Jopts.on("change", function () {
+        var value = Jopts.val();//这个值就是你获取的值;
+       
+        if (value != "") {
+            for (var i = 0; i < Jopts.find("option").length; i++) {
+                if (value == Jopts.find("option")[i].value) {
+                    console.log(Jopts.find("option")[i]);
+                    if ($(Jopts.find("option")[i]).hasClass("active")) {
+                        return;
+                    } else {
+                        $(Jopts.find("option")[i]).siblings().removeClass("active")
+                        $(Jopts.find("option")[i]).addClass("active");
+                        
+                    }
+                   
+                    
+                    break;
+                }
+            }
+        }
+    })
+   
+   // 门店
+    var Mopts = $("#shopName");
+    Mopts.on("change", function () {
+        var value = Jopts.val();//这个值就是你获取的值;
+
+        if (value != "") {
+            for (var i = 0; i < Mopts.find("option").length; i++) {
+                if (value == Mopts.find("option")[i].value) {
+                    console.log(Mopts.find("option")[i]);
+                    if ($(Mopts.find("option")[i]).hasClass("active")) {
+                        return;
+                    } else {
+                        $(Mopts.find("option")[i]).siblings().removeClass("active")
+                        $(Mopts.find("option")[i]).addClass("active");
+
+                    }
+
+
+                    break;
+                }
+            }
+        }
+    })
+   // 商场
+    var Sopts = $("#storeName");
+    Sopts.on("change", function () {
+        var value = Jopts.val();//这个值就是你获取的值;
+
+        if (value != "") {
+            for (var i = 0; i < Sopts.find("option").length; i++) {
+                if (value == Sopts.find("option")[i].value) {
+                    console.log(Sopts.find("option")[i]);
+                    if ($(Sopts.find("option")[i]).hasClass("active")) {
+                        return;
+                    } else {
+                        $(Sopts.find("option")[i]).siblings().removeClass("active")
+                        $(Sopts.find("option")[i]).addClass("active");
+
+                    }
+
+
+                    break;
+                }
+            }
+        }
+    })
+
+
+    //根据选择的出差对象显示隐藏
+    function chooseObj() {
+       
+        if ($(".choose").val() == "经销商") {
+            $(".shopName").addClass("hidden");
+            $(".storeName").addClass("hidden");
+            $(".dealerName").removeClass("hidden");
+            return;
+        }
+        if ($(".choose").val() == "门店") {
+            $(".dealerName").addClass("hidden");
+            $(".storeName").addClass("hidden");
+            $(".shopName").removeClass("hidden");
+            return;
+        }
+        if ($(".choose").val() == "商场") {
+            $(".shopName").addClass("hidden");
+            $(".dealerName").addClass("hidden");
+            $(".storeName").removeClass("hidden");
+            return;
+        }
+        
+    }
+
+    
+    // 跳转详情
+    function goDetail() {
+        setid = $(".setID").val();
+        window.location.href = '@Url.Action("", "")?id=' + setid;
+    }
+
+    $(function () {
+       //获取省份数据
+        $.ajax({
+            type: "post",
+            data: {},
+            url: '@Url.Action( "GetProvince", "BusinessTrip")',
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                $.each(data, (i, m) => {
+
+                    $("#city").append("<option value=" + m + ">" + m + "</option>")
+
+                })
+
+            },
+            error: function(err){
+                console.log(err)
+            }
+
+        })
+         //获取经销商数据
+        $.ajax({
+            type: "post",
+            data: {},
+            url: '@Url.Action("GetDistripObj", "BusinessTrip")',
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                $.each(data, (i, m) => {
+
+                    $("#dealerName").append("<option value=" + m[0] + ">" + m[1] + "</option>")
+
+                })
+
+            },
+            error: function(err){
+                console.log(err)
+            }
+
+        })
+         //获取门店数据
+        $.ajax({
+            type: "post",
+            data: {},
+            url: '@Url.Action("GetTripObj", "BusinessTrip")',
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                $.each(data, (i, m) => {
+
+                    $("#shopName").append("<option value=" + m[0] + ">" + m[1] + "</option>")
+
+                })
+
+            },
+            error: function(err){
+                console.log(err)
+            }
+
+        })
+         //获取商场数据
+        $.ajax({
+            type: "post",
+            data: {},
+            url: '@Url.Action("GetMarketObj", "BusinessTrip")',
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                $.each(data, (i, m) => {
+
+                    $("#storeName").append("<option value=" + m[0] + ">" + m[1] + "</option>")
+
+                })
+
+            },
+            error: function(err){
+                console.log(err)
+            }
+
+        })
+
+
+        // 副表提交
+        jQuery("#grid").jqGrid({
+            url: "",
+            datatype: "json",
+            mtype: "get",
+            colModel: [
+                //{ label: 'ID', name: 'ID', index: 'ID',  sorttype: "int",width:50,align:"center" },
+                { label: '日期', name: '出差时间', index: '日期', align: "center" },
+                { label: '城市', name: '城市', index: '城市',  align: "center" },
+                { label: '经销商名称', name: '经销商ID', index: '经销商名称', sortable: false, align: "center" },
+                { label: '商场名称', name: '商场ID', index: '商场名称', sortable: false, align: "center" },
+                { label: '门店名称', name: '门店ID', index: '门店名称', sortable: false, align: "center" },
+                { label: '同行人', name: '同行人员', index: '同行人',  sortable: false, align: "center" },
+               
+                { label: '巡店目的', name: '巡店目的', index: '巡店目的', sortable: false, align: "center" },
+                { label: '计划方案', name: '计划方案', index: '计划方案', sortable: false, align: "center" },
+                { label: '计划内容', name: '计划内容', index: '计划内容', sortable: false, align: "center" },
+                { label: '备注', name: '备注', index: '备注', sortable: false, align: "center" },
+                { label: '操作', name: 'Delete', index: 'id',  sortable: false, align: "center" },
+
+            ],
+            caption: "出差行程计划展示",
+            loadonce: true,    //排序翻页等操作在服务端完成
+            rowNum: 5,
+            rowList: [5, 10, 20],  //设置分页下拉列表
+            pager: "#pager",
+            viewrecords: true,
+            width: 500, height: "auto",
+            jsonReader: { repeatitems: false }, //prmNames: { id: "No" },
+            sortorder: "asc",
+            sortname: "No",//传递给服务端的排序字段名
+            autowidth: true,
+            gridComplete: function () {  //在此事件中循环为每一行添加删除链接
+                var ids = jQuery("#grid").jqGrid('getDataIDs');
+                for (var i = 0; i < ids.length; i++) {
+                    var id = ids[i];
+                    del = "<a href='#'  style='color:#f60' onclick='Delete(" + id + ")' >删除</a>";
+                    jQuery("#grid").jqGrid('setRowData', ids[i], { Delete: del });
+                }
+            }
+        });
+        // 配置对话框(使用Jquery-UI的dialog插件)
+        $('#dialog-form').dialog({ title: '出差行程计划详细内容' });
+
+    });
+
+   //配置模态框
+    $("#dialog-form").dialog({
+        autoOpen: false,
+        height: 560,
+        width: 960,
+        modal: true,
+        buttons: {
+
+            "取消": function () { $(this).dialog("close") },
+            "提交": function () {
+                var setid = $(".setID").val();
+                var Cdate = $.trim($("#Cdate").val());//日期
+                var city = $.trim($("#city").val()); //城市
+                var dealerID = $.trim($("#dealerName").val());//经销商ID
+                var shopID = $.trim($("#shopName").val());//门店ID 
+                var storeID = $.trim($("#storeName").val());//商场ID
+                var dealerName = $.trim($("#dealerName").find(".active").text())//经销商名称
+                var shopName = $.trim($("#shopName").find(".active").text());//门店名称
+                var storeName = $.trim($("#storeName").find(".active").text());//商场名称
+                var person = $.trim($("#person").val());//同行人
+                var visitAim = $.trim($("#visitAim").val());//巡店目的
+                var workPlan = $.trim($("#workPlan").val());//计划方案
+                var workContent = $.trim($("#workContent").val());//计划内容
+                var notes = $.trim($("#notes").val());//备注
+
+
+
+                var selectedId = $("#grid").jqGrid("getGridParam", "selrow");
+                var actionUrl = "@Url.Action("BusinessTrip_DetailsAdd", "BusinessTrip")";
+                var params = {
+
+                    "出差记录ID": setid,
+                    "出差时间": Cdate,
+                    "城市": city,
+                    "经销商ID": dealerID,
+                    "门店ID": shopID,
+                    "商场ID": storeID,
+                    "同行人员": person,
+                    "巡店目的": visitAim,
+                    "计划方案":workPlan,
+                    "计划内容":workContent,
+                    "备注":notes,
+
+
+
+                };
+                $.ajax({
+                    url: actionUrl,
+                    type: "post",   //默认为get
+                    data: params,   //传递给服务端的数据
+                    dataType: "json",
+                    cache: false,
+                    success: function (data, textStatus) {
+                        console.log(data)
+                        if (data.Success) {
+                            var dataRow = {
+                                
+                                "出差记录ID": setid,
+                                "出差时间": Cdate,
+                                "城市": city,
+                                "经销商ID": dealerName,
+                                "门店ID": shopName,
+                                "商场ID": storeName,
+                                "同行人员": person,
+                                "巡店目的": visitAim,
+                                "计划方案": workPlan,
+                                "计划内容": workContent,
+                                "备注": notes,
+                            };
+
+                            if (selectedId) {
+                                $("#grid").jqGrid("addRowData", setid,dataRow, "before", selectedId);//如果有选定行则添加在选定行前面
+                            } else {
+                                $("#grid").jqGrid("addRowData", setid, dataRow, "last");//没有选定行则添加在第一行
+                            }
+                            $("#dialog-form").dialog("close");
+                            alert("报销添加操作成功!");
+                        } else {
+                            alert("添加操作失败!");
+                        }
+
+                    },
+                    error: function (err) {
+                        console.log(err)
+                    }
+                    //error: function (textStatus, errorThrown) {
+                    //    console.log("系统ajax交互错误: " + JSON.stringify(textStatus));
+                    //},
+                });
+            }
+        }
+    });
+    $("#create-user")
+        .button()
+        .click(function () {
+            $("#dialog-form").dialog("open");
+        });
+
+
+        // 行删除
+        function Delete(id) {
+            if (confirm("确定删除当前数据?")) {
+                $.ajax({
+                url: "@Url.Action("", "Reimbursement")",
+                type: "POST",
+                data: { id: id },
+                dataType: 'json',
+                cache: false,
+                error: function (textStatus, errorThrown) { alert("交互错误" + JSON.stringify(textStatus)); },
+                    success: function (data) {
+                    if (data) {
+                        $("#grid").jqGrid("delRowData", id);
+                        alert("删除成功！");
+                    } else {
+                        alert("删除失败！");
+                    }
+                }
+            });
+            }
+        };
+
+    </script>
+    
+
+
+
+

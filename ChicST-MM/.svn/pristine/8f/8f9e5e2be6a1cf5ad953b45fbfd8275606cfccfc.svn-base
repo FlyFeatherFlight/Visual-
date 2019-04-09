@@ -1,0 +1,7 @@
+﻿
+@{
+    ViewBag.Title = "出差首页";
+}
+
+<h2>Index</h2>
+

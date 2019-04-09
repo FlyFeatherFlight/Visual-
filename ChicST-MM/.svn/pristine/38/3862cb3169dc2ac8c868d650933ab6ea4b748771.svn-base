@@ -1,0 +1,57 @@
+﻿@model JPager.Net.PagerResult<ChicST_MM.WEB.Models.AirFaresViewModel>
+@{
+    ViewBag.Title = "机票报销审核";
+}
+
+<h3>机票报销审核</h3>
+<div>
+    <div style="padding-left:2.5%; margin:10px 0;">
+        <form method="get" action="~/BusinessTrip/Index">
+            查询：
+            <input name="searchString" class="search-input" />
+            <input type="submit" value="查询" class="city-sure" style="position: relative;top: 0;" />
+        </form>
+    </div>
+    <table class="table table-bordered table-striped table-hover " style="text-align:center;table-layout:fixed;" id="Table">
+        <tr>
+
+            <th>报销人</th>
+            <th>出发时间</th>
+            <th>到达时间</th>
+            <th>费用小计</th>
+            <th>制单日期</th>
+            <th>审核状态</th>
+
+        </tr>
+        @foreach (var item in Model.DataList)
+        {
+        <tr>
+
+            <td>@Html.ActionLink(item.姓名, "AirFareInfoView", new { id = item.ID, role = true })</td>
+            <td>@item.出发日期.ToString("d")</td>
+            <td>@item.到达日期.ToString("d")</td>
+            <td>@item.费用小计</td>
+            <td>@item.制单日期</td>
+            <td>
+                @if (item.审核标志 == null)
+                {
+                    <span>未审核</span>
+                }
+                @if (item.审核标志 == true)
+                {
+                    <span>通过</span>
+                }
+                @if (item.审核标志 == false)
+                {
+                    <span>驳回</span>
+                }
+            </td>
+        </tr>
+        }
+    </table>
+
+</div>
+<div style="padding-left:2.5%; margin:10px 0; text-align:center;">
+    @Html.Raw(Model.PagerHtml()) 共 @Model.Total 条
+</div>
+

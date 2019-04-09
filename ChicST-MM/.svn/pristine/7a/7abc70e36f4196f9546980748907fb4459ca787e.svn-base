@@ -1,0 +1,83 @@
+﻿@model JPager.Net.PagerResult<ChicST_MM.WEB.Models.TravelReimbursementViewModel>
+
+@{
+    ViewBag.Title = "出差报销审核";
+}
+@*@if (Model.DataList.FirstOrDefault().报销类型 == "出差")
+    {
+        <h3>出差报销审核</h3>
+    }
+    else
+    {
+        <h3>接待报销审核</h3>
+    }*@
+<h3>出差报销审核</h3>
+<div>
+    <div style="padding-left:2.5%; margin:10px 0;">
+        <form action="" method="post">
+            根据对象查询：
+            <input name="keyObj" class="search-input" />
+            <input type="submit" value="查询" class="city-sure" style="position: relative;top:0;" />
+
+        </form>
+    </div>
+    <table class="table table-bordered table-striped table-hover " style="text-align:center; table-layout:fixed;">
+        <tr>
+            <th>操作</th>
+            <th>报销人</th>
+            <th>报销部门</th>
+            <th>原借款</th>
+            <th>应退补金额</th>
+            <th>提交日期</th>
+            <th>审批状态</th>
+        </tr>
+        @foreach (var item in Model.DataList)
+        {
+            <tr>
+                <td>@Html.ActionLink("查看", "TravelReimbursementDetailsInfoView", new { id = item.ID, role = "true" })</td>
+                <td>@item.报销人</td>
+                <td>@item.部门</td>
+                <td>
+                    @if (item.借款金额 == null)
+                    {
+                        <span>0</span>
+                    }
+                    else
+                    {
+                        @item.借款金额
+                    }
+                </td>
+                <td>
+                    @if (item.应退补金额 == null)
+                    {
+                        <span>0</span>
+                    }
+                    else
+                    {
+                        @item.应退补金额
+                    }
+                </td>
+                <td>@item.提交时间</td>
+                <td>
+                    @if (item.审核状态 == null)
+                    {
+                        <span>未审核</span>
+                    }
+                    else if (item.审核状态.Value == true)
+                    {
+                        <span>通过</span>
+                    }
+                    else
+                    {
+                        <span>驳回</span>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+
+</div>
+<div style="padding-left:2.5%; margin:10px 0; text-align:center;">
+    @Html.Raw(Model.PagerHtml()) 共 @Model.Total 条
+</div>
+

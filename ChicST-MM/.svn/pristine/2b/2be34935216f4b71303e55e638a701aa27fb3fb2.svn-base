@@ -1,0 +1,8 @@
+﻿@model ChicST_MM.WEB.Models.TravelReimbursementViewModel
+
+@{
+    ViewBag.Title = "CheckReimbursementView";
+}
+
+<h2>CheckReimbursementView</h2>
+

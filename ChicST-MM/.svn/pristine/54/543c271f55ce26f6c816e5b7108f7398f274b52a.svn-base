@@ -1,0 +1,115 @@
+﻿
+@{
+    ViewBag.Title = "出差/接待报销";
+}
+<style>
+
+
+</style>
+
+
+<form action="" method="post" class="chuchai">
+    <div>
+        <h3>出差报销</h3>
+        <a href="javascript:;" onclick="goJie()" style="margin-left:2.5%;">接待报销</a>
+    </div>
+    <table class="table table-striped table-bordered table-hover">
+        <tr>
+            <td>姓名</td>
+            <td></td>
+            <td>部门</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>职务</td>
+            <td></td>
+            <td>出差日期</td>
+            <td><input name="" data-provide="datepicker" class="datepicker search-input" type='text' placeholder="请选择出差日期" style="width:100%;" /></td>
+        </tr>
+        <tr>
+            <td>出差事由</td>
+            <td colspan="3"><input type="text" class="form-control" /></td>
+        </tr>
+        <tr>
+            <td>总计</td>
+            <td><input type="text" class="form-control" /></td>
+            <td>汇款账号</td>
+            <td><input type="text" class="form-control" /></td>
+        </tr>
+        
+        <tr>
+            <td colspan="4" style=" text-align: center;"><input type="button" value="安排计划日程" class="plan btn  btn-primary" onclick="plan()" /></td>
+        </tr>
+        <tr>
+            <td colspan="4" style="position:relative;">
+                <div class="mask-jsGrid" title="点击安排计划日程后方可操作"></div>
+                <div style="text-align:start; margin-bottom:10px;">
+                    <input id="create-user" type="button" value="添加" class="btn " />
+                    <input id="btn_del" type="button" value="删除" class="btn btn-danger" />
+                </div>
+                <table id="grid"></table>
+                <div id="pager"></div>
+                <div style="margin-top:10px;color:#333;">
+                    <input type="button" value="确认" />
+                </div>
+            </td>
+        </tr>
+
+    </table>
+</form>
+<form action="" method="post" class="hidden jiedai">
+    <div>
+        <h3>接待报销</h3>
+        <a href="javascript:;" onclick="goChu()" style="margin-left:2.5%;">出差报销</a>
+    </div>
+    <table class="table table-striped table-bordered table-hover">
+        <tr>
+            <td>姓名</td>
+            <td></td>
+            <td>部门</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>职务</td>
+            <td></td>
+            <td>接待日期</td>
+            <td><input name="" data-provide="datepicker" class="datepicker search-input" type='text' placeholder="请选择出差日期" style="width:100%;" /></td>
+        </tr>
+        <tr>
+            <td>出差事由</td>
+            <td colspan="3"><input type="text" class="form-control" /></td>
+        </tr>
+        <tr>
+            <td>总计</td>
+            <td><input type="text" class="form-control" /></td>
+            <td>汇款账号</td>
+            <td><input type="text" class="form-control" /></td>
+        </tr>
+        <tr>
+            <td colspan="4" style=" text-align: center;"><input type="button" value="安排计划日程" class="plan" /></td>
+        </tr>
+        <tr>
+            <td colspan="4" style="position:relative;">
+                <div class="mask-jsGrid" title="点击安排计划日程后方可操作"></div>
+                <div id="jsGrid2"> </div>
+            </td>
+        </tr>
+
+    </table>
+</form>
+<script>
+    //遮罩
+    $(".plan").click(function () {
+        $(".mask-jsGrid").css("display", "none")
+    })
+    //页面切换
+    function goJie() {
+        $(".chuchai").addClass("hidden").siblings().removeClass("hidden")
+    }
+    function goChu() {
+        $(".jiedai").addClass("hidden").siblings().removeClass("hidden")
+    }
+
+   
+</script>
+

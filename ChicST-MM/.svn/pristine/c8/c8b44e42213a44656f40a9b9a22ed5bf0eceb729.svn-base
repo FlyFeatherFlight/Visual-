@@ -1,0 +1,93 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.StoreCustomer_TrackViewModel>
+
+@{
+    ViewBag.Title = "CustomerTrackListView";
+}
+
+<h2>CustomerTrackListView</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.店铺)
+        </th>
+        
+        <th>
+            @Html.DisplayNameFor(model => model.客户姓名)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.客户电话)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.跟进人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.跟进时间)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.跟进方式)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.跟进内容)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.跟进结果)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.店长审核)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.备注)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.是否申请设计师)
+        </th>
+        
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.店铺)
+        </td>
+        <td>
+            @Html.ActionLink(item.客户姓名, "CustomerTrackInfoView", "StoreAnalyze", new { id=item.Id})
+            @Html.DisplayFor(modelItem => item.客户姓名)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.客户电话)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.跟进人)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.跟进时间)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.跟进方式)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.跟进内容)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.跟进结果)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.店长审核)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.备注)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.是否申请设计师)
+        </td>
+
+
+    </tr>
+}
+
+</table>

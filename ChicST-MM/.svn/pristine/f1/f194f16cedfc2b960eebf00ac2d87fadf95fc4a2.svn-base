@@ -1,0 +1,641 @@
+﻿using ChicST_MM.IBLL;
+using ChicST_MM.Model;
+using ChicST_MM.WEB.Models;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
+using JPager.Net;
+
+namespace ChicST_MM.WEB.Controllers
+{
+    public class BusinessTripController : Controller
+    {
+        private readonly IBusinessTripBLL businessTripBLL;
+        private readonly IBusinessTrip_DetailsBLL businessTrip_DetailsBLL;
+        private readonly IBusinessTrip_TypeBLL businessTrip_TypeBLL;
+        private readonly IRegionBLL regionBLL;
+        private readonly IDistributorBLL distributorBLL;
+        private readonly IStoreBLL storeBLL;
+        private readonly IAccountBLL accountBLL;
+        private readonly IEmployeeInformationBLL employeeInformationBLL;
+        private readonly IDepartmentBLL departmentBLL;
+
+        public BusinessTripController(IBusinessTripBLL businessTripBLL, IBusinessTrip_DetailsBLL businessTrip_DetailsBLL, IBusinessTrip_TypeBLL businessTrip_TypeBLL, IRegionBLL regionBLL, IDistributorBLL distributorBLL, IStoreBLL storeBLL, IAccountBLL accountBLL, IEmployeeInformationBLL employeeInformationBLL, IDepartmentBLL departmentBLL)
+        {
+            this.businessTripBLL = businessTripBLL;
+            this.businessTrip_DetailsBLL = businessTrip_DetailsBLL;
+            this.businessTrip_TypeBLL = businessTrip_TypeBLL;
+            this.regionBLL = regionBLL;
+            this.distributorBLL = distributorBLL;
+            this.storeBLL = storeBLL;
+            this.accountBLL = accountBLL;
+            this.employeeInformationBLL = employeeInformationBLL;
+            this.departmentBLL = departmentBLL;
+        }
+
+
+        /// <summary>
+        /// 出差首页
+        /// </summary>
+        /// <returns></returns>
+        // GET: BusinessTrip
+        [HttpGet]
+        public ViewResult Index(int? role,string searchString, PagerInBase pagerInBase)
+        {
+           
+            Session["View"] = true;
+            var model = BuildBusinessTripList(role);
+
+            //根据条件检索
+            var query = searchString != null ?
+                model.Where(t => t.对象.Contains(searchString)).ToList() :
+                model.ToList();
+
+            //分页数据
+            var data = query.Skip(pagerInBase.Skip).Take(pagerInBase.PageSize);
+
+            //总页数
+            var count = model.Count;
+            var res = new PagerResult<BusinessTripViewModel>
+            {
+                Code = 0,
+                DataList = data,
+                Total = count,
+                PageSize = pagerInBase.PageSize,
+                PageIndex = pagerInBase.PageIndex,
+                RequestUrl = pagerInBase.RequetUrl
+            };
+            return View(res);
+        }
+
+
+        /// <summary>
+        /// 展示出差详细
+        /// </summary>
+        /// <param name="id">出差记录ID</param>
+        /// <returns></returns>
+        public ActionResult BusinessTrip_DetailsView(int id,string role)
+        {
+            Session["View"] = true;
+            var model = BuildBusinessTrip_DetailsViewModel(id);
+            if (model==null)
+            {
+                return Content("<script>alert('数据查询出错');window.history.go(-1);");
+            }
+            ViewBag.Role = role;
+            return View(model);
+
+        }
+
+        /// <summary>
+        /// 出差记录审核页
+        /// </summary>
+        /// <param name="selectKey"></param>
+        /// <param name="orderKey"></param>
+        /// <returns></returns>
+        public ViewResult BusinerssTrip_CheckView(string selectKey, string orderKey)
+        {
+
+
+            Session["View"] = true;
+            var ac = GetAccountInfo();
+            var model = BuildBusinessTripList(1);
+            //搜索操作
+            model = selectKey != null ?
+                 model.Where(t => t.对象.Contains(selectKey)).ToList() :
+                 model.ToList();
+            //分页数据
+            var data = model.OrderByDescending(p => p.ID);//默认倒叙排列
+            //总页数
+            var count = model.Count;
+
+            var res = new PagerResult<BusinessTripViewModel>
+            {
+                Code = 0,
+                DataList = model,
+                Total = count,
+                PageSize = 10,
+                PageIndex = 0,
+                RequestUrl = ""
+            };
+            return View(res);
+        }
+
+        /// <summary>
+        /// 添加出差记录页面
+        /// </summary>
+        /// <returns></returns>
+        public ViewResult AddBusinessTripView()
+        {
+            Session["View"] = true;
+            BusinessTripViewModel model = new BusinessTripViewModel();
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// 添加出差记录详细页面
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult AddBusinessTrip_DetailsView(int id)
+        {
+            Session["View"] = true;
+            BusinessTrip_DetailsViewModel model = new BusinessTrip_DetailsViewModel();
+            if (BuildBusinessTrip_DetailsViewModel(id) != null)
+            {
+                return Content("<script>alert('该出差已有数据，不可添加！');window.history.go(-1);");
+            }
+            model.出差记录ID = id;
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// 添加出差记录操作
+        /// </summary>
+        /// <param name="model">传入出差记录</param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult BusinessTripAdd(BusinessTripViewModel model)
+        {
+            if (Session["View"].ToString() == "false")
+            {
+                return Content("<script>alert('重复操作！');window.history.go(-1);");
+            }
+
+            var ac = GetAccountInfo();
+            var businessTrip = new HR_出差记录表();
+
+            var em = GetCompanyStaff();
+
+
+
+
+            businessTrip.关联审核人ID = model.关联审核人ID;
+
+            businessTrip.出差内容 = model.出差内容;
+            businessTrip.城市ID = model.城市ID;
+            businessTrip.审核状态 = model.审核状态;
+            businessTrip.对象ID = model.对象ID;
+            businessTrip.对象类别ID = model.对象类别ID;
+            businessTrip.开始时间 = model.开始时间;
+            businessTrip.提交人ID = ac.用户ID;
+            businessTrip.提交时间 = DateTime.Now;
+            businessTrip.结束时间 = model.结束时间;
+            businessTrip.部门ID = ac.部门;
+
+            if (ModelState.IsValid)
+            {
+                businessTrip = businessTripBLL.AddReturnModel(businessTrip);
+                Session["View"] = false;
+            }
+
+            else
+            {
+                List<string> sb = new List<string>();
+                //获取所有错误的Key
+                List<string> Keys = ModelState.Keys.ToList();
+                //获取每一个key对应的ModelStateDictionary
+                foreach (var key in Keys)
+                {
+                    var errors = ModelState[key].Errors.ToList();
+                    //将错误描述添加到sb中
+                    foreach (var error in errors)
+                    {
+                        sb.Add(error.ErrorMessage);
+                    }
+                }
+                string msg = null;
+                foreach (var item in sb)
+                {
+                    msg += item.ToString() + "<br/>";
+                }
+                return Content("<script>alert('" + msg + "');window.history.go(-1);</script>");
+            }
+            return RedirectToAction("AddBusinessTrip_DetailsView", new { id = businessTrip.ID });
+        }
+
+        /// <summary>
+        /// 添加出差记录详情
+        /// </summary>
+        /// <param name="model">传入出差记录详情</param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult BusinessTrip_DetailsAdd(BusinessTrip_DetailsViewModel model)
+        {
+            if (Session["View"].ToString() == "false")
+            {
+                return Content("<script>alert('重复操作！');parent.location.href='Index';</script>");
+            }
+            Session["View"] = false;
+            HR_出差详情 businessTrip_Details = new HR_出差详情();
+            businessTrip_Details.出差记录ID = model.出差记录ID;
+            businessTrip_Details.受访者 = model.受访者;
+            businessTrip_Details.受访者职务 = model.受访者职务;
+            businessTrip_Details.备注 = model.备注;
+            businessTrip_Details.拜访时间 = model.拜访时间;
+            businessTrip_Details.拜访结果 = model.拜访结果;
+            businessTrip_Details.提交时间 = DateTime.Now;
+            businessTrip_Details.新的问题 = model.新的问题;
+            businessTrip_Details.新的问题应对方案 = model.新的问题应对方案;
+            businessTrip_Details.计划内容 = model.计划内容;
+            businessTrip_Details.计划方案 = model.计划方案;
+            businessTrip_Details.计划目标 = model.计划目标;
+            businessTrip_Details.预计可能性 = model.预计可能性;
+            businessTrip_Details.预计完成日期 = model.预计完成日期;
+            if (ModelState.IsValid)
+            {
+                businessTrip_Details = businessTrip_DetailsBLL.AddReturnModel(businessTrip_Details);
+                Session["View"] = false;
+            }
+
+            else
+            {
+                List<string> sb = new List<string>();
+                //获取所有错误的Key
+                List<string> Keys = ModelState.Keys.ToList();
+                //获取每一个key对应的ModelStateDictionary
+                foreach (var key in Keys)
+                {
+                    var errors = ModelState[key].Errors.ToList();
+                    //将错误描述添加到sb中
+                    foreach (var error in errors)
+                    {
+                        sb.Add(error.ErrorMessage);
+                    }
+                }
+                string s = null;
+                foreach (var item in sb)
+                {
+                    s += item.ToString() + "<br/>";
+                }
+                return Content("<script>alert('" + s + "');window.history.go(-1);</script>");
+            }
+            return RedirectToAction("BusinessTrip_DetailsView", new { id = businessTrip_Details.出差记录ID });
+        }
+
+        /// <summary>
+        /// 出差审核
+        /// </summary>
+        /// <param name="id">出差记录ID</param>
+        /// <param name="checkType">审核状态</param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult BusinessTrip_Check(int id, string checkType)
+        {
+            var ac = GetAccountInfo();
+            var model = businessTripBLL.GetModel(p => p.ID == id);
+
+            if (ac.用户ID != model.关联审核人ID)
+            {
+                return Json("违规操作！");
+            }
+            else
+            {
+                model.审核状态 = checkType;
+                string[] property = new string[1];
+                property[0] = "审核状态";
+                businessTripBLL.Modify(model, property);
+                return Json(true);
+            }
+
+        }
+
+
+        /// <summary>
+        /// 获取省
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult GetProvince()
+        {
+            var regions = regionBLL.GetModels(p => true).GroupBy(p => p.省).Select(p => p.FirstOrDefault());
+
+            List<String> provinces = new List<String>();
+            foreach (var item in regions)
+            {
+                provinces.Add(item.省);
+            }
+
+            return Json(provinces);
+
+        }
+        /// <summary>
+        /// 获取市
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult GetRgion(string province)
+        {
+            var regions = regionBLL.GetModels(p => p.省 == province).GroupBy(p => p.市).Select(p => p.FirstOrDefault());
+
+            var cityes = new ArrayList();
+            foreach (var item in regions)
+            {
+
+                var city = new string[] { item.区号, item.市 };
+                cityes.Add(city);
+
+            }
+            return Json(cityes);
+
+        }
+
+        /// <summary>
+        /// 获取地区
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult GetArea(string code)
+        {
+            var areaList = regionBLL.GetModels(p => p.区号 == code).ToList();
+            var area = new ArrayList();
+            foreach (var item in areaList)
+            {
+
+                var city = new string[] { item.ID.ToString(), item.区县 };
+                area.Add(city);
+
+            }
+            return Json(area);
+        }
+        /// <summary>
+        /// 获得出差对象
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult GetTripObj(string type, int? id)
+        {
+            int n = int.Parse(type);
+            var tripType = businessTrip_TypeBLL.GetModel(p => p.ID == n);
+            if (tripType.ID == 3)//门店
+            {
+                var stores = storeBLL.GetModels(p => p.地区ID == id);
+                var tripObj = new ArrayList();
+                foreach (var item in stores)
+                {
+
+                    var store = new string[] { item.ID.ToString(), item.名称 };
+                    tripObj.Add(store);
+                }
+                return Json(tripObj);
+            }
+            if (tripType.ID == 4)//经销商
+            {
+                var distributors = distributorBLL.GetModels(p => true).ToList();
+                var tripObj = new ArrayList();
+                foreach (var item in distributors)
+                {
+
+                    var distributor = new string[] { item.ID.ToString(), item.名称 };
+                    tripObj.Add(distributor);
+
+                }
+                return Json(tripObj);
+
+            }
+            if (tripType.ID == 5)//或物业
+            {
+                var stores = storeBLL.GetModels(p => p.地区ID == id);
+                var tripObj = new ArrayList();
+                foreach (var item in stores)
+                {
+
+                    var store = new string[] { item.ID.ToString(), item.商场 };
+                    tripObj.Add(store);
+                }
+                return Json(tripObj);
+            }
+            else
+            {
+                return Json(null);
+            }
+
+        }
+
+
+
+        /// <summary>
+        /// 获得出差类型
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult GetBusinessTripType()
+        {
+
+            var tripTypes = businessTrip_TypeBLL.GetModels(p => true).ToList();
+            var tripType = new ArrayList();
+            foreach (var item in tripTypes)
+            {
+
+                var Type = new string[] { item.ID.ToString(), item.对象类型 };
+                tripType.Add(Type);
+            }
+            return Json(tripType);
+        }
+
+        /// <summary>
+        /// 获取关联审核人
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult GetAssociatedAuditor()
+        {
+            var models = GetCompanyStaff();
+            if (models.Count() <= 0)
+            {
+                return Json("");
+            }
+            var tripObj = new ArrayList();
+            foreach (var item in models)
+            {
+
+                var Auditor = new string[] { item.用户ID.ToString(), item.姓名 };
+                tripObj.Add(Auditor);
+            }
+            return Json(tripObj);
+        }
+
+        /// <summary>
+        /// 查询出差详情
+        /// </summary>
+        /// <param name="id">出差记录ID</param>
+        /// <returns></returns>
+        private BusinessTrip_DetailsViewModel BuildBusinessTrip_DetailsViewModel(int id)
+        {
+            var businessTrip = businessTripBLL.GetModel(p => p.ID == id);
+            var businessTripDetails = businessTrip_DetailsBLL.GetModel(p => p.出差记录ID == id);
+            if (businessTripDetails == null)
+            {
+                return null;
+            }
+            BusinessTrip_DetailsViewModel model = new BusinessTrip_DetailsViewModel();
+            model.ID = businessTripDetails.ID;
+            model.出差记录ID = businessTripDetails.出差记录ID;
+            model.受访者 = businessTripDetails.受访者;
+            model.受访者职务 = businessTripDetails.受访者职务;
+            model.备注 = businessTripDetails.备注;
+            model.拜访时间 = businessTripDetails.拜访时间;
+            model.拜访结果 = businessTripDetails.拜访结果;
+            model.提交时间 = businessTripDetails.提交时间;
+            model.新的问题 = businessTripDetails.新的问题;
+            model.新的问题应对方案 = businessTripDetails.新的问题应对方案;
+            model.计划内容 = businessTripDetails.计划内容;
+            model.计划方案 = businessTripDetails.计划方案;
+            model.计划目标 = businessTripDetails.计划目标;
+            model.预计可能性 = businessTripDetails.预计可能性;
+            model.预计完成日期 = businessTripDetails.预计完成日期;
+            model.BusinessTripView = BuildBusinessTrip(id);
+            if (model.BusinessTripView==null)
+            {
+                return null;
+            }
+            return model;
+        }
+
+
+        /// <summary>
+        /// 构建单个出差基本信息
+        /// </summary>
+        /// <param name="id">出差记录ID</param>
+        /// <returns></returns>
+        private BusinessTripViewModel BuildBusinessTrip(int? id)
+        {
+            BusinessTripViewModel businessTripViewModel = new BusinessTripViewModel();
+            HR_出差记录表 model = new HR_出差记录表();
+            var account = GetAccountInfo();
+            if (id > 0)
+            {
+                model = businessTripBLL.GetModel(p => p.ID == id);
+            }
+            else
+            {
+                model = businessTripBLL.GetModel(p => p.提交人ID == account.用户ID);
+            }
+
+            businessTripViewModel.ID = model.ID;
+            businessTripViewModel.关联审核人ID = model.关联审核人ID;
+            businessTripViewModel.关联审核人 = accountBLL.GetModel(p => p.ID == model.关联审核人ID).姓名;
+            businessTripViewModel.出差内容 = model.出差内容;
+            businessTripViewModel.城市ID = model.城市ID;
+            var region = regionBLL.GetModel(p => p.ID == model.城市ID);
+            businessTripViewModel.城市 = region.省 + region.市 + region.区县;
+            businessTripViewModel.审核状态 = model.审核状态;
+            businessTripViewModel.对象类别ID = model.对象类别ID;
+            businessTripViewModel.对象类别 = businessTrip_TypeBLL.GetModel(p => p.ID == model.对象类别ID).对象类型;
+            businessTripViewModel.对象ID = model.对象ID;
+            switch (businessTripViewModel.对象类别)
+            {
+                case "门店":
+                    businessTripViewModel.对象 = storeBLL.GetModel(p => p.ID == model.对象ID).名称;
+                    break;
+                case "经销商":
+                    businessTripViewModel.对象 = distributorBLL.GetModel(p => p.ID == model.对象ID).名称;
+                    break;
+                case "物业":
+                    businessTripViewModel.对象 = storeBLL.GetModel(p => p.ID == model.对象ID).商场;
+                    break;
+                default:
+                    businessTripViewModel.对象 = null;
+                    break;
+            }
+            businessTripViewModel.开始时间 = model.开始时间;
+            businessTripViewModel.提交时间 = model.提交时间;
+            businessTripViewModel.结束时间 = model.结束时间;
+            businessTripViewModel.部门ID = account.部门;
+            businessTripViewModel.提交人ID = model.提交人ID;
+            businessTripViewModel.提交人 = accountBLL.GetModel(p => p.ID == model.提交人ID).姓名;
+            return businessTripViewModel;
+
+        }
+
+        /// <summary>
+        /// 根据当前操作人员显示出差申请
+        /// </summary>
+        /// <param name="role">当前用户角色</param>
+        /// <returns></returns>
+        private List<BusinessTripViewModel> BuildBusinessTripList(int? role)
+        {
+            List<BusinessTripViewModel> businessTripViewModels = new List<BusinessTripViewModel>();
+            var em = GetAccountInfo();
+            if (role > 0)//大于零则为审核人员操作
+            {
+                var models = businessTripBLL.GetModels(p => p.关联审核人ID == em.用户ID);
+                foreach (var item in models)
+                {
+                    businessTripViewModels.Add(BuildBusinessTrip(item.ID));
+                }
+            }
+            else
+            {
+                var models = businessTripBLL.GetModels(p => p.提交人ID == em.用户ID);
+                foreach (var item in models)
+                {
+                    businessTripViewModels.Add(BuildBusinessTrip(item.ID));
+                }
+            }
+
+            return businessTripViewModels;
+        }
+
+        /// <summary>
+        /// 获取公司员工信息
+        /// </summary>
+        /// <returns></returns>
+        private List<CompanyStaffViewModel> GetCompanyStaff()
+        {
+            List<CompanyStaffViewModel> companyStaffViewModel = new List<CompanyStaffViewModel>();
+
+            var accounts = accountBLL.GetModels(p => true).ToList();
+            var employees = employeeInformationBLL.GetModels(p => true).ToList();
+            for (int i = 0; i < accounts.Count(); i++)
+            {
+                HR_人员信息表 m = new HR_人员信息表();
+                try
+                {
+                    var id = accounts.ElementAt(i).ID;
+                    m = employeeInformationBLL.GetModel(p => p.用户ID == id);
+                }
+                catch (Exception e)
+                {
+
+                    throw e;
+                }
+                CompanyStaffViewModel ac = new CompanyStaffViewModel();
+                if (m != null)
+                {
+                    ac.ID = m.ID;
+                    ac.上级部门 = m.上级部门;
+                    ac.姓名 = m.姓名;
+                    ac.岗位 = m.岗位;
+                    ac.用户ID = m.用户ID;
+                    ac.职级 = m.职级;
+                    ac.部门 = m.部门;
+                    companyStaffViewModel.Add(ac);
+                }
+            }
+            return companyStaffViewModel;
+        }
+
+        /// <summary>
+        /// 设置当前的用户信息
+        /// </summary>
+        private AcountInformation GetAccountInfo()
+        {
+
+            string userName = HttpContext.User.Identity.Name;
+            if (userName != null)
+            {
+
+                var account = HttpContext.Session["Account"] as AcountInformation;
+                return account;
+            }
+            else
+            {
+                return null;
+            }
+
+        }
+
+    }
+}

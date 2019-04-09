@@ -1,0 +1,16 @@
+﻿using ChicST_MM.WEB.Controllers;
+using System.Web;
+using System.Web.Mvc;
+
+namespace ChicST_MM.WEB
+{
+    public class FilterConfig
+    {
+        public static void RegisterGlobalFilters(GlobalFilterCollection filters)
+        {
+            filters.Add(new HandleErrorAttribute());
+            filters.Add(new ExceptionControl());
+            filters.Add(new CustomAttributes.AuthorizationFilterAttribute());
+        }
+    }
+}

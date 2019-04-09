@@ -1,0 +1,28 @@
+﻿using System;
+
+namespace ChicST_MM.WEB.Models
+{
+    /// <summary>
+    /// 商务接待计划明细
+    /// </summary>
+    public class BusinessReceiving_PlansViewModel
+    {
+        public int ID { get; set; }
+        public DateTime 日期 { get; set; }
+        public DateTime? 开始时间 { get; set; }
+        public DateTime? 结束时间 { get; set; }
+        public string 行程项目 { get; set; }
+        public string 陪同人员 { get; set; }
+        public string 准备的资料 { get; set; }
+        public int? 车辆配备数 { get; set; }
+        public string 会谈地点 { get; set; }
+        public string 会谈重点项目 { get; set; }
+        public int 提交人ID { get; set; }
+        public string 提交人 { get; set; }
+        public DateTime 提交日期 { get; set; }
+        public int? 更新人ID { get; set; }
+        public string 更新人 { get; set; }
+        public DateTime? 更新日期 { get; set; }
+        public int 接待计划ID { get; set; }
+    }
+}

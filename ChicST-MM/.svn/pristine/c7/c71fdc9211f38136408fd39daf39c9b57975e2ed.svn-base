@@ -1,0 +1,42 @@
+﻿@model JPager.Net.PagerResult<ChicST_MM.WEB.Models.BusinessTripViewModel>
+@{
+    ViewBag.Title = "BusinerssTrip_CheckView";
+}
+
+<h3>出差审核</h3>
+<div>
+    <div style="padding-left:2.5%; margin:10px 0;">
+        <form method="get">
+            根据对象查询：
+            <input name="keyObj" />
+            <input type="submit" value="查询" />
+        </form>
+    </div>
+    <table class="table table-bordered table-striped  " style="text-align:center; table-layout:fixed;">
+        <tr >
+            <th>ID</th>
+            <th>对象</th>
+            <th>对象类别</th>
+            <th>城市</th>
+            <th>出差内容</th>
+            <th>开始时间</th>
+            <th>结束时间</th>
+        </tr>
+        @foreach (var item in Model.DataList)
+        {
+            <tr>
+                <td>@item.ID</td>
+                <td>@Html.ActionLink(item.对象, "BusinessTrip_DetailsView", new {id = item.ID ,role = "true"})</td>
+                <td>@item.对象类别</td>
+                <td style="width:100%; word-break:keep-all;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">@item.城市</td>
+                <td style="width:100%; word-break:keep-all;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">@item.出差内容</td>
+                <td>@item.开始时间</td>
+                <td>@item.结束时间</td>
+            </tr>
+        }
+    </table>
+   
+</div>
+<div style="padding-left:2.5%; margin:10px 0; text-align:center;">
+    @Html.Raw(Model.PagerHtml()) 共 @Model.Total 条
+</div>

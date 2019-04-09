@@ -1,0 +1,314 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - CHIC营销系统</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet" href="~/Content/common.css">
+    <link rel="stylesheet" href="~/Content/index.css">
+    <link href="~/Content/style.css" rel="stylesheet" />
+    @*附件上传*@
+    
+    @*日期插件*@
+    <link rel="stylesheet" href="~/Content/bootstrap-datepicker3.css">
+    @* jqgrid相关 *@
+    <link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+    <link href="~/Content/jquery.jqGrid/ui.jqgrid.css" rel="stylesheet" />
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    @*附件上传*@
+    <script src="~/Scripts/layer.js"></script>
+
+    @*引入jqgrid js*@
+    <script src="~/Scripts/jquery.jqGrid.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.10.0.min.js"></script>
+    <script src="~/Scripts/i18n/grid.locale-cn.js"></script>
+    <script src="~/Scripts/jquery.gallery.js"></script>
+    @*时间日期插件 (一定要放在jqgrid后面)*@
+    <script src="~/Scripts/bootstrap-datepicker.min.js"></script>
+    <script src="~/Scripts/bootstrap-datepicker.zh-CN.min.js" charset="UTF-8"></script>
+
+    <script type="text/javascript">
+        // 显示当前登录者
+        window.onload = function () {
+            var a = sessionStorage.getItem("userkey");
+            $('.userName').text(a);
+            if (document.getElementById("tab") == null) {
+                return;
+            } else {
+                //合并
+                var tab = document.getElementById("tab");
+                var maxCol = 4, val, count, start;
+
+                for (var col = maxCol - 1; col >= 0; col--) {
+                    count = 1;
+                    val = "";
+                    for (var i = 0; i < tab.rows.length; i++) {
+                        if (val == tab.rows[i].cells[col].innerHTML) {
+                            count++;
+                        } else {
+                            if (count > 1) { //合并
+                                start = i - count;
+                                tab.rows[start].cells[col].rowSpan = count;
+                                for (var j = start + 1; j < i; j++) {
+                                    tab.rows[j].cells[col].style.display = "none";
+                                }
+                                count = 1;
+                            }
+                            val = tab.rows[i].cells[col].innerHTML;
+                        }
+                    }
+                    if (count > 1) { //合并，最后几行相同的情况下
+                        start = i - count;
+                        tab.rows[start].cells[col].rowSpan = count;
+                        for (var j = start + 1; j < i; j++) {
+                            tab.rows[j].cells[col].style.display = "none";
+                        }
+                    }
+                }
+            }
+           
+        }
+        //必填项
+        function sureRed() {
+            var reds = $(".red");
+            reds.each((index, red) => {
+                if ($(red).val() == "" || $(red).val() == null) {
+                    $(red).siblings(".must").text("*该项为必填项");
+                    return;
+                }
+                $(red).siblings(".must").html("<i class='iconfont green'>&#xe61f;</i>");
+            })
+        }
+    </script>
+</head>
+<body>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <!-- 缩略导航栏 -->
+            <div class="small-box hidden-lg hidden-md col-sm-12 col-xs-12 clearFix">
+                <span class="glyphicon glyphicon-menu-left back" onclick="javascript: history.back(-1)"></span><span>CHIC营销系统</span>
+                <div class="icon-menus">
+                    <span class="icon-menu"></span>
+                    <span class="icon-menu"></span>
+                    <span class="icon-menu"></span>
+                    <span class="icon-menu"></span>
+                </div>
+                <ul class="small-nav nav-pills nav-stacked col-sm-12 col-xs-12 ">
+                    <!--出差-->
+                    <li class="active type-list">
+                        <span class=" glyphicon glyphicon-plane"></span>
+                        出差
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <div class="nav-second" style="display:none;">
+                        <ul>
+                            <li><a href="@Url.Action("AddBusinessTripView","BusinessTrip")">出差申请</a></li>
+                            <li><a href="@Url.Action("Index","BusinessTrip")">出差记录</a></li>
+                            <li><a href="@Url.Action("BusinerssTrip_CheckView","BusinessTrip")">出差审核</a></li>
+                        </ul>
+                    </div>
+                    <!--接待-->
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-briefcase"></span>
+                        接待
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <div class="nav-second" style="display:none;">
+                        <ul>
+                            <li><a href="@Url.Action("AddReceivingRecordsView","ReceivingRecords")">接待申请</a></li>
+                            <li><a href="@Url.Action("ReceivingRecordsIndex","ReceivingRecords")">接待记录</a></li>
+                            <li><a href="@Url.Action("ReceivingRecords_CheckView","ReceivingRecords")">接待审核</a></li>
+                        </ul>
+                    </div>
+                    <!--报销-->
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-usd"></span>
+                        报销
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <div class="nav-second" style="display:none;">
+                        <ul>
+                            <li><a href="@Url.Action("TravelReimbursementHistoryView","Reimbursement")">出差/接待报销</a></li>
+                            <li><a href="@Url.Action("OtherReimbursementHistoryView","Reimbursement")">其它报销</a></li>
+                            <li><a href="@Url.Action("CheckReimbursementView","Reimbursement",new {dataType = 0 })">出差报销审核</a></li>
+                            <li><a href="@Url.Action("CheckReimbursementView","Reimbursement",new {dataType = 1 })">接待报销审核</a></li>
+                            <li><a href="@Url.Action("CheckOtherReimbursementView","Reimbursement")">其它报销审核</a></li>
+                        </ul>
+                    </div>
+                    <!--收款-->
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-edit"></span>
+                        收款
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <div class="nav-second" style="display:none;">
+                        <ul>
+                            <li><a href="@Url.Action("ReceiptAddView","Receipt")">添加收款记录</a></li>
+                            <li><a href="@Url.Action("Index","Receipt")">收款查询</a></li>
+                        </ul>
+                    </div>
+                    <!-- 5s评审表-->
+                    <li class="type-list">
+                        <span class=glyphicon glyphicon-pencil"></span>
+                        5s评审
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <div class="nav-second" style="display:none;">
+                        <ul>
+                            <li><a href="@Url.Action("Index","Review_5S")">5S评审标准</a></li>
+                            <li><a href="@Url.Action("ReviewRecordAddView","Review_5S")">5S评审表</a></li>
+                            <li><a href="@Url.Action("ReviewRecordsView","Review_5S")">5S评审表记录</a></li>
+                        </ul>
+                    </div>
+                    <!-- 售后 -->
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-phone-alt"></span>
+                        售后
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <div class="nav-second" style="display:none;">
+                        <ul>
+                            <li><a href="@Url.Action("","")">售后相关</a></li>
+                        </ul>
+                    </div>
+                    <li class="type-list" style="text-align:center;">
+                        <label style="font-size:12px;">用户：</label><span class="userName">登录者</span>
+                        <a href="@Url.Action("SignOut","LogIn")" class="btn btn-danger" style="width:15%;margin-left:10px;padding: 4px;">注销</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- 侧边导航栏 -->
+            <nav class="nav-warpper fl hidden-sm hidden-xs ">
+                <div class="user-warpper">
+                    <span class="glyphicon glyphicon-user "></span>
+                    <span class="userName">登录者</span>
+                    <a href="@Url.Action("SignOut","LogIn")" class="goOut">注销</a>
+                </div>
+                <ul class="nav nav-pills nav-stacked col-sm-12 col-xs-12 ">
+                    <!-- 出差 -->
+                    <li class="active type-list">
+                        <span class="glyphicon glyphicon-plane"></span>
+                        出差
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <div class="nav-second" style="display:none;">
+                        <ul>
+                            <li><a href="@Url.Action("AddBusinessTripView","BusinessTrip")">出差申请</a></li>
+                            <li><a href="@Url.Action("Index","BusinessTrip")">出差记录</a></li>
+                            <li><a href="@Url.Action("BusinerssTrip_CheckView","BusinessTrip")">出差审核</a></li>
+                        </ul>
+                    </div>
+                    <!-- 接待 -->
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-briefcase"></span>
+                        接待
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <div class="nav-second" style="display:none;">
+                        <ul>
+                            <li><a href="@Url.Action("AddReceivingRecordsView","ReceivingRecords")">接待申请</a></li>
+                            <li><a href="@Url.Action("ReceivingRecordsIndex","ReceivingRecords")">接待记录</a></li>
+                            <li><a href="@Url.Action("ReceivingRecords_CheckView","ReceivingRecords")">接待审核</a></li>
+                        </ul>
+                    </div>
+                    <!-- 报销 -->
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-usd"></span>
+                        报销
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <div class="nav-second" style="display:none;">
+                        <ul>
+                            <li><a href="@Url.Action("TravelReimbursementHistoryView","Reimbursement")">出差/接待报销</a></li>
+                            <li><a href="@Url.Action("OtherReimbursementHistoryView","Reimbursement")">其它报销</a></li>
+                            <li><a href="@Url.Action("CheckReimbursementView","Reimbursement",new {dataType = 0 })">出差报销审核</a></li>
+                            <li><a href="@Url.Action("CheckReimbursementView","Reimbursement",new {dataType = 1 })">接待报销审核</a></li>
+                            <li><a href="@Url.Action("CheckOtherReimbursementView","Reimbursement")">其它报销审核</a></li>
+                        </ul>
+                    </div>
+                    <!-- 收款 -->
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-edit"></span>
+                        收款
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <div class="nav-second" style="display:none;">
+                        <ul>
+                            <li><a href="@Url.Action("ReceiptAddView","Receipt")">添加收款记录</a></li>
+                            <li><a href="@Url.Action("Index","Receipt")">收款查询</a></li>
+                        </ul>
+                    </div>
+                    <!-- 5s评审表 -->
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                        5s评审
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+
+                    <div class="nav-second" style="display:none;">
+                        <ul>
+                            <li><a href="@Url.Action("Index","Review_5S")">5S评审标准</a></li>
+                            <li><a href="@Url.Action("ReviewRecordAddView","Review_5S")">5S评审表</a></li>
+                            <li><a href="@Url.Action("ReviewRecordsView","Review_5S")">5S评审表记录</a></li>
+                        </ul>
+                    </div>
+                    <!-- 售后 -->
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-phone-alt"></span>
+                        售后
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <div class="nav-second" style="display:none;">
+                        <ul>
+                            <li><a href="@Url.Action("","")">评审相关</a></li>
+                        </ul>
+                    </div>
+
+                </ul>
+            </nav>
+        </div>
+        <div class="row">
+
+            <div class="content-warpper col-sm-12 col-xs-12 sm-width">
+                <div class="logo hidden-sm hidden-xs">
+                    CHIC营销系统
+                </div>
+                @RenderBody()
+                <footer class="foot-copy ">
+                    <p>Copyright &copy; @DateTime.Now.Year -CHIC营销系统 by至尚至美信息部</p>
+                </footer>
+
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        /* 缩略导航 */
+        $('.icon-menus').click(function () {
+            $('.small-nav').toggleClass('show');
+        })
+        /* 二级菜单 */
+        $('.type-list').each((i, li) => {
+            li.onclick = function () {
+                $(this).next('.nav-second').slideToggle();
+                $(this).children('.glyphicon-menu-left').toggleClass('running');
+                $(this).addClass('active').siblings().removeClass('active');
+            }
+        })
+        /* 日期 */
+        $('.datepicker').datepicker({
+            language: 'zh-CN'
+        });
+
+
+    </script>
+
+</body>
+</html>

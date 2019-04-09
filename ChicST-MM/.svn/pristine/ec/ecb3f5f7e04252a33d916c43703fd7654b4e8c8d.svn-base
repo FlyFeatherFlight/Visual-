@@ -1,0 +1,1727 @@
+﻿@model ChicST_MM.WEB.Models.BusinessReceiving_RecordsViewModel
+@{
+    ViewBag.Title = "接待申请表";
+}
+<style>
+    .tab tbody tr td:nth-child(2n-1) {
+        text-align: center;
+        width: auto;
+    }
+    #MainForm-wrap {
+        margin-bottom:400px;
+    }
+    #recInfo-wrap,
+    #recDetailPlan-wrap,
+    #talkMatters-wrap,
+    #RecBudget-wrap {
+        height:900px;
+    }
+  
+</style>
+<script>
+    $(function () {
+
+    //加载关联审核人下拉框数据
+    $.ajax({
+        type: "post",
+        data: {},
+        url: '@Url.Action("GetAssociatedAuditor", "BusinessReceiving")',
+        dataType: "json",
+        cache: false,
+        async: true,
+        success: function (data) {
+            $("#reviewer").empty();
+            $("#reviewer").append("<option value=''>-请选择审核人-</option>")
+            $.each(data, function(i, m) {
+                $("#reviewer").append("<option value=" + m[0] + ">" + m[1] + "</option>");
+
+            })
+
+        },
+        error: function (err) {
+            alert(err);
+            console.log(err)
+        }
+
+        })
+        $("#reviewer").change(function () {
+            sureRed();
+        })
+    //获取省份数据 (来宾信息添加)
+    $.ajax({
+        type: "post",
+        data: {},
+        url: '@Url.Action( "GetProvince", "BusinessTrip")',
+        dataType: "json",
+        cache: false,
+        async: true,
+        success: function (data) {
+            $("#sheng").append("<option value=''> -请选择- </option>");
+            $("#shengE").append("<option value=''> -请选择- </option>");
+            $.each(data, function(i, m) {
+                $("#sheng").append("<option value=" + m + ">" + m + "</option>");
+                $("#shengE").append("<option value=" + m + ">" + m + "</option>");
+
+            })
+
+        },
+        error: function (err) {
+            alert(err);
+            console.log(err);
+        }
+
+        })
+          /****添加***/
+    //根据选择的省份，获取市数据
+    $("#sheng").change(function () {
+        var province = $("#sheng").val();
+        $("#shi").empty();
+        getShi(province, $("#shi"), $("#city"), $("#NowCity"));
+    })
+    //显示当前选择的城市
+    $("#shi").change(function () {
+        showCity($("#city"), $("#sheng").val(), $("#shi").val(), $(".NowCity"));
+       
+        })
+        /****修改***/
+        //根据选择的省份，获取市数据
+        $("#shengE").change(function () {
+            var province = $("#shengE").val();
+            $("#shiE").empty();
+            getShi(province, $("#shiE"), $("#cityE"), $("#NowCityE"));
+        })
+        //显示当前选择的城市
+        $("#shiE").change(function () {
+            showCity($("#cityE"), $("#shengE").val(), $("#shiE").val(), $(".NowCityE"));
+
+        })
+    //显示当前选择的城市
+    function showCity(city, shengVal, shiVal, NowCity) {
+        city.val(shengVal + shiVal);
+        NowCity.text(city.val());
+    }
+
+    //获取市
+    function getShi(province, shi, city, NowCity) {
+
+         $.ajax({
+                type: "post",
+                data: { province: province },
+                url: '@Url.Action("GetRgion", "BusinessTrip")',
+                dataType: "json",
+                cache: false,
+                async: true,
+                success: function (data) {
+                    city.val("");
+                    NowCity.text('');
+                    shi.append("<option value=''> -请选择- </option>");
+                    $.each(data, function(i, m) {
+
+                        shi.append("<option value=" + m[1] + ">" + m[1]  + "</option>")
+
+                    })
+                        
+                },
+                error: function (err) {
+                    alert(err);
+                    console.log(err);
+                }
+
+            })
+    }
+    })
+   
+  
+</script>
+
+<h3>接待申请表</h3>
+
+@*主表信息*@
+<div id="MainForm-wrap">
+    <input type="text" name="" value="" id="recPlanID" class="hidden" />
+    <form id="MainForm">
+
+        <table class="table table-striped table-bordered table-hover">
+
+            <tr>
+                <td class="bold">申请人</td>
+                <td>
+                    @Model.申请人
+                <input type="text" name="申请人ID" value="@Model.申请人ID" class=" hidden" readonly />
+            </td>
+            <td class="bold">部门</td>
+            <td>
+                <input type="text" name="部门" value="@Model.部门" class="form-control" readonly />
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">入住酒店</td>
+            <td>
+                <input type="text" name="入住酒店" class="form-control" />
+            </td>
+            <td class="bold">航班号</td>
+            <td colspan="3">
+                <input type="text" name="航班号" class="form-control" />
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">关联审核人</td>
+            <td colspan="3">
+                <select name="审核人ID" id="reviewer" class="form-control red">
+                    <option>-请选择审核人-</option>
+                </select>
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" class="" style="position:relative;">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 start-date">
+                    <span class="bold">抵达日期</span>&nbsp;&nbsp;
+                    <input name="抵达日期" class="dateTime search-input red" type='text' placeholder="请选择开始日期" oninput="sureRed()" />
+                    <span class="must" style="color:red;">*该选项为必填项</span>
+                </div>
+
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <span class="bold">离开日期</span>&nbsp;&nbsp;
+                    <input name="离开日期" class="dateTime search-input " type='text' placeholder="请选择结束日期" />
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">主要沟通内容</td>
+            <td colspan="3">
+                <textarea rows="3" name="主要沟通内容" class="form-control red" oninput="sureRed()"></textarea>
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="bold">费用总预算</td>
+            <td>
+                <input name="费用总预算" type="text" class="form-control red"
+                       onkeyup="value=value.replace(/[^\d.]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" value="0" oninput="sureRed()" />
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+            <td class="bold">配合部门</td>
+            <td>
+                <input name="配合部门" type="text" class="form-control red" oninput="sureRed()" />
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+        </tr>
+
+    </table>
+    <div class="submit-btns" style="margin-top:10px;">
+        <input type="button" name="name" value="下一步" id="mainNext" />
+    </div>
+</form>
+</div>
+@*接待来宾信息模态框*@
+<div id="recInfo-wrap">
+    <h3>接待来宾信息模态框</h3>
+    <div id="ReceptionInfo-diolog">
+        <table class="table table-bordered table-hover table-striped tab">
+            <tr>
+                <td>城市</td>
+                <td>
+                    <select id="sheng" class="form-control">
+                        <option value="">-请选择省-</option>
+                    </select>
+                    <select id="shi" class="form-control" style="margin-top:5px;">
+                        <option value="">-请选择市-</option>
+                    </select>
+
+                    城市是：<span class="NowCity"></span>
+                    <input type="text" id="city" class="hidden" />
+
+                </td>
+            </tr>
+            <tr>
+                <td>身份</td>
+                <td>
+                    <input type="text" class="form-control" id="identity" />
+                </td>
+            </tr>
+            <tr>
+                <td>姓名</td>
+                <td>
+                    <input type="text" class="form-control" id="recName" />
+                </td>
+            </tr>
+            <tr>
+                <td>性别</td>
+                <td>
+                    <input type="text" class="form-control" id="recGender" />
+                </td>
+            </tr>
+            <tr>
+                <td>电话</td>
+                <td>
+                    <input type="text" class="form-control" id="recPhone" onkeyup="value=value.replace(/[^\d]/g,'')"
+                           onblur="value=value.replace(/[^\d]/g,'')" placeholder="请输入数字"/>
+                </td>
+            </tr>
+            <tr>
+                <td>备注</td>
+                <td>
+                    <input type="text" class="form-control" id="infoNotes" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    @*修改*@
+    <form id="ReceptionInfo-diologE">
+        @*来宾信息详情ID*@
+        <input type="text" name="ID" value="" id="InfoID" class="hidden" />
+        <input type="text" name="接待计划ID" value="" id="recInfoID" class="hidden" />
+        <table class="table table-bordered table-hover table-striped tab">
+            <tr>
+                <td>城市</td>
+                <td>
+                    <select id="shengE" class="form-control">
+                        <option value="">-请选择省-</option>
+                    </select>
+                    <select id="shiE" class="form-control" style="margin-top:5px;">
+                        <option value="">-请选择市-</option>
+                    </select>
+
+                    城市是：<span class="NowCityE"></span>
+                    <input type="text" name="城市" id="cityE" class="hidden" value=""/>
+
+                </td>
+            </tr>
+            <tr>
+                <td>身份</td>
+                <td>
+                    <input type="text" name="身份" class="form-control" id="identityE" />
+                </td>
+            </tr>
+            <tr>
+                <td>姓名</td>
+                <td>
+                    <input type="text" name="姓名" class="form-control" id="recNameE" />
+                </td>
+            </tr>
+            <tr>
+                <td>性别</td>
+                <td>
+                    <input type="text" name="性别" class="form-control" id="recGenderE" />
+                </td>
+            </tr>
+            <tr>
+                <td>电话</td>
+                <td>
+                    <input type="text" name="电话" class="form-control" id="recPhoneE"
+                           onkeyup="value=value.replace(/[^\d]/g,'')"
+                           onblur="value=value.replace(/[^\d]/g,'')" placeholder="请输入数字" />
+                </td>
+            </tr>
+            <tr>
+                <td>备注</td>
+                <td>
+                    <input type="text" name="备注" class="form-control" id="infoNotesE" />
+                </td>
+            </tr>
+        </table>
+    </form>
+    @*接待来宾信息表格*@
+    <div style="margin: 0 auto; width:95%;">
+        <div style="text-align:start; margin-bottom:10px;">
+            <input id="AddReceptionInfo" type="button" value="添加来宾信息" class="btn " />
+            <sapn style="color: orange;display: block;margin: 5px 0 5px 0;">温馨提示：添加后请点击下一步</sapn>
+        </div>
+        <table id="ReceptionInfo-grid"></table>
+        <div id="ReceptionInfo-pager"></div>
+        <div class="submit-btns" style="margin-top:10px;">
+            <input type="button" name="name" value="下一步" onclick="recInfoNext()" />
+        </div>
+    </div>
+</div>
+@*商务接待计划详情模态框*@
+<div id="recDetailPlan-wrap">
+    <h3>商务接待计划详情模态框</h3>
+    <div id="recDetailPlan-diolog">
+        <table class="table table-bordered table-hover table-striped">
+            <tr>
+                <td>日期</td>
+                <td>
+                    <input type="text" value="" class="search-input dateTime" placeholder="请选择日期" id="detailDate" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 start-date">
+                        <span>开始时间</span>&nbsp;&nbsp;
+                        <input class="timeLay search-input" type='text' placeholder="请选择开始时间" oninput="sureRed()" id="detailStart" />
+                        <span class="must" style="color:red;">*该选项为必填项</span>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <span>结束时间</span>&nbsp;&nbsp;
+                        <input class="timeLay search-input" type='text' placeholder="请选择结束时间" oninput="sureRed()" id="detailEnd" />
+                        <span class="must" style="color:red;">*该选项为必填项</span>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>行程项目</td>
+                <td>
+                    <input type="text" value="" class="form-control" id="travelProj" />
+                </td>
+            </tr>
+            <tr>
+                <td>陪同人员</td>
+                <td>
+                    <input type="text" value="" class="form-control" id="withPerson" />
+                </td>
+            </tr>
+            <tr>
+                <td>准备的资料</td>
+                <td>
+                    <textarea rows="3" class="form-control" id="preparedData"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>车辆配备数</td>
+                <td>
+                    <input type="text" value="" class="form-control" id="carNum" />
+                </td>
+            </tr>
+            <tr>
+                <td>会谈地点</td>
+                <td>
+                    <input type="text" value="" class="form-control" id="talksite" />
+                </td>
+            </tr>
+            <tr>
+                <td>会谈重点项目</td>
+                <td>
+                    <input type="text" value="" class="form-control" id="talkKey" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    @*修改*@
+    <form id="recDetailPlan-diologE">
+        @*接待计划详情ID*@
+        <input type="text" name="ID" value="" id="planDetailID" class="hidden" />
+        <input type="text" name="接待计划ID" value="" id="recDetailID" class="hidden" />
+        <table class="table table-bordered table-hover table-striped">
+            <tr>
+                <td>日期</td>
+                <td>
+                    <input type="text" name="日期" value="" class="search-input dateTime" placeholder="请选择日期" id="detailDateE" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 start-date">
+                        <span>开始时间</span>&nbsp;&nbsp;
+                        <input class="timeLay search-input" name="开始时间" type='text' placeholder="请选择开始时间" oninput="sureRed()" id="detailStartE" />
+                        <span class="must" style="color:red;">*该选项为必填项</span>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <span>结束时间</span>&nbsp;&nbsp;
+                        <input class="timeLay search-input" name="结束时间" type='text' placeholder="请选择结束时间" oninput="sureRed()" id="detailEndE" />
+                        <span class="must" style="color:red;">*该选项为必填项</span>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>行程项目</td>
+                <td>
+                    <input type="text" name="行程项目" value="" class="form-control red" id="travelProjE" oninput="sureRed()"/>
+                    <span class="must" style="color:red;">*该选项为必填项</span>
+                </td>
+            </tr>
+            <tr>
+                <td>陪同人员</td>
+                <td>
+                    <input type="text" name="陪同人员" value="" class="form-control" id="withPersonE" />
+                </td>
+            </tr>
+            <tr>
+                <td>准备的资料</td>
+                <td>
+                    <textarea rows="3" name="准备的资料" class="form-control" id="preparedDataE"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>车辆配备数</td>
+                <td>
+                    <input type="text" name="车辆配备数" value="" class="form-control" id="carNumE" />
+                </td>
+            </tr>
+            <tr>
+                <td>会谈地点</td>
+                <td>
+                    <input type="text" name="会谈地点" value="" class="form-control" id="talksiteE" />
+                </td>
+            </tr>
+            <tr>
+                <td>会谈重点项目</td>
+                <td>
+                    <input type="text" name="会谈重点项目" value="" class="form-control" id="talkKeyE" />
+                </td>
+            </tr>
+        </table>
+    </form>
+    @**表格*@
+    <div style="margin: 0 auto; width:95%;">
+        <div style="text-align:start; margin-bottom:10px;">
+            <input id="AddrecDetailPlan" type="button" value="添加接待计划详情" class="btn " />
+            <sapn style="color: orange;display: block;margin: 5px 0 5px 0;">温馨提示：添加后请点击下一步</sapn>
+        </div>
+        <table id="recDetailPlan-grid"></table>
+        <div id="recDetailPlan-pager"></div>
+        <div class="submit-btns" style="margin-top:10px;">
+            <input type="button" name="name" value="下一步" onclick="recDetailNext()" />
+        </div>
+    </div>
+</div>
+@*会谈事项模态框*@
+<div id="talkMatters-wrap">
+    <h3>会谈事项模态框</h3>
+    <div id="talkMatters-diolog">
+        <table class="table table-bordered table-hover table-striped">
+
+            <tr>
+                <td>主要问题</td>
+                <td>
+                    <textarea rows="3" class="form-control" id="problemKey"></textarea>
+                </td>
+            </tr>
+
+            <tr>
+                <td>计划应对方案</td>
+                <td>
+                    <textarea rows="3" class="form-control" id="AddPlanProject"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>预计成果</td>
+                <td>
+                    <textarea rows="3" class="form-control" id="ExpResults"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>需要的协助</td>
+                <td>
+                    <textarea rows="3" class="form-control" id="needHelp"></textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+    @*修改*@
+    <form id="talkMatters-diologE">
+        <input type="text" name="ID" value="" id="talkMattersID" class="hidden" />
+        <input type="text" name="接待计划ID" value="" id="recTalkID" class="hidden" />
+        <table class="table table-bordered table-hover table-striped">
+
+            <tr>
+                <td>主要问题</td>
+                <td>
+                    <textarea rows="3" name="主要问题" class="form-control" id="problemKeyE"></textarea>
+                </td>
+            </tr>
+
+            <tr>
+                <td>计划应对方案</td>
+                <td>
+                    <textarea name="计划应对方案" rows="3" class="form-control" id="planProjectE"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>预计成果</td>
+                <td>
+                    <textarea name="预计成果" rows="3" class="form-control" id="ExpResultsE"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>需要的协助</td>
+                <td>
+                    <textarea name="需要的协助" rows="3" class="form-control" id="needHelpE"></textarea>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <div style="margin: 0 auto; width:95%;">
+        <div style="text-align:start; margin-bottom:10px;">
+            <input id="AddtalkMatters" type="button" value="添加会议事项" class="btn " />
+            <sapn style="color: orange;display: block;margin: 5px 0 5px 0;">温馨提示：添加后请点击下一步</sapn>
+        </div>
+        <table id="talkMatters-grid"></table>
+        <div id="talkMatters-pager"></div>
+        <div class="submit-btns" style="margin-top:10px;">
+            <input type="button" name="name" value="下一步" onclick="talkMattersNext()" />
+        </div>
+    </div>
+</div>
+@*接待预算模态框*@
+<div id="RecBudget-wrap">
+    <h3>接待预算模态框</h3>
+    <div id="RecBudget-diolog">
+        <table class="table table-bordered table-hover table-striped tab">
+            <tr>
+                <td>时间</td>
+                <td>
+                    <input type="text" value="" class=" form-control dateTime" placeholder="请选择日期" id="recBudDate" />
+                </td>
+            </tr>
+            <tr>
+                <td>摘要</td>
+                <td>
+                    <textarea rows="3" class="form-control" id="digest"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>金额预估</td>
+                <td>
+                    <input type="text" class="form-control" onkeyup="value=value.replace(/[^\d.]/g,'')"
+                           onblur="value=value.replace(/[^\d.]/g,'')" value="0" id="budMoney" />
+                </td>
+            </tr>
+
+        </table>
+    </div>
+    @*修改*@
+    <form id="RecBudget-diologE">
+        @*接待预算详情ID*@
+        <input type="text" name="ID" value="" id="RecBudID" class="hidden" />
+        <input type="text" name="接待计划ID" value="" id="recBudID" class="hidden" />
+        <table class="table table-bordered table-hover table-striped tab">
+            <tr>
+                <td>时间</td>
+                <td>
+                    <input type="text" name="时间" class=" form-control dateTime" placeholder="请选择日期" id="recBudDateE" />
+                </td>
+            </tr>
+            <tr>
+                <td>摘要</td>
+                <td>
+                    <textarea rows="3" name="摘要" class="form-control" id="digestE"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>金额预估</td>
+                <td>
+                    <input name="金额预估" type="text" class="form-control" onkeyup="value=value.replace(/[^\d.]/g,'')"
+                           onblur="value=value.replace(/[^\d.]/g,'')" value="0" id="budMoneyE" />
+                </td>
+            </tr>
+
+        </table>
+    </form>
+    <div style="margin: 0 auto; width:95%;">
+        <div style="text-align:start; margin-bottom:10px;">
+            <input id="AddReceptionBudget" type="button" value="添加接待预算" class="btn " />
+            <sapn style="color: orange;display: block;margin: 5px 0 5px 0;">温馨提示：添加后请点击确定</sapn>
+        </div>
+        <table id="RecBudget-grid"></table>
+        <div id="RecBudget-pager"></div>
+        <div class="submit-btns" style="margin-top:10px;">
+            <input type="button" name="name" value="确定" onclick="goDetail()" />
+        </div>
+    </div>
+</div>
+
+
+<script>
+   
+    //接待计划ID
+    var recPlanID = "";
+        //点击主表后的提交
+    $("#mainNext").click(function() {
+        var MainStatus = false;
+        $("#MainForm .red").each(function(i, m) {
+            if (m.value == "" || m.value == null) {
+                return MainStatus = true;
+            }
+        })
+        if (MainStatus) {
+            alert("请完善信息！")
+        } else {
+           
+                $.ajax({
+                type: "post",
+                    url: '@Url.Action("ReceivingRecordsAdd", "BusinessReceiving")',
+                    data: $("#MainForm").serialize(),
+                dataType: "json",
+                cache: false,
+                async: true,
+                    success: function (data) {
+                        //console.log(data.id);
+                        $("#recPlanID").val(data.id);//接待计划ID
+                        //用于修改传递的接待计划ID
+                        $("#recInfoID").val(data.id);
+                        $("#recDetailID").val(data.id);
+                        $("#recTalkID").val(data.id);
+                        $("#recBudID").val(data.id);
+                        recPlanID = data.id;
+                        //console.log(recPlanID);
+                        $("html,body").animate({
+                            scrollTop: $("#recInfo-wrap").offset().top
+                        }, { duration: 500, easing: "swing" });
+                        return false;
+
+                   
+                },
+                    error: function (err) {
+                        alert(err);
+                    console.log(err)
+                }
+
+            })
+          
+        }
+
+    })
+    //console.log(recPlanID);
+    //来宾信息中下一步
+    function recInfoNext() {
+        //来宾信息表格数据
+       
+        var o = jQuery("#ReceptionInfo-grid");
+        //获取当前显示的数据
+        var rows = o.jqGrid('getRowData');
+        var rowNum = o.jqGrid('getGridParam', 'rowNum'); //获取显示配置记录数量
+        var total = o.jqGrid('getGridParam', 'records'); //获取查询得到的总记录数量
+        //设置rowNum为总记录数量并且刷新jqGrid，使所有记录现出来调用getRowData方法才能获取到所有数据
+        o.jqGrid('setGridParam', { rowNum: total }).trigger('reloadGrid');
+        var rows = o.jqGrid('getRowData');  //此时获取表格所有匹配的
+        o.jqGrid('setGridParam', { rowNum: rowNum }).trigger('reloadGrid'); //还原原来显示的记录数量
+        if (rows.length == 0) {
+            alert("请添加来宾信息！")
+        } else {
+            $("html,body").animate({
+                scrollTop: $("#recDetailPlan-wrap").offset().top
+            }, { duration: 500, easing: "swing" });
+            return false;
+        }
+    }
+    //接待详情中的下一步
+    function recDetailNext() {
+        //详情计划表格数据
+      
+        var o = jQuery("#recDetailPlan-grid");
+        //获取当前显示的数据
+        var rows = o.jqGrid('getRowData');
+        var rowNum = o.jqGrid('getGridParam', 'rowNum'); //获取显示配置记录数量
+        var total = o.jqGrid('getGridParam', 'records'); //获取查询得到的总记录数量
+        //设置rowNum为总记录数量并且刷新jqGrid，使所有记录现出来调用getRowData方法才能获取到所有数据
+        o.jqGrid('setGridParam', { rowNum: total }).trigger('reloadGrid');
+        var rows = o.jqGrid('getRowData');  //此时获取表格所有匹配的
+        o.jqGrid('setGridParam', { rowNum: rowNum }).trigger('reloadGrid'); //还原原来显示的记录数量
+        if (rows.length == 0) {
+            alert("请添加计划详情！")
+        } else {
+            $("html,body").animate({
+                scrollTop: $("#talkMatters-wrap").offset().top
+            }, { duration: 500, easing: "swing" });
+            return false;
+        }
+    }
+    //会议事项中的下一步
+    function talkMattersNext() {
+        //会议事项表格数据
+      
+        var o = jQuery("#talkMatters-grid");
+        //获取当前显示的数据
+        var rows = o.jqGrid('getRowData');
+        var rowNum = o.jqGrid('getGridParam', 'rowNum'); //获取显示配置记录数量
+        var total = o.jqGrid('getGridParam', 'records'); //获取查询得到的总记录数量
+        //设置rowNum为总记录数量并且刷新jqGrid，使所有记录现出来调用getRowData方法才能获取到所有数据
+        o.jqGrid('setGridParam', { rowNum: total }).trigger('reloadGrid');
+        var rows = o.jqGrid('getRowData');  //此时获取表格所有匹配的
+        o.jqGrid('setGridParam', { rowNum: rowNum }).trigger('reloadGrid'); //还原原来显示的记录数量
+        if (rows.length == 0) {
+            alert("请添加会议事项！")
+        } else {
+            $("html,body").animate({
+                scrollTop: $("#RecBudget-wrap").offset().top
+            }, { duration: 500, easing: "swing" });
+            return false;
+        }
+        
+        }
+    //接待预算中的确认
+    function goDetail() {
+        var o = jQuery("#ReceptionInfo-grid");
+        //获取当前显示的数据
+        var rows = o.jqGrid('getRowData');
+        var rowNum = o.jqGrid('getGridParam', 'rowNum'); //获取显示配置记录数量
+        var total = o.jqGrid('getGridParam', 'records'); //获取查询得到的总记录数量
+        //设置rowNum为总记录数量并且刷新jqGrid，使所有记录现出来调用getRowData方法才能获取到所有数据
+        o.jqGrid('setGridParam', { rowNum: total }).trigger('reloadGrid');
+        var rows = o.jqGrid('getRowData');  //此时获取表格所有匹配的
+        o.jqGrid('setGridParam', { rowNum: rowNum }).trigger('reloadGrid'); //还原原来显示的记录数量
+        if (rows.length == 0) {
+            alert("请添加接待预算！")
+        } else {
+            window.location.href = '@Url.Action("ReceivingRecords_DetailsView", "BusinessReceiving")?id=' + recPlanID;
+        }
+    }
+
+    
+       @************ 接待来宾信息 **************@
+    
+        //jqgrid表格配置
+        jQuery("#ReceptionInfo-grid").jqGrid({
+            url: "",
+            datatype: "local",//显示数据
+
+            mtype: "post",
+            colModel: [
+                { label: 'ID', name: 'ID', index: 'ID', sorttype: "int", width: 50, align: "center" },
+                { label: '城市', name: '城市', index: '城市', sortable: false, align: "center" },
+                { label: '身份', name: '身份', index: '身份', sortable: false, align: "center" },
+                { label: '姓名', name: '姓名', index: '姓名', sortable: false, align: "center" },
+                { label: '性别', name: '性别', index: '性别', sortable: false, align: "center" },
+                { label: '电话', name: '电话', index: '电话', sortable: false, align: "center" },
+                { label: '备注', name: '备注', index: '备注', sortable: false, align: "center" },
+                { label: '修改', name: 'Edit', index: 'id', width: 80, align: "center" },
+                { label: '删除', name: 'Delete', index: 'id', sortable: false, align: "center" },
+
+            ],
+            caption: "接待来宾信息展示",
+            loadonce: true,    //排序翻页等操作在服务端完成
+            //rowNum: 5,
+            //rowList: [5, 10, 20],  //设置分页下拉列表
+            pager: "#ReceptionInfo-pager",
+            viewrecords: true,
+            width: 500, height: "auto",
+            jsonReader: { repeatitems: false }, //prmNames: { id: "No" },
+            sortorder: "asc",
+            sortname: "No",//传递给服务端的排序字段名
+            autowidth: true,
+            gridComplete: function () {  //在此事件中循环为每一行添加删除/修改链接
+                var ids = jQuery("#ReceptionInfo-grid").jqGrid('getDataIDs');
+
+                for (var i = 0; i < ids.length; i++) {
+
+                    var id = ids[i];
+                    
+                    //console.log(rowId)
+                    edit = "<span     class='Aspan' onclick='InfoEdit(" + id + ")' >修改</span>";
+                    del = "<span     class='Aspan' onclick='InfoDelete(" + id + ")' >删除</span>";
+                    jQuery("#ReceptionInfo-grid").jqGrid('setRowData', ids[i], { Edit: edit, Delete: del });
+
+                }
+            }
+        });
+        // 点击添加打开模态框
+        $("#AddReceptionInfo")
+            .click(function () {
+                if (recPlanID == "") {
+                    alert("请先填写主接待申请信息！");
+                } else {
+                    $("#ReceptionInfo-diolog").dialog("option", "title", "接待来宾信息填写").dialog("open");
+                }
+            });
+        //接待来宾模态框
+        $("#ReceptionInfo-diolog").dialog({
+            autoOpen: false,
+            height: 500,
+            width: 500,
+            modal: true,
+            buttons: {
+
+                "取消": function () { $(this).dialog("close") },
+                "提交": function () {
+                    var city = $.trim($("#city").val());//城市
+                    var recName = $.trim($("#recName").val());//姓名
+                    var recGender = $.trim($("#recGender").val());//性别
+                    var recPhone = $.trim($("#recPhone").val());//电话
+                    var identity = $.trim($("#identity").val());//身份
+                    var infoNotes = $.trim($("#infoNotes").val());//备注
+                   
+                    var params = {
+                        "接待计划ID": recPlanID,
+                        "城市": city,
+                        "姓名": recName,
+                        "性别": recGender,
+                        "电话": recPhone,
+                        "身份": identity,
+                        "备注": infoNotes,
+
+                    };
+
+                    $("#ReceptionInfo-diolog .red").each(function(i, m) {
+                        if (m.value == null || m.value == "") {
+                            return status = true;
+                        }
+                    })
+                    if (status) {
+                        alert("请完善信息！")
+                    }
+                    else {
+                        //提交模态框的数据
+                        $.ajax({
+                            url: "@Url.Action("BusinessRec_GuestAdd", "BusinessReceiving")",
+                            type: "post",   //默认为get
+                            data: params,   //传递给服务端的数据
+                            dataType: "json",
+                            cache: false,
+                            success: function (data, textStatus) {
+                                //console.log(data)
+                                // 如果提交成功就显示在页面
+                                if (data.success) {
+                                    var dataRow = {
+                                        "ID": data.data.ID,
+                                        "城市": city,
+                                        "姓名": recName,
+                                        "性别": recGender,
+                                        "电话": recPhone,
+                                        "身份": identity,
+                                        "备注": infoNotes,
+                                    };
+                                    //console.log(dataRow)
+                                    
+                                    $("#ReceptionInfo-grid").jqGrid("addRowData", data.data.ID, dataRow, "last");//没有选定行则添加在第一行
+                                   
+                                    // 添加成功模态框关闭
+                                    $("#ReceptionInfo-diolog").dialog("close");
+                                    alert("添加操作成功!");
+                                    console.log(data.msg);
+                                } else {
+                                    alert("添加操作失败!");
+                                    console.log(data.msg);
+                                }
+
+                            },
+
+                            error: function (textStatus, errorThrown) {
+                                console.log("系统ajax交互错误: " + JSON.stringify(textStatus));
+                            },
+                        });
+                    }
+
+                }
+            }
+        });
+        //修改模态框
+        $("#ReceptionInfo-diologE").dialog({
+            autoOpen: false,
+            height: 500,
+            width: 500,
+            modal: true,
+            buttons: {
+
+                "取消": function () { $(this).dialog("close") },
+                "提交": function () {
+                  
+                        //提交模态框的数据
+                        $.ajax({
+                            url: "@Url.Action("BusinessRec_GuestEdit", "BusinessReceiving")",
+                            type: "post",   //默认为get
+                            data: $("#ReceptionInfo-diologE").serialize(),   //传递给服务端的数据
+                            dataType: "json",
+                            cache: false,
+                            success: function (data, textStatus) {
+                                //console.log(data.data)
+                                if (data.success) {
+                                    //页面修改数据 
+                                    var selectedId = $("#ReceptionInfo-grid").jqGrid("getGridParam", "selrow");
+                                    var dataRow = data.data;
+
+                                    // 修改成功模态框关闭
+                                    $("#ReceptionInfo-diologE").dialog("close");
+                                    $("#ReceptionInfo-grid").jqGrid('setRowData', selectedId, dataRow, { color: "" });
+                                    alert(data.msg);
+                                } else {
+                                    console.log(data.msg);
+                                }
+                               ;
+                               
+                            },
+
+                            error: function (textStatus, errorThrown) {
+                                console.log("系统ajax交互错误: " + JSON.stringify(textStatus));
+                            },
+                        });
+                    
+
+                }
+            }
+        });
+
+        // 行编辑
+        function InfoEdit(id) {
+            console.log('当前编辑的是'+id)
+
+            var model = $("#ReceptionInfo-grid").jqGrid('getRowData', id);
+            console.log(model)
+
+            // 给修改模态框的赋值
+            $("#InfoID").val(id);
+            $.trim($("#cityE").val(model.城市));//城市
+            $.trim($("#NowCityE").text(model.城市));//城市
+            $.trim($("#recNameE").val(model.姓名));//姓名
+            $.trim($("#recGenderE").val(model.性别));//性别
+            $.trim($("#recPhoneE").val(model.电话));//电话
+            $.trim($("#identityE").val(model.身份));//身份
+            $.trim($("#infoNotesE").val(model.备注));//备注
+
+            $("#ReceptionInfo-diologE").dialog("option", "title", "修改来宾信息内容").dialog("open");
+
+
+        };
+
+        // 来宾信息行删除
+        function InfoDelete(id) {
+            //console.log(id)//当前的表上ID和行号ID一样
+            if (confirm("确定删除当前数据?")) {
+                $.ajax({
+                    url: "@Url.Action("BusinessRec_GuestDel", "BusinessReceiving")",
+                    type: "get",
+                    data: { id: id },
+                    dataType: 'json',
+                    cache: false,
+                    error: function (textStatus, errorThrown) { alert("交互错误" + JSON.stringify(textStatus)); },
+                    success: function (data) {
+
+                        if (data.success) {
+                            $("#ReceptionInfo-grid").jqGrid("delRowData", id);
+
+                            alert(data.msg);
+
+                        } else {
+                            alert("删除失败！");
+                            console.log(data.msg);
+                        }
+                    }
+                });
+             }
+        };
+
+
+        @************ 商务接待计划详情 **************@
+        //jqgrid表格配置
+        jQuery("#recDetailPlan-grid").jqGrid({
+            url: "",
+            datatype: "local",//显示数据
+
+            mtype: "post",
+            colModel: [
+                { label: 'ID', name: 'ID', index: 'ID', sorttype: "int", width: 50, align: "center" },
+                { label: '日期', name: '日期', index: '日期', sortable: false, align: "center" },
+                { label: '开始时间', name: '开始时间', index: '开始时间', sortable: false, align: "center" },
+                { label: '结束时间', name: '结束时间', index: '结束时间', sortable: false, align: "center" },
+                { label: '行程项目', name: '行程项目', index: '行程项目', sortable: false, align: "center" },
+                { label: '陪同人员', name: '陪同人员', index: '陪同人员', sortable: false, align: "center" },
+                { label: '准备的资料', name: '准备的资料', index: '准备的资料', sortable: false, align: "center" },
+                { label: '车辆配备数', name: '车辆配备数', index: '车辆配备数', sortable: false, align: "center" },
+                { label: '会谈地点', name: '会谈地点', index: '会谈地点', sortable: false, align: "center" },
+                { label: '会谈重点项目', name: '会谈重点项目', index: '会谈重点项目', sortable: false, align: "center" },
+                { label: '修改', name: 'Edit', index: 'id', width: 80, align: "center" },
+                { label: '删除', name: 'Delete', index: 'id', sortable: false, align: "center" },
+
+
+
+            ],
+            caption: "接待计划展示",
+            loadonce: true,    //排序翻页等操作在服务端完成
+            //rowNum: 5,
+            //rowList: [5, 10, 20],  //设置分页下拉列表
+            pager: "#recDetailPlan-pager",
+            viewrecords: true,
+            width: 500, height: "auto",
+            jsonReader: { repeatitems: false }, //prmNames: { id: "No" },
+            sortorder: "asc",
+            sortname: "No",//传递给服务端的排序字段名
+            autowidth: true,
+            gridComplete: function () {  //在此事件中循环为每一行添加删除/修改链接
+                var ids = jQuery("#recDetailPlan-grid").jqGrid('getDataIDs');
+
+                for (var i = 0; i < ids.length; i++) {
+
+                    var id = ids[i];
+                    // 通过当前行id获取所需ID
+
+                    //console.log(rowId)
+                    edit = "<span  class='Aspan' onclick='DetailPlanEdit(" + id  + ")' >修改</span>";
+                    del = "<span     class='Aspan' onclick='DetailPlanDelete(" + id  + ")' >删除</span>";
+                    jQuery("#recDetailPlan-grid").jqGrid('setRowData', ids[i], { Edit: edit, Delete: del });
+
+                }
+            }
+        });
+        // 点击添加打开模态框
+        $("#AddrecDetailPlan")
+            .click(function () {
+                if (recPlanID == "") {
+                    alert("请先填写主接待申请信息！");
+                } else {
+                    $("#recDetailPlan-diolog").dialog("option", "title", "接待计划详情填写").dialog("open");
+                }
+            });
+        //商务接待计划详情模态框
+        $("#recDetailPlan-diolog").dialog({
+            autoOpen: false,
+            height: 650,
+            width: 960,
+            modal: true,
+            buttons: {
+
+                "取消": function () { $(this).dialog("close") },
+                "提交": function () {
+                    
+                    var detailDate   = $.trim($("#detailDate").val());//日期
+                    var detailStart  = $.trim($("#detailStart").val());//开始时间
+                    var detailEnd    = $.trim($("#detailEnd").val());//结束时间
+                    var travelProj   = $.trim($("#travelProj").val());//行程项目
+                    var withPerson   = $.trim($("#withPerson").val());//陪同人员
+                    var preparedData = $.trim($("#preparedData").val());//准备的资料
+                    var carNum       = $.trim($("#carNum").val());//车辆配备数
+                    var talksite     = $.trim($("#talksite").val());//会谈地点
+                    var talkKey      = $.trim($("#talkKey").val());//会谈重点项目
+                    
+                   
+                    var params = {
+                        "接待计划ID":recPlanID,
+                        "日期": detailDate,
+                        "开始时间": detailStart,
+                        "结束时间": detailEnd,
+                        "行程项目": travelProj,
+                        "陪同人员": withPerson,
+                        "准备的资料": preparedData,
+                        "车辆配备数": carNum,
+                        "会谈地点": talksite,
+                        "会谈重点项目": talkKey,
+
+                    };
+
+                    $("#recDetailPlan-diolog .red").each(function(i, m) {
+                        if (m.value == null || m.value == "") {
+                            return status = true;
+                        }
+                    })
+                    if (status) {
+                        alert("请完善信息！")
+                    }
+                    else {
+                        //提交模态框的数据
+                        $.ajax({
+                            url: "@Url.Action("BusinessRec_PlanAdd", "BusinessReceiving")",
+                            type: "post",   //默认为get
+                            data: params,   //传递给服务端的数据
+                            dataType: "json",
+                            cache: false,
+                            success: function (data, textStatus) {
+                              
+                                // 如果提交成功就显示在页面
+                                if (data.success) {
+                                    var newid = data.data.ID;
+                                    var dataRow = {
+                                        "ID": newid,
+                                        "日期": detailDate,
+                                        "开始时间": detailStart,
+                                        "结束时间": detailEnd,
+                                        "行程项目": travelProj,
+                                        "陪同人员": withPerson,
+                                        "准备的资料": preparedData,
+                                        "车辆配备数": carNum,
+                                        "会谈地点": talksite,
+                                        "会谈重点项目": talkKey,
+                                    };
+                                    //console.log(dataRow)
+                                    $("#recDetailPlan-grid").jqGrid("addRowData", newid, dataRow, "last");//没有选定行则添加在第一行
+                                   
+                                    // 添加成功模态框关闭
+                                    $("#recDetailPlan-diolog").dialog("close");
+                                    alert("添加操作成功!");
+                                    console.log(data.msg)
+                                } else {
+                                    alert("添加操作失败!");
+                                    console.log(data.msg)
+                                }
+
+                            },
+
+                            error: function (textStatus, errorThrown) {
+                                console.log("系统ajax交互错误: " + JSON.stringify(textStatus));
+                            },
+                        });
+                    }
+
+                }
+            }
+        });
+        //修改
+        $("#recDetailPlan-diologE").dialog({
+            autoOpen: false,
+            height: 650,
+            width: 960,
+            modal: true,
+            buttons: {
+
+                "取消": function () { $(this).dialog("close") },
+                "提交": function () {
+                    //获取修改计划详情内容
+                    //页面修改数据
+                    var planDetailID = $("#planDetailID").val();
+                    var detailDateE = $.trim($("#detailDateE").val());//日期
+                    var detailStartE = $.trim($("#detailStartE").val());//开始时间
+                    var detailEndE = $.trim($("#detailEndE").val());//结束时间
+                    var travelProjE = $.trim($("#travelProjE").val());//行程项目
+                    var withPersonE = $.trim($("#withPersonE").val());//陪同人员
+                    var preparedDataE = $.trim($("#preparedDataE").val());//准备的资料
+                    var carNumE = $.trim($("#carNumE").val());//车辆配备数
+                    var talksiteE = $.trim($("#talksiteE").val());//会谈地点
+                    var talkKeyE = $.trim($("#talkKeyE").val());//会谈重点项目
+                    var dataRow = {
+                        "ID": planDetailID,
+                        "日期": detailDateE,
+                        "开始时间": detailStartE,
+                        "结束时间": detailEndE,
+                        "行程项目": travelProjE,
+                        "陪同人员": withPersonE,
+                        "准备的资料": preparedDataE,
+                        "车辆配备数": carNumE,
+                        "会谈地点": talksiteE,
+                        "会谈重点项目": talkKeyE,
+
+                    }
+                        //提交模态框的数据
+                        $.ajax({
+                            url: '@Url.Action("BusinessRec_PlanEdit", "BusinessReceiving")',
+                            type: "post",   //默认为get
+                            data: $("#recDetailPlan-diologE").serialize(),   //传递给服务端的数据
+                            dataType: "json",
+                            cache: false,
+                            success: function (data, textStatus) {
+                                console.log(data)
+                                if (data.success) {
+                                   
+                                    console.log(dataRow)
+                                    var selectedId = $("#recDetailPlan-grid").jqGrid("getGridParam", "selrow");
+                                   // 添加成功模态框关闭
+                                    $("#recDetailPlan-diologE").dialog("close");
+                                    $("#recDetailPlan-grid").jqGrid('setRowData', selectedId, dataRow, { color: "" });
+                                    alert(data.msg);
+                                } else {
+                                    alert("修改操作失败!");
+                                    console.log(data.msg)
+                                }
+                                    
+                                
+
+                            },
+                            error: function (err) {
+                                alert(err);
+                                console.log(err)
+                            }
+                            //error: function (textStatus, errorThrown) {
+                            //    console.log("系统ajax交互错误: " + JSON.stringify(textStatus));
+                            //},
+                        });
+                    
+
+                }
+            }
+    });
+
+        // 行编辑
+        function DetailPlanEdit(id) {
+            //console.log('当前编辑的是'+id)
+       
+            var model = $("#recDetailPlan-grid").jqGrid('getRowData', id);
+            //console.log(model)
+            
+            // 给修改模态框的赋值
+            $("#planDetailID").val(id);
+            var detailDateE = $.trim($("#detailDateE").val(model.日期));//日期
+            var detailStartE = $.trim($("#detailStartE").val(model.开始时间));//开始时间
+            var detailEndE = $.trim($("#detailEndE").val(model.结束时间));//结束时间
+            var travelProjE = $.trim($("#travelProjE").val(model.行程项目));//行程项目
+            var withPersonE = $.trim($("#withPersonE").val(model.陪同人员));//陪同人员
+            var preparedDataE = $.trim($("#preparedDataE").val(model.准备的资料));//准备的资料
+            var carNumE = $.trim($("#carNumE").val(model.车辆配备数));//车辆配备数
+            var talksiteE = $.trim($("#talksiteE").val(model.会谈地点));//会谈地点
+            var talkKeyE = $.trim($("#talkKeyE").val(model.会谈重点项目));//会谈重点项目
+            
+            $("#recDetailPlan-diologE").dialog("option", "title", "修改接待计划详细内容").dialog("open");
+
+
+        };
+        // 计划详情行删除
+        function DetailPlanDelete(id) {
+            //console.log(id)//当前的表上ID和行号ID一样
+                if (confirm("确定删除当前数据?")) {
+                    $.ajax({
+                    url: "@Url.Action("BusinessRec_PlanDel", "BusinessReceiving")",
+                    type: "get",
+                    data: { id: id },
+                    dataType: 'json',
+                    cache: false,
+                    error: function (textStatus, errorThrown) { alert("交互错误" + JSON.stringify(textStatus)); },
+                    success: function (data) {
+
+                        if (data.success) {
+                            $("#recDetailPlan-grid").jqGrid("delRowData", id);
+
+                            alert(data.msg);
+
+                        } else {
+                            alert("删除失败！");
+                            console.log(data.msg)
+                        }
+                    }
+                });
+                }
+        };
+        @************ 会谈事项 **************@
+
+        //jqgrid表格配置
+        jQuery("#talkMatters-grid").jqGrid({
+            url: "",
+            datatype: "local",//显示数据
+
+            mtype: "post",
+            colModel: [
+                { label: 'ID', name: 'ID', index: 'ID', sorttype: "int", width: 50, align: "center" },
+                { label: '主要问题', name: '主要问题', index: '主要问题', sortable: false, align: "center" },
+                { label: '计划应对方案', name: '计划应对方案', index: '计划应对方案', sortable: false, align: "center" },
+                { label: '预计成果', name: '预计成果', index: '预计成果', sortable: false, align: "center" },
+                { label: '需要的协助', name: '需要的协助', index: '需要的协助', sortable: false, align: "center" },
+                { label: '修改', name: 'Edit', index: 'id', width: 80, align: "center" },
+                { label: '删除', name: 'Delete', index: 'id', sortable: false, align: "center" },
+
+
+
+            ],
+            caption: "会议事项展示",
+            loadonce: true,    //排序翻页等操作在服务端完成
+            //rowNum: 5,
+            //rowList: [5, 10, 20],  //设置分页下拉列表
+            pager: "#talkMatters-pager",
+            viewrecords: true,
+            width: 500, height: "auto",
+            jsonReader: { repeatitems: false }, //prmNames: { id: "No" },
+            sortorder: "asc",
+            sortname: "No",//传递给服务端的排序字段名
+            autowidth: true,
+            gridComplete: function () {  //在此事件中循环为每一行添加删除/修改链接
+                var ids = jQuery("#talkMatters-grid").jqGrid('getDataIDs');
+
+                for (var i = 0; i < ids.length; i++) {
+
+                    var id = ids[i];
+                    // 通过当前行id获取所需ID
+                   
+                    //console.log(rowId)
+                    edit = "<span     class='Aspan' onclick='talkMattersEdit(" + id + ")' >修改</span>";
+                    del = "<span     class='Aspan' onclick='talkMattersDelete(" + id + ")' >删除</span>";
+                    jQuery("#talkMatters-grid").jqGrid('setRowData', ids[i], { Edit: edit, Delete: del });
+
+                }
+            }
+        });
+
+        // 点击添加打开模态框
+        $("#AddtalkMatters")
+            .click(function () {
+                if (recPlanID == "") {
+                    alert("请先填写主接待申请信息！");
+                } else {
+                    $("#talkMatters-diolog").dialog("option", "title", "会议事项填写").dialog("open");
+                }
+            });
+        //会谈事项模态框
+        $("#talkMatters-diolog").dialog({
+            autoOpen: false,
+            height: 550,
+            width: 860,
+            modal: true,
+            buttons: {
+
+                "取消": function () { $(this).dialog("close") },
+                "提交": function () {
+                    var problemKey = $.trim($("#problemKey").val());//主要问题
+                    var AddPlanProject = $.trim($("#AddPlanProject").val());//计划应对方案
+                    var needHelp = $.trim($("#needHelp").val());//需要的协助
+                    var ExpResults = $.trim($("#ExpResults").val());//预计成果
+                   
+                    var params = {
+                        "接待计划ID":recPlanID,
+                        "主要问题": problemKey,
+                        "计划应对方案": AddPlanProject,
+                        "需要的协助": needHelp,
+                        "预计成果": ExpResults
+                    };
+                    //console.log(params)
+                    $("#talkMatters-diolog .red").each(function(i, m) {
+                        if (m.value == null || m.value == "") {
+                            return status = true;
+                        }
+                    })
+                    if (status) {
+                        alert("请完善信息！")
+                    }
+                    else {
+                        //提交模态框的数据
+                        $.ajax({
+                            url: "@Url.Action("BusinessRec_MattersAdd", "BusinessReceiving")",
+                            type: "post",   //默认为get
+                            data: params,   //传递给服务端的数据
+                            dataType: "json",
+                            cache: false,
+                            success: function (data, textStatus) {
+                                //console.log(data)
+                                // 如果提交成功就显示在页面
+                                if (data.success) {
+                                    var dataRow = {
+                                        "ID":data.data.ID,
+                                        "主要问题": problemKey,
+                                        "计划应对方案": AddPlanProject,
+                                        "需要的协助": needHelp,
+                                        "预计成果": ExpResults
+                                    };
+                                    //console.log(dataRow)
+                                    $("#talkMatters-grid").jqGrid("addRowData", data.data.ID, dataRow, "last");//没有选定行则添加在第一行
+                                    
+                                    // 添加成功模态框关闭
+                                    $("#talkMatters-diolog").dialog("close");
+                                    alert("添加操作成功!");
+                                    console.log(data.msg)
+                                } else {
+                                    alert("添加操作失败!");
+                                    console.log(data.msg)
+                                }
+
+                            },
+
+                            error: function (textStatus, errorThrown) {
+                                console.log("系统ajax交互错误: " + JSON.stringify(textStatus));
+                            },
+                        });
+                    }
+
+                }
+            }
+        });
+        //修改会议事项
+        $("#talkMatters-diologE").dialog({
+            autoOpen: false,
+            height: 550,
+            width: 860,
+            modal: true,
+            buttons: {
+
+                "取消": function () { $(this).dialog("close") },
+                "提交": function () {
+
+                        //提交模态框的数据
+                        $.ajax({
+                            url: '@Url.Action("BusinessRec_MattersEdit", "BusinessReceiving")',
+                            type: "post",   //默认为get
+                            data: $("#talkMatters-diologE").serialize(),   //传递给服务端的数据
+                            dataType: "json",
+                            cache: false,
+                            success: function (data, textStatus) {
+                                //console.log(data)
+                                
+                                if (data.success) {
+                                    //页面修改数据 
+                                    var selectedId = $("#talkMatters-grid").jqGrid("getGridParam", "selrow");
+                                    var dataRow = data.data;
+
+                                    // 添加成功模态框关闭
+                                    $("#talkMatters-diologE").dialog("close");
+                                    $("#talkMatters-grid").jqGrid('setRowData', selectedId, dataRow, { color: "" });
+                                    alert(data.msg);
+                                   
+                                } else {
+                                    alert("修改操作失败!");
+                                    console.log(data.msg)
+                                }
+
+                            },
+
+                            error: function (textStatus, errorThrown) {
+                                console.log("系统ajax交互错误: " + JSON.stringify(textStatus));
+                            },
+                        });
+                    
+
+                }
+            }
+    });
+    // 会议事项行编辑
+    function talkMattersEdit(id) {
+        //console.log('当前编辑的是'+id)
+
+        var model = $("#talkMatters-grid").jqGrid('getRowData', id);
+        //console.log(model)
+
+        // 给修改模态框的赋值
+        $("#talkMattersID").val(id);
+        var problemKeyE = $.trim($("#problemKeyE").val(model.主要问题));//主要问题
+        var planProjectE = $.trim($("#planProjectE").val(model.计划应对方案));//计划应对方案
+        var needHelpE = $.trim($("#needHelpE").val(model.需要的协助));//需要的协助
+        var ExpResultsE = $.trim($("#ExpResultsE").val(model.预计成果));//预计成果
+
+        $("#talkMatters-diologE").dialog("option", "title", "修改会议事项内容").dialog("open");
+
+
+    };
+    // 会议事项行删除
+    function talkMattersDelete(id) {
+        //console.log(id)//当前的表上ID和行号ID一样
+        if (confirm("确定删除当前数据?")) {
+            $.ajax({
+                url: "@Url.Action("BusinessRec_GuestDel", "BusinessReceiving")",
+                type: "get",
+                data: { id: id },
+                dataType: 'json',
+                cache: false,
+                error: function (textStatus, errorThrown) { alert("交互错误" + JSON.stringify(textStatus)); },
+                success: function (data) {
+
+                    if (data.success) {
+                        $("#talkMatters-grid").jqGrid("delRowData", id);
+
+                        alert(data.msg);
+
+                    } else {
+                        alert("删除失败！");
+                        console.log(data.msg);
+                    }
+                }
+            });
+            }
+    };
+
+
+        @************ 接待预算 **************@
+
+        //jqgrid表格配置
+        jQuery("#RecBudget-grid").jqGrid({
+            url: "",
+            datatype: "local",//显示数据
+
+            mtype: "post",
+            colModel: [
+                { label: 'ID', name: 'ID', index: 'ID', sorttype: "int", width: 50, align: "center" },
+                { label: '时间', name: '时间', index: '时间', sortable: false, align: "center" },
+                { label: '摘要', name: '摘要', index: '摘要', sortable: false, align: "center" },
+                { label: '金额预估', name: '金额预估', index: '金额预估', sortable: false, align: "center" },
+                { label: '修改', name: 'Edit', index: 'id', width: 80, align: "center" },
+                { label: '删除', name: 'Delete', index: 'id', sortable: false, align: "center" },
+
+
+
+            ],
+            caption: "接待预算展示",
+            loadonce: true,    //排序翻页等操作在服务端完成
+            //rowNum: 5,
+            //rowList: [5, 10, 20],  //设置分页下拉列表
+            pager: "#RecBudget-pager",
+            viewrecords: true,
+            width: 500, height: "auto",
+            jsonReader: { repeatitems: false }, //prmNames: { id: "No" },
+            sortorder: "asc",
+            sortname: "No",//传递给服务端的排序字段名
+            autowidth: true,
+            gridComplete: function () {  //在此事件中循环为每一行添加删除/修改链接
+                var ids = jQuery("#RecBudget-grid").jqGrid('getDataIDs');
+
+                for (var i = 0; i < ids.length; i++) {
+
+                    var id = ids[i];
+                    
+                    //console.log(rowId)
+                    edit = "<span     class='Aspan' onclick='RecBudEdit(" + id + ")' >修改</span>";
+                    del = "<span     class='Aspan' onclick='RecBudDelete(" + id + ")' >删除</span>";
+                    jQuery("#RecBudget-grid").jqGrid('setRowData', ids[i], { Edit: edit, Delete: del });
+
+                }
+            }
+        });
+        // 点击添加打开模态框
+        $("#AddReceptionBudget")
+            .click(function () {
+                if (recPlanID == "") {
+                    alert("请先填写主接待申请信息！");
+                } else {
+                    $("#RecBudget-diolog").dialog("option", "title", "接待预算填写").dialog("open");
+                }
+                
+            });
+        //接待预算模态框
+        $("#RecBudget-diolog").dialog({
+            autoOpen: false,
+            height: 400,
+            width: 500,
+            modal: true,
+            buttons: {
+
+                "取消": function () { $(this).dialog("close") },
+                "提交": function () {
+                    var digest = $.trim($("#digest").val());//摘要
+                    var recBudDate = $.trim($("#recBudDate").val());//时间
+                    var budMoney = $.trim($("#budMoney").val());//金额预估
+                   
+                   
+                    var params = {
+                        "接待计划ID": recPlanID,
+                        "摘要": digest,
+                        "时间": recBudDate,
+                        "金额预估": budMoney
+                    };
+
+                    $("#RecBudget-diolog .red").each(function(i, m) {
+                        if (m.value == null || m.value == "") {
+                            return status = true;
+                        }
+                    })
+                    if (status) {
+                        alert("请完善信息！")
+                    }
+                    else {
+                        //提交模态框的数据
+                        $.ajax({
+                            url: "@Url.Action("BusinessRec_BudgetAdd", "BusinessReceiving")",
+                            type: "post",   //默认为get
+                            data: params,   //传递给服务端的数据
+                            dataType: "json",
+                            cache: false,
+                            success: function (data, textStatus) {
+                                //console.log(data)
+                                // 如果提交成功就显示在页面
+                                if (data.success) {
+                                    var dataRow = {
+                                        "ID":data.data.ID,
+                                        "摘要": digest,
+                                        "时间": recBudDate,
+                                        "金额预估": budMoney
+                                    };
+                                    //console.log(dataRow)
+                                   
+                                    $("#RecBudget-grid").jqGrid("addRowData", data.data.ID, dataRow, "last");//没有选定行则添加在第一行
+                                   
+                                    // 添加成功模态框关闭
+                                    $("#RecBudget-diolog").dialog("close");
+                                    alert("添加操作成功!");
+                                    console.log(data.msg);
+                                } else {
+                                    alert("添加操作失败!");
+                                    console.log(data.msg);
+                                }
+
+                            },
+
+                            error: function (textStatus, errorThrown) {
+                                console.log("系统ajax交互错误: " + JSON.stringify(textStatus));
+                            },
+                        });
+                    }
+
+                }
+            }
+        });
+        //修改
+        $("#RecBudget-diologE").dialog({
+            autoOpen: false,
+            height: 400,
+            width: 500,
+            modal: true,
+            buttons: {
+
+                "取消": function () { $(this).dialog("close") },
+                "提交": function () {
+                   
+                    
+                        //提交模态框的数据
+                        $.ajax({
+                            url: '@Url.Action("BusinessRec_BudgetEdit", "BusinessReceiving")',
+                            type: "post",   //默认为get
+                            data: $("#RecBudget-diologE").serialize(),   //传递给服务端的数据
+                            dataType: "json",
+                            cache: false,
+                            success: function (data, textStatus) {
+                                //console.log(data)
+                                
+                                if (data.success) {
+                                    //页面修改数据 
+                                    var selectedId = $("#RecBudget-grid").jqGrid("getGridParam", "selrow");
+                                    var digestE = $.trim($("#digestE").val());//摘要
+                                    var recBudDateE = $.trim($("#recBudDateE").val());//时间
+                                    var budMoneyE = $.trim($("#budMoneyE").val());//金额预估
+
+                                    var dataRow = {
+                                        "ID": data.data.ID,
+                                        "摘要": digestE,
+                                        "时间": recBudDateE,
+                                        "金额预估": budMoneyE
+                                    };
+
+                                    // 添加成功模态框关闭
+                                    $("#RecBudget-diologE").dialog("close");
+                                    $("#RecBudget-grid").jqGrid('setRowData', selectedId, dataRow, { color: "" });
+                                   
+                                    alert(data.msg);
+                                } else {
+                                    alert("修改失败！");
+                                    console.log(data.msg);
+                                }
+                               
+
+                            },
+
+                            error: function (textStatus, errorThrown) {
+                                console.log("系统ajax交互错误: " + JSON.stringify(textStatus));
+                            },
+                        });
+                    
+
+                }
+            }
+        });
+    // 接待预算行编辑
+    function RecBudEdit(id) {
+        //console.log('当前编辑的是'+id)
+
+        var model = $("#RecBudget-grid").jqGrid('getRowData', id);
+        //console.log(model)
+
+        // 给修改模态框的赋值
+        $("#RecBudID").val(id);
+        var digestE = $.trim($("#digestE").val(model.摘要));//摘要
+        var recBudDateE = $.trim($("#recBudDateE").val(model.时间));//时间
+        var budMoneyE = $.trim($("#budMoneyE").val(model.金额预估));//金额预估
+
+        $("#RecBudget-diologE").dialog("option", "title", "修改接待预算内容").dialog("open");
+
+
+    };
+
+    // 会议事项行删除
+    function RecBudDelete(id) {
+        //console.log(id)//当前的表上ID和行号ID一样
+        if (confirm("确定删除当前数据?")) {
+            $.ajax({
+                url: "@Url.Action("BusinessRec_BudgetDel", "BusinessReceiving")",
+                type: "get",
+                data: { id: id },
+                dataType: 'json',
+                cache: false,
+                error: function (textStatus, errorThrown) { alert("交互错误" + JSON.stringify(textStatus)); },
+                success: function (data) {
+
+                    if (data.success) {
+                        $("#RecBudget-grid").jqGrid("delRowData", id);
+
+                        alert(data.msg);
+
+                    } else {
+                        alert("删除失败！");
+                        console.log(data.msg);
+                    }
+                }
+            });
+            }
+    };
+   
+</script>

@@ -1,0 +1,7 @@
+﻿
+@{
+    ViewBag.Title = "ReceiptCheckView";
+}
+
+<h2>ReceiptCheckView</h2>
+

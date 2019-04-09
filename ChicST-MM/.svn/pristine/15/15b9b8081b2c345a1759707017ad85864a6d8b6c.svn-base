@@ -1,0 +1,12 @@
+﻿using ChicST_MM.IDAL;
+using ChicST_MM.Model;
+
+namespace ChicST_MM.DAL
+{
+    /// <summary>
+    /// 售后跟进
+    /// </summary>
+   public partial class AfterSales_TrackDAL:BaseDAL<营销_售后跟进日志>, IAfterSales_TrackDAL
+    {
+    }
+}

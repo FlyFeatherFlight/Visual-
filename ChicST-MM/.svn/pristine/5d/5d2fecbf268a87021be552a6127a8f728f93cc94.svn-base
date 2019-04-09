@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using ChicST_MM.IBLL;
+namespace ChicST_MM.WEB.Controllers
+{
+    public class Review_5SController : Controller
+    {
+        private readonly IReview_5SBLL review_5SBLL;
+
+        public Review_5SController(IReview_5SBLL review_5SBLL)
+        {
+            this.review_5SBLL = review_5SBLL ?? throw new ArgumentNullException(nameof(review_5SBLL));
+        }
+
+        // GET: Review_5S
+        public ActionResult Index()
+        {
+            var models = review_5SBLL.GetModels(p => true).ToList();
+            return View(models);
+        }
+    }
+}

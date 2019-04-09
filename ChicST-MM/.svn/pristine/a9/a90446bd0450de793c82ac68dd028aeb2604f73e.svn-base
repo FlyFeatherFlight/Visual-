@@ -1,0 +1,9 @@
+﻿namespace ChicST_MM.IBLL
+{
+    /// <summary>
+    /// 出差记录
+    /// </summary>
+    public partial interface IBusinessTripBLL:IBaseServiceBLL<HR_出差记录表>
+    {
+    }
+}

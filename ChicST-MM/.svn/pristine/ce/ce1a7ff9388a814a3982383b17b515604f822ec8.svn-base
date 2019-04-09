@@ -1,0 +1,35 @@
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace ChicST_MM.WEB.Models
+{
+    public class BusinessTrip_DetailsViewModel
+    {
+
+        public int ID { get; set; }
+        [DataType(DataType.Text)]
+        [Required]
+        public int 出差记录ID { get; set; }
+        [DataType(DataType.Text)]
+        [Required]
+        public string 受访者 { get; set; }
+        [DataType(DataType.Text)]
+        [Required]
+        public string 受访者职务 { get; set; }
+        public string 计划目标 { get; set; }
+        public string 计划内容 { get; set; }
+        public string 计划方案 { get; set; }
+        public DateTime? 拜访时间 { get; set; }
+        public string 拜访结果 { get; set; }
+        public string 新的问题 { get; set; }
+        public string 新的问题应对方案 { get; set; }
+        public DateTime? 预计完成日期 { get; set; }
+        public string 预计可能性 { get; set; }
+        public string 备注 { get; set; }
+        [DataType(DataType.Text)]
+       
+        public DateTime 提交时间 { get; set; }
+
+        public BusinessTripViewModel BusinessTripView { get; set; }
+    }
+}

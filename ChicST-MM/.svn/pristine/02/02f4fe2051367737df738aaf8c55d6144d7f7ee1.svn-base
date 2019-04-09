@@ -1,0 +1,196 @@
+﻿@model ChicST_MM.WEB.Models.StoreRecRecordsViewModel
+
+@{
+    ViewBag.Title = "CustomerInfoView";
+}
+<style>
+    .tab tbody tr td:nth-child(2n-1) {
+        text-align: center;
+        width: auto;
+    }
+</style>
+<h3>跟进客户详细信息</h3>
+<table class="table table-bordered table-hover tab" >
+    <tr>
+        <td>店铺</td>
+        <td>@Model.店铺</td>
+        <td>制单日期</td>
+        <td>@Model.制单日期</td>
+        <td>更新人姓名</td>
+        <td>@Model.更新人姓名</td>
+        <td>更新日期</td>
+        <td>@Model.更新日期</td>
+    </tr>
+    <tr>
+        <td>接待人</td>
+        <td>@Model.接待人</td>
+        <td>接待日期</td>
+        <td>@Model.接待日期</td>
+        <td>跟进人</td>
+        <td colspan="3">@Model.跟进人</td>
+    </tr>
+    <tr>
+        <td>进店时间</td>
+        <td>@Model.进店时间</td>
+        <td>出店时间</td>
+        <td>@Model.出店时间</td>
+        <td>进店时长</td>
+        <td colspan="3">@Model.进店时长</td>
+    </tr>
+    <tr>
+        <td colspan="8" class="bold">客户信息</td>
+    </tr>
+    <tr>
+        <td>客户姓名</td>
+        <td>@Model.客户姓名</td>
+        <td>性别</td>
+        <td>@Model.性别</td>
+        <td>年龄段</td>
+        <td>@Model.年龄段</td>
+        <td>同行人</td>
+        <td>@Model.同行人</td>
+    </tr>
+
+    <tr>
+        <td>客户电话</td>
+        <td>@Model.客户电话</td>
+        <td>家庭成员</td>
+        <td>@Model.家庭成员</td>
+        <td>客户目的</td>
+        <td>@Model.客户目的</td>
+        <td>使用空间</td>
+        <td>@Model.使用空间</td>
+    </tr>
+    <tr>
+        <td>客户来源</td>
+        <td>@Model.客户来源</td>
+        <td>来店次数</td>
+        <td>@Model.来店次数</td>
+        <td>客户职业</td>
+        <td>@Model.客户职业</td>
+        <td>社交软件</td>
+        <td>@Model.社交软件</td>
+
+    </tr>
+    <tr>
+        <td>特征</td>
+        <td>@Model.特征</td>
+        <td>客户着装</td>
+        <td>@Model.客户着装</td>
+        <td>客户类别</td>
+        <td>@Model.客户类别</td>
+        <td>客户类型</td>
+        <td>@Model.客户类型</td>
+    </tr>
+    <tr>
+        <td>销售讲解</td>
+        <td colspan="3">@Model.销售讲解</td>
+        <td>客户建议</td>
+        <td colspan="3">@Model.客户建议</td>
+    </tr>
+    <tr>
+        <td colspan="8" class="bold">客户爱好</td>
+    </tr>
+    <tr>
+        <td>喜欢产品</td>
+        <td colspan="3">@Model.喜欢产品</td>
+        <td>不喜欢产品</td>
+        <td colspan="3">@Model.不喜欢产品</td>
+    </tr>
+    <tr>
+        <td>喜欢元素</td>
+        <td colspan="3">@Model.喜欢元素</td>
+        <td>不喜欢元素</td>
+        <td colspan="3">@Model.不喜欢元素</td>
+    </tr>
+    <tr>
+        <td>主导者</td>
+        <td colspan="3">@Model.主导者</td>
+        <td>主导者喜好风格</td>
+        <td colspan="3">@Model.主导者喜好风格</td>
+    </tr>
+    <tr>
+        <td>如何得知品牌</td>
+        <td>@Model.如何得知品牌</td>
+        <td>比较品牌</td>
+        <td>@Model.比较品牌</td>
+        <td>比较品牌产品</td>
+        <td>@Model.比较品牌产品</td>
+        <td>比较品牌产品备注</td>
+        <td>@Model.比较品牌产品备注</td>
+
+    </tr>
+    <tr>
+        <td colspan="8" class="bold">预算</td>
+    </tr>
+
+    <tr>
+        <td>卧室预算家具</td>
+        <td>@Model.卧室预算家具</td>
+        <td>餐厅预算家具</td>
+        <td>@Model.餐厅预算家具</td>
+        <td>客厅预算家具</td>
+        <td>@Model.客厅预算家具</td>
+        <td>其它空间家具</td>
+        <td>@Model.其它空间家具</td>
+
+    </tr>
+    <tr>
+        <td>卧室预算金额</td>
+        <td>@Model.卧室预算金额</td>
+        <td>餐厅预算金额</td>
+        <td>@Model.餐厅预算金额</td>
+        <td>客厅预算金额</td>
+        <td>@Model.客厅预算金额</td>
+        <td>其它空间预算</td>
+        <td>@Model.其它空间预算</td>
+
+    </tr>
+    <tr>
+        <td>卧室预算备注</td>
+        <td>@Model.卧室预算备注</td>
+        <td>餐厅预算备注</td>
+        <td>@Model.餐厅预算备注</td>
+        <td>客厅预算备注</td>
+        <td>@Model.客厅预算备注</td>
+        <td>其它空间备注</td>
+        <td>@Model.其它空间备注</td>
+    </tr>
+    <tr>
+        <td>预算金额</td>
+        <td colspan="8">@Model.预算金额</td>
+
+    </tr>
+    <tr>
+        <td colspan="8" class="bold">其它</td>
+    </tr>
+    <tr>
+        <td>安装地址</td>
+        <td colspan="8">@Model.安装地址</td>
+    </tr>
+    <tr>
+        <td>户型大小</td>
+        <td>@Model.户型大小</td>
+        <td>装修情况</td>
+        <td>@Model.装修情况</td>
+        <td>装修进度</td>
+        <td>@Model.装修进度</td>
+        <td>装修风格</td>
+        <td>@Model.装修风格</td>
+    </tr>
+
+    <tr>
+        <td>设计师</td>
+        <td colspan="3">@Model.设计师</td>
+        <td>返点</td>
+        <td colspan="3">@Model.返点</td>
+    </tr>
+
+    <tr>
+        <td>预报价折扣</td>
+        <td colspan="3">@Model.预报价折扣</td>
+        <td>预计使用时间</td>
+        <td colspan="3">@Model.预计使用时间</td>
+    </tr>
+</table>
+

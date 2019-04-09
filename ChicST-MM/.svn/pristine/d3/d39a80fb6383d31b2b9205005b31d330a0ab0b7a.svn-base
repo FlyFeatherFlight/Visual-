@@ -1,0 +1,135 @@
+﻿@model ChicST_MM.WEB.Models.ReviewRecordViewModel
+@{
+    ViewBag.Title = "5S评审详情";
+}
+
+<h3>5S评审详情</h3>
+
+<table class="table table-striped table-bordered table-hover" id="must-table" style="margin: 0 auto;">
+    <tr>
+        <td>经销商名字</td>
+        <td colspan="4">@Model.经销商名字</td>
+        <td>展厅名称</td>
+        <td colspan="3">@Model.展厅名称</td>
+    </tr>
+    <tr>
+        <td>巡店日期</td>
+        <td colspan="8">@Model.巡店日期.ToString("d")</td>
+    </tr>
+
+    <tr>
+        <td>门店需调整内容</td>
+        <td colspan="8">@Model.门店需调整内容</td>
+    </tr>
+    <tr>
+        <td>奖惩制度提出意见</td>
+        <td colspan="8">@Model.奖惩制度提出意见</td>
+    </tr>
+</table>
+<div style="position:relative;width:95%; margin:auto;">
+
+    <table class="table table-striped table-bordered " id="tab" style="width:100% !important; margin:auto;">
+        <tr class="font-middle">
+            <th>序号</th>
+            <th>评估项目</th>
+            <th>具体内容</th>
+            <th>评估标准</th>
+            <th>分值</th>
+            <th>扣分标准</th>
+            <th>扣分情况</th>
+            <th>实际得分</th>
+            <th style="width:15%;">备注/提升</th>
+            <th style="width:10%;">凭证</th>
+        </tr>
+        @foreach (var item in Model.ReviewRecord_DetailsViewModels)
+        {
+            <tr style="text-align:center; width:auto !important;">
+                <td class="num">@item.评分标准序号</td>
+                <td>@item.评估项目</td>
+                <td>@item.具体内容</td>
+                <td>@item.评估标准</td>
+                <td>@item.分值</td>
+                <td>@item.扣分标准</td>
+                <td>@item.扣分</td>
+                <td>@item.得分</td>
+                <td>@item.备注</td>
+                <td>
+
+                    <a href="#" class="downFile">下载</a>
+
+
+                    @if (item.proofs != null)
+                    {
+
+                        <table class="files-tab">
+                            @foreach (var ite in item.proofs)
+                            {
+                                <tr><td>@ite.ToString()</td></tr>
+                            }
+                        </table>
+
+                    }
+                    else
+                    {
+                        <span>0.0</span>
+                    }
+
+
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+<script>
+    $(".downFile").click(function () {
+        var _this = this;
+        var fileIds = $(_this).next().find("td");
+        console.log(fileIds.length)
+        for (var i = 0; i < fileIds.length; i++) {
+
+            var fileId = $(fileIds[i]).text();
+            var action = '@Url.Action("DownLoadFiles", "Review_5S")' ;
+            var form = $("<form>");
+            form.attr("style", "display:none");
+            form.attr("target", "");
+            form.attr("method", "get");
+            form.attr("action", action );
+            var input1 = $("<input>");
+            input1.attr("type", "hidden");
+            input1.attr("name", "id");
+            input1.attr("value", fileId);
+            $("body").append(form);
+            form.append(input1);
+            form.submit();
+            form.remove();
+        }
+
+
+
+
+
+        @*$.ajax({
+            type:"post",
+            url: '@Url.Action("DownLoadFiles", "Review_5S")',
+            data: { id: ,rowid:num },
+            dataType: 'json',
+            success: function (data) {
+                if (data.Success) {
+                    console.log("正在下载...")
+                } else {
+                    alert("当前没有凭证！")
+                }
+
+            },
+            error:
+            function(jqXHR, textStatus, errorThrown) {
+
+                console.log(JSON.stringify(jqXHR.responseText));
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+
+        })*@
+
+    })
+</script>

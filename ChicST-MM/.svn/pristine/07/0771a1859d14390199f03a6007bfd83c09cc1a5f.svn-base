@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - 我的 ASP.NET 应用程序</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet" href="~/Content/common.css">
+    <link rel="stylesheet" href="~/Content/index.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- 缩略导航栏 -->
+            <div class="small-box hidden-lg hidden-md col-sm-12 col-xs-12 clearFix">
+                <span style="margin-left:10px;">信息系统</span>
+                <div class="icon-menus">
+                    <span class="icon-menu"></span>
+                    <span class="icon-menu"></span>
+                    <span class="icon-menu"></span>
+                    <span class="icon-menu"></span>
+                </div>
+                <ul class="small-nav nav-pills nav-stacked col-sm-12 col-xs-12 ">
+                    <li class="active type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        出差
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <div class="nav-second" style="display:none;">
+                        <ul>
+                            <li>内容</li>
+                            <li>内容</li>
+                            <li>内容</li>
+                        </ul>
+                    </div>
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        接待
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        报销
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        收款
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        5s评审表
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        售后
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                </ul>
+            </div>
+            <!-- 侧边导航栏 -->
+            <nav class="nav-warpper fl hidden-sm hidden-xs ">
+                <div class="user-warpper">
+                    <span class="glyphicon glyphicon-user "></span>登录者
+                    <br>
+                    <span class="goOut">注销</span>
+                </div>
+                <form action="" class="form-group search-warpper">
+                    <div class="">
+                        <input type="text" class="form-control" placeholder="Search">
+                    </div>
+                </form>
+                <ul class="nav nav-pills nav-stacked col-sm-12 col-xs-12 ">
+                    <li class="active type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        出差
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <div class="nav-second" style="display:none;">
+                        <ul>
+                            <li>内容</li>
+                            <li>内容</li>
+                            <li>内容</li>
+                        </ul>
+                    </div>
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        接待
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        报销
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        收款
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        5s评审表
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                    <li class="type-list">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        售后
+                        <span class="glyphicon glyphicon-menu-left fr"></span>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="row">
+            <div class="content-warpper col-sm-12 col-xs-12 sm-width">
+                @RenderBody()
+                <select name="" id="">
+                    <option value="成都">成都</option>
+                    <option value="重庆">重庆</option>
+                    <option value="贵阳">贵阳</option>
+                    <option value="云南" selected>云南</option>
+                    <option value="北京南">北京南</option>
+                    <option value="上海">上海</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - 我的 ASP.NET 应用程序</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    <script type="text/javascript">
+        /* 缩略导航 */
+        $('.icon-menus').click(function(){
+            $('.small-nav').toggleClass('show');
+        })
+        /* 二级菜单 */
+        $('.type-list').each((i,li)=>{
+            li.onclick = function(){
+                $(this).next('.nav-second').slideToggle();
+                $(this).children('.glyphicon-menu-left').toggleClass('running');
+                $(this).addClass('active').siblings().removeClass('active');
+
+            }
+        })
+
+    </script>
+</body>
+</html>

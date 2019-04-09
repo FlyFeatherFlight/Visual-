@@ -1,0 +1,52 @@
+﻿
+@model JPager.Net.PagerResult<ChicST_MM.WEB.Models.ReviewRecordViewModel>
+@{
+    ViewBag.Title = "5s评审记录";
+}
+
+<h3>5s评审记录</h3>
+<div>
+    <div style="padding-left:2.5%; margin:10px 0;">
+        <form action="" method="post">
+            根据对象查询：
+            <input name="keyObj" class="search-input" />
+            <input type="submit" value="查询" class="city-sure" style="position: relative;top:0;" />
+
+        </form>
+    </div>
+    <table class="table table-bordered table-striped  " style="text-align:center; table-layout:fixed;">
+        <tr>
+
+            <th>巡店人员</th>
+            <th>巡店日期</th>
+            <th>展厅名称</th>
+            <th>分数</th>
+            <th>提交日期</th>
+
+        </tr>
+        @foreach (var item in Model.DataList)
+        {
+        <tr>
+
+            <td> @Html.ActionLink(item.巡店人员姓名, "ReviewRecordInfo", new { id = item.ID })</td>
+            <td class="ellipsis">@item.巡店日期.ToString("d")</td>
+            <td class="ellipsis">@item.展厅名称</td>
+            @if (item.分数 == null)
+            {
+                <td>0</td>
+            }
+            else
+            {
+                <td>@item.分数</td>
+            }
+            <td>@item.提交日期</td>
+
+
+        </tr>
+        }
+    </table>
+
+</div>
+<div style="padding-left:2.5%; margin:10px 0; text-align:center;">
+    @Html.Raw(Model.PagerHtml()) 共 @Model.Total 条
+</div>

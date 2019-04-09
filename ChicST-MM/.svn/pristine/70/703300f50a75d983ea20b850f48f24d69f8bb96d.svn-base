@@ -1,0 +1,21 @@
+﻿using System;
+using ChicST_MM.IBLL;
+using ChicST_MM.IDAL;
+using ChicST_MM.Model;
+
+namespace ChicST_MM.BLL
+{
+    /// <summary>
+    /// 接待记录
+    /// </summary>
+    public partial class ReceivingRecordsBLL:BaseService<HR_接待记录>, IReceivingRecordsBLL
+    {
+        private IReceivingRecordsDAL receivingRecordsDAL;
+
+        public ReceivingRecordsBLL(IReceivingRecordsDAL receivingRecordsDAL)
+        {
+            this.receivingRecordsDAL = receivingRecordsDAL ?? throw new ArgumentNullException(nameof(receivingRecordsDAL));
+            Dal = receivingRecordsDAL;
+        }
+    }
+}

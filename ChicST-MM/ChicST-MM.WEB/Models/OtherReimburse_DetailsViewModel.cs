@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ChicST_MM.WEB.Models
+{
+    public class OtherReimburse_DetailsViewModel
+    {
+        public int ID { get; set; }
+        public Nullable<int> 其他报销ID { get; set; }
+        public string 用途 { get; set; }
+        public Nullable<int> 核算分类ID { get; set; }
+        public decimal 金额 { get; set; }
+        public Nullable<System.DateTime> 提交时间 { get; set; }
+    }
+}

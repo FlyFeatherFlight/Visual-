@@ -1,0 +1,10 @@
+﻿
+@{
+    ViewBag.Title = "添加出差详情";
+}
+
+<h2>AddBusinessTrip_DetailsView</h2>
+
+<script>
+
+</script>

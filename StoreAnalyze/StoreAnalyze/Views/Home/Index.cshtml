@@ -1,0 +1,276 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<script type="text/javascript">
+    var emRecChart;
+    var storeRecChart;
+    $(function () {
+        // 基于准备好的dom，初始化echarts实例
+        emRecChart = echarts.init(document.getElementById('emRec'));
+        storeRecChart = echarts.init(document.getElementById('storeRec'));
+        $.ajax({
+            type: "get",
+             data: {},
+                url: '@Url.Action("getstores")',
+                dataType: "json",
+                cache: false,
+                async: true,
+            success: function (data) {
+                console.log(JSON.stringify(data));
+                $.each(data, (i, m) => {
+
+                    $("#sec").append("<option value=" + m.ID+ ">" + m.Name + "</option>")
+
+                })
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
+       
+    })
+   
+    var emName = [];
+    var emDate = [];
+   
+    var recData = [];
+    var storeRecData = [];
+    var storeRecDate = [];
+    function func() {
+        var checkValue = $("#sec").val()
+        if (checkValue==null||checkValue==0) {
+            checkValue = 1;
+        }
+        emName = [];
+        emDate = [];
+        recData = [];
+         $.ajax({
+         type: "get",
+             data: { storeid: checkValue},
+                url: '@Url.Action("GetStoreRece")',
+                dataType: "json",
+                cache: false,
+                async: true,
+        success: function (data) {
+            console.log(data);
+            var storeCount = [];
+            for (var i = 0; i < data.emdata.length; i++) {
+                        
+                        emName.push(data.emdata[i].Name);
+                        var recCount = [];
+                        var gDate = [];
+                for (var j = 0; j < data.emdata[i].dateCounts.length; j++) {
+                    recCount.push(data.emdata[i].dateCounts[j].Count);
+                    gDate.push(ChangeDateFormat(data.emdata[i].dateCounts[j].Date));
+                        }
+                        emDate = gDate;
+                        var obj = {
+                            name: data.emdata[i].Name,
+                            type: 'bar',
+                            //stack: '店员',
+                            data: recCount,
+                            //markPoint: {
+                            //    data: [
+                            //        { type: 'max', name: '最大值' },
+                            //        { type: 'min', name: '最小值' }
+                            //    ]
+                            //},
+                            //markLine: {
+                            //    data: [
+                            //        { type: 'average', name: '平均值' }
+                            //    ]
+                            //},
+                            label: {
+                                normal: {
+                                    show: true,
+                                    position: 'top'
+                                }
+                            },
+
+                        };
+                        recData.push(obj);
+            }
+            for (var i = 0; i < data.storedata.length; i++) {
+                storeRecDate = [];
+                storeRecData = [];
+                storeRecDate.push(ChangeDateFormat(data.storedata[i].Date));
+                
+                storeCount.push(data.storedata[i].Count);
+               
+            }
+            var obj1 = {
+                name: "接待人次",
+                type: 'bar',
+                //stack: '店员',
+                data: storeCount,
+                markPoint: {
+                    data: [
+                        { type: 'max', name: '最大值' },
+                        { type: 'min', name: '最小值' }
+                    ]
+                },
+                markLine: {
+                    data: [
+                        { type: 'average', name: '平均值' }
+                    ]
+                },
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'top'
+                    }
+                },
+               
+            };
+      
+            storeRecData.push(obj1);
+          
+            console.log(emName);
+            console.log(emDate);
+            console.log(recData);
+            emRecfunction();
+            storeRecfunction()
+            
+                },
+                error: function(err){
+                    console.log(err);
+                }
+
+    })
+  
+    }
+   ///各店铺员工接待数据统计
+    function emRecfunction() {
+
+        var option = {
+            title: {
+                text: '销售接待数据',
+               
+            },
+            legend: { data: emName },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                    type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    magicType: { show: true, type: ['line', 'bar'] },
+                    restore: { show: true },
+                    saveAsImage: { show: true }
+                }
+            },
+
+            xAxis: [{
+                'type': 'category',
+                'axisLabel': {
+                    'interval': 0,
+                    'rotate':40,
+                },
+                'data': emDate
+             
+            }],
+          
+            yAxis: [
+                {
+                    type: 'value'
+                }
+            ],
+            series: recData,
+               
+
+
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        emRecChart.setOption(option, true);
+    }
+    // 指定图表的配置项和数据
+
+    ///店铺接待统计
+    function storeRecfunction() {
+      
+        var option = {
+            title: {
+                text: '门店接待数据',
+
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                    type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    magicType: { show: true, type: ['line', 'bar'] },
+                    restore: { show: true },
+                    saveAsImage: { show: true }
+                }
+            },
+
+            xAxis: [{
+                'type': 'category',
+                'axisLabel': {
+                    'interval': 0,
+                    'rotate': 40,
+                },
+                'data': emDate
+
+            }],
+
+            yAxis: [
+                {
+                    type: 'value'
+                }
+            ],
+            series: storeRecData,
+
+
+
+        };
+        storeRecChart.setOption(option, true);
+    }
+
+    function ChangeDateFormat(jsondate) {
+        jsondate = jsondate.replace("/Date(", "").replace(")/", "");
+        if (jsondate.indexOf("+") > 0) {
+            jsondate = jsondate.substring(0, jsondate.indexOf("+"));
+        }
+        else if (jsondate.indexOf("-") > 0) {
+            jsondate = jsondate.substring(0, jsondate.indexOf("-"));
+        }
+
+        var date = new Date(parseInt(jsondate, 10));
+        var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+        var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+
+        return date.getFullYear()
+            + "/"
+            + month
+            + "/"
+            + currentDate
+            
+            
+    }
+</script>
+<div>
+    <select id="sec" class="form-control" onchange=" func()">
+        <option value="">-请选择-</option>
+    </select>
+    <input type="button" name="name" value="店铺接待数据" onclick="storeRecfunction()" />
+    <input type="button" name="" value="员工接待数据" onclick="emRecfunction()"/>
+</div>
+
+<div class="row">
+    <div id="emRec" class="col-md-6" style="height:600px">
+
+    </div>
+    <div></div>
+    <div id="storeRec" class="col-md-6" style="height:600px">
+
+    </div>
+</div>

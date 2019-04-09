@@ -1,0 +1,55 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace ChicST_MM.WEB.Controllers
+{
+    public class ReceivingRecordsController : Controller
+    {
+        // GET: ReceivingRecords
+        /// <summary>
+        /// 接待记录查询页
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ReceivingRecordsIndex()
+        {
+            return View();
+        }
+
+
+        /// <summary>
+        /// 添加接待记录
+        /// </summary>
+        /// <returns></returns>
+        public ViewResult AddReceivingRecordsView() {
+
+
+            return View();
+        }
+
+        /// <summary>
+        /// 接待下记录详细
+        /// </summary>
+        /// <returns></returns>
+        public ViewResult ReceivingRecords_DetailsView()
+        {
+
+
+            return View();
+        }
+
+        /// <summary>
+        /// 接待记录审核
+        /// </summary>
+        /// <returns></returns>
+        public ViewResult ReceivingRecords_CheckView()
+        {
+
+
+            return View();
+        }
+
+    }
+}

@@ -1,0 +1,177 @@
+﻿
+@{
+    ViewBag.Title = "接待申请表";
+}
+<script>
+    $(function () {
+         //加载接待对象所属方类型
+    $.ajax({
+        type: "post",
+        data: {},
+        url: "@Url.Action("GetBusinessTripType", "ReceivingRecords")",
+        cache: false,
+        async: true,
+        success: function (data) {
+            $("#belongType").empty(),
+                $.each(data, (i, m) => {
+                    $("#belongType").append("<option value="+ m[0] +">"+ m[1] +"</option>")
+            })
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+    //加载接待对象所属方
+    $("#belongType").change(function () {
+        var belongTypeVal = $("#belongType").val();
+         $.ajax({
+            type: "post",
+            data: { type: belongTypeVal},
+            url: "@Url.Action("GetTripObj", "ReceivingRecords")",
+            cache: false,
+            async: true,
+            success: function (data) {
+                $("#belong").empty(),
+                $.each(data, (i, m) => {
+                    $("#belong").append("<option value="+ m[0] +">"+ m[1] +"</option>")
+                })
+            },
+            error: function (err) {
+                console.log(err)
+            }
+         })
+    })
+    
+    //加载关联审核人下拉框数据
+    $.ajax({
+        type: "post",
+        data: {},
+        url: '@Url.Action("GetAssociatedAuditor", "ReceivingRecords")',
+        dataType: "json",
+        cache: false,
+        async: true,
+        success: function (data) {
+            $("#reviewer").empty();
+            $.each(data, (i, m) => {
+                $("#reviewer").append("<option value=" + m[0] + ">" + m[1] + "</option>")
+                    
+            })
+              
+        },
+        error: function(err){
+            console.log(err)
+        }
+
+    }) 
+    })
+</script>
+<div>
+    <h3>接待申请表</h3>
+</div>
+<form action="@Url.Action("ReceivingRecordsAdd","ReceivingRecords")" method="POST">
+    <table class="table table-striped table-bordered table-hover">
+        <tr>
+            <td class="bold">接待对象所属方类型</td>
+            <td>
+                <select name="接待对象所属类型ID" id="belongType" class="form-control">
+                    <option>-请选择所属方类型-</option>
+                </select>
+            </td>
+            <td class="bold">接待对象所属方</td>
+            <td>
+                <select name="接待对象所属方ID" id="belong" class="form-control">
+                    <option>-请选择所属方-</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">接待对象</td>
+            <td>
+                <input type="text" name="接待对象" class="form-control" />
+            </td>
+            <td class="bold">接待对象职务</td>
+            <td>
+                <input type="text" name="接待对象职务" class="form-control" />
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">关联审核人</td>
+            <td colspan="3">
+                <select name="关联审核人ID" id="reviewer" class="form-control">
+                    <option>-请选择审核人-</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" class="" style="position:relative;">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 start-date">
+                    <span class="bold">接待开始日期</span>&nbsp;&nbsp;
+                    <input name="接待开始时间" data-provide="datepicker" class="datepicker search-input" type='text' placeholder="请选择开始日期" oninput="sureRed()" />
+                    <span class="must" style="color:red;">*该选项为必填项</span>
+                </div>
+
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <span class="bold">接待结束日期</span>&nbsp;&nbsp;
+                    <input name="接待结束时间" data-provide="datepicker" class="datepicker search-input" type='text' placeholder="请选择结束日期" oninput="sureRed()" />
+                    <span class="must" style="color:red;">*该选项为必填项</span>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">接待地点</td>
+            <td>
+                <input type="text" name="接待地点" class="form-control" placeholder="请输入接待地点" />
+            </td>
+            <td class="bold">接待计划</td>
+            <td>
+                <input type="text" name="接待计划" class="form-control" />
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">接待目的</td>
+            <td colspan="3">
+                <textarea name="接待目的" id="" class="form-control" rows="3"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">接待大概内容</td>
+            <td colspan="3">
+                <textarea name="接待大概内容" id="" class="form-control" rows="3"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">预计完成日期</td>
+            <td>
+                <input name="预计完成日期" type="text" data-provide="datepicker" class=" datepicker form-control" placeholder="请选择完成日期" readonly>
+            </td>
+            <td class="bold">预计完成可能性</td>
+            <td>
+                <input name="预计完成可能性" type="text" class="form-control">
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">新的问题</td>
+            <td colspan="3">
+                <textarea name="新的问题" id="" class="form-control" rows="3"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">新的问题应对方案</td>
+            <td colspan="3">
+                <textarea name="新的问题应对方案" id="" class="form-control" rows="3"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">备注</td>
+            <td colspan="3">
+                <input name="备注" type="text" class="form-control">
+            </td>
+        </tr>
+    </table>
+    <div class="submit-btns">
+        <input type="submit" value="提交" class="btn btn-success width-7"/>
+        &nbsp;&nbsp;
+        <input type="button" value="取消" class="btn btn-danger width-7" onclick="javascript:history.back(-1);"/>
+    </div>
+</form>
+
