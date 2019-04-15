@@ -54,14 +54,19 @@
     <Compile Include="BusinessReception_GuestBLL.cs" />
     <Compile Include="BusinessReception_MattersBLL.cs" />
     <Compile Include="BusinessReception_PlansBLL.cs" />
+    <Compile Include="BusinessRec_CarReimBLL.cs" />
+    <Compile Include="BusinessRec_HotelReimBLL.cs" />
     <Compile Include="BusinessTripBLL.cs" />
     <Compile Include="BusinessTrip_DetailsBLL.cs" />
     <Compile Include="BusinessTrip_ReportBLL.cs" />
     <Compile Include="BusinessTrip_ReportProofBLL.cs" />
     <Compile Include="BusinessTrip_TypeBLL.cs" />
+    <Compile Include="CarReim_DetailsBLL.cs" />
+    <Compile Include="CarReim_SharingBLL.cs" />
     <Compile Include="CommodityFile_CommodityBLL.cs" />
     <Compile Include="CustomerInfoBLL.cs" />
     <Compile Include="CustomerTrackingBLL.cs" />
+    <Compile Include="HotelReimSharingBLL.cs" />
     <Compile Include="Reimbursement_BusinessReceptionBLL.cs" />
     <Compile Include="Reimbursement_ReceptionSharingBLL.cs" />
     <Compile Include="Review_5SBLL.cs" />
@@ -76,6 +81,7 @@
     <Compile Include="Review_5S_RcordBLL.cs" />
     <Compile Include="Review_5S_RecordDetailsBLL.cs" />
     <Compile Include="Review_5S_RecordProofBLL.cs" />
+    <Compile Include="SalesRecordBLL.cs" />
     <Compile Include="StoreBLL.cs" />
     <Compile Include="StoreEmployeeBLL.cs" />
     <Compile Include="TrackGoalBLL.cs" />

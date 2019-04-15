@@ -1,0 +1,32 @@
+﻿@model JPager.Net.PagerResult<ChicST_MM.WEB.Models.HotelReimViewModel>
+@{
+    ViewBag.Title = "住宿报销记录";
+}
+
+<h2>住宿报销记录</h2>
+
+<table class="table table-bordered table-hover">
+    <tr>
+        <th>报销人</th>
+        <th>酒店名称</th>
+        <th>住宿人员</th>
+        <th>住宿时间</th>
+        <th>金额</th>
+        <th>提交时间</th>
+    </tr>
+    @foreach (var item in Model.DataList)
+    {
+    <tr>
+        <td>@item.提交人</td>
+        <td>@item.酒店名称</td>
+        <td>@item.住宿人员</td>
+        <td>@item.住宿时间</td>
+        <td>@item.金额</td>
+        <td>@item.提交时间</td>
+    </tr>
+    }
+
+</table>
+<div style="padding-left:2.5%; margin:10px 0; text-align:center;">
+    @Html.Raw(Model.PagerHtml()) 共 @Model.Total 条
+</div>

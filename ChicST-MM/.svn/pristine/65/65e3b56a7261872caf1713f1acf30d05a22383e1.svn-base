@@ -1,0 +1,122 @@
+﻿@model ChicST_MM.WEB.Models.CarReimViewModel
+
+@{
+    ViewBag.Title = "CarReimInfoView";
+}
+
+<h2>CarReimInfoView</h2>
+
+<div>
+    <h4>CarReimViewModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.车辆数)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.车辆数)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.用车开始时间)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.用车开始时间)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.用车截止时间)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.用车截止时间)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.搭乘人员)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.搭乘人员)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.总计花费金额)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.总计花费金额)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.备注)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.备注)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.提交人ID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.提交人ID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.提交人)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.提交人)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.提交时间)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.提交时间)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.更新人ID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.更新人ID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.更新人)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.更新人)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.更新时间)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.更新时间)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.商务接待ID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.商务接待ID)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

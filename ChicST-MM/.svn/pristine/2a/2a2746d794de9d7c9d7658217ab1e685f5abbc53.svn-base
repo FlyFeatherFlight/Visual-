@@ -1,0 +1,70 @@
+﻿@model ChicST_MM.WEB.Models.HotelReimViewModel
+
+@{
+    ViewBag.Title = "住宿报销添加";
+}
+
+<h3>添加住宿报销</h3>
+<form action="@Url.Action("HotelReimAdd", "Reimbursement")" method="post" id="myForm">
+    <input type="text" name="商务接待ID" value="@Model.商务接待ID" class="hidden"/>
+    <table class="table table-bordered table-hover table-striped">
+        <tr>
+            <td>报销人</td>
+            <td></td>
+            <td>部门</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>酒店名称</td>
+            <td colspan="3">
+                <input type="text" name="酒店名称" value="" class="form-control red" oninput="sureRed()" />
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>住宿人员</td>
+            <td  colspan="3">
+                <input type="text" name="住宿人员" value="" class="form-control red" oninput="sureRed()" />
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+        </tr>
+
+        <tr>
+            <td>住宿时间</td>
+            <td  colspan="3">
+                <input type="text" name="住宿时间" value="" class="form-control red" oninput="sureRed()" />
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>总金额</td>
+            <td  colspan="3">
+                <input type="text" name="金额" value="0" class="form-control red" oninput="sureRed()"
+                       onkeyup="value=value.replace(/[^\d]/g,'')"
+                       onblur="value=value.replace(/[^\d]/g,'')" />
+                <span class="must" style="color:red;">*该选项为必填项</span>
+            </td>
+        </tr>
+    </table>
+
+    <div class="submit-btns" style="margin-top:10px;">
+        <input type="button" value="提交" class="btn btn-success width-7" onclick="subForm()">
+        &nbsp;&nbsp;
+        <input type="button" value="取消" class="btn btn-danger width-7" onclick="javascript:history.back(-1);">
+    </div>
+</form>
+<script>
+    function subForm() {
+        var status = false;
+        $("#myForm .red").each(function (i, m) {
+            if (m.value == null || m.value == "") {
+                return status = true;
+            }
+        })
+        if (status) {
+            alert("请完善信息！")
+        } else {
+            $("#myForm").submit();
+        }
+    }
+</script>

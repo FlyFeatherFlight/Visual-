@@ -1,0 +1,55 @@
+﻿@model JPager.Net.PagerResult<ChicST_MM.WEB.Models.CarReimViewModel>
+@{
+    ViewBag.Title = "车辆报销记录";
+}
+<style>
+    .table tbody tr td:nth-child(2n-1) {
+        text-align: center;
+        width: auto;
+    }
+</style>
+<h3>车辆报销记录</h3>
+@Html.ActionLink("添加车辆报销", "CarReimAddView", new { id = ViewBag.id }, new { style = "margin-left:2.5%;" })
+<div style="padding-left:2.5%; margin:10px 0;">
+    <form method="get" action="~/Reimbursement/CarReimIndexView">
+        根据提交人查询：
+        <input type="text" name="id" value="@ViewBag.id" class="hidden" />
+        <input type="text" name="role" value=false class="hidden" />
+        <input name="searchString" class="search-input" />
+        <input type="submit" value="查询" class="city-sure" style="position: relative;top: 0;" />
+    </form>
+</div>
+<table class="table table-bordered table-hover text-center">
+    <tr>
+        <th>提交人</th>
+        <th>搭乘人员</th>
+        <th>用车开始时间</th>
+        <th>用车结束时间</th>
+        <th>总金额</th>
+        <th>提交时间</th>
+    </tr>
+    @if (Model.DataList != null)
+    {
+
+        foreach (var item in Model.DataList)
+        {
+    <tr>
+        <td>@Html.ActionLink(item.提交人, "CarReimInfoView", new { id = item.ID, isEdit = false , role =false})</td>
+        <td>@item.搭乘人员</td>
+        <td>@item.用车开始时间</td>
+        <td>@item.用车截止时间</td>
+        <td>@item.总计花费金额</td>
+        <td>@item.提交时间</td>
+    </tr>
+        }
+    }
+    else
+    {
+        <tr><td colspan="6">暂无数据！</td></tr>
+    }
+
+
+</table>
+<div style="padding-left:2.5%; margin:10px 0; text-align:center;">
+    @Html.Raw(Model.PagerHtml()) 共 @Model.Total 条
+</div>

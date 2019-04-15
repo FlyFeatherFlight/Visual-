@@ -1,0 +1,117 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.BusinessRecReimburseViewModel>
+
+@{
+    ViewBag.Title = "BusinessRec_ReimIndexView";
+}
+
+<h2>BusinessRec_ReimIndexView</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.城市)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.经销商)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.事由)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.时间)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.金额)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.接待计划ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.提交人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.提交人ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.提交时间)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.更新人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.更新人ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.更新时间)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.审核状态)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.财务审核人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.财务审核人ID)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.城市)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.经销商)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.事由)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.时间)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.金额)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.接待计划ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.提交人)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.提交人ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.提交时间)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.更新人)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.更新人ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.更新时间)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.审核状态)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.财务审核人)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.财务审核人ID)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

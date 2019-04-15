@@ -94,6 +94,7 @@
   <ItemGroup>
     <Content Include="DLL\zxing.dll" />
     <Content Include="DLL\zxing.presentation.dll" />
+    <Content Include="img\背景.jpg" />
     <Content Include="img\logo.png" />
     <Content Include="DLL\QRBuilder.dll" />
   </ItemGroup>

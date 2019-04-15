@@ -1,0 +1,83 @@
+﻿@model ChicST_MM.WEB.Models.BusinessTripViewModel
+@{
+    ViewBag.Title = "出差详情页";
+}
+
+<h3>出差详情页</h3>
+<table class="table table-bordered table-hover table-striped">
+    <tr>
+        <td class="bold">部门</td>
+        <td colspan="10">@Model.部门</td>
+    </tr>
+    <tr>
+        <td class="bold">出差人</td>
+        <td colspan="10">@Model.出差人姓名</td>
+    </tr>
+
+    <tr>
+        <td colspan="11" style="position:relative;">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 start-date">
+                <span class="bold">开始日期</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="date">@Model.开始时间.ToString("d")</span>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <span class="bold">结束日期</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>@Model.结束时间.ToString("d")</span>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td class="bold">关联审核人</td>
+        <td colspan="10">@Model.关联审核人</td>
+    </tr>
+    <tr>
+        <td class="bold">出差内容</td>
+        <td colspan="10">@Model.出差内容</td>
+    </tr>
+    <tr>
+        <td class="bold">备注</td>
+        <td colspan="10">@Model.备注</td>
+    </tr>
+    <tr>
+        <td class="bold" rowspan="3">费用预估</td>
+    </tr>
+    <tr>
+        <td class="bold">车船费预计</td>
+        <td colspan="2">@Model.车船费预计</td>
+        <td class="bold">住宿费预计</td>
+        <td colspan="2">@Model.住宿费预计</td>
+        <td class="bold">餐补费预计</td>
+        <td colspan="3">@Model.餐补费预计</td>
+    </tr>
+    <tr>
+        <td>合计</td>
+        <td colspan="9">@Model.合计</td>
+    </tr>
+</table>
+@*计划详情表*@
+<table class="table table-hover table-striped table-bordered" style="margin-bottom:0;">
+
+</table>
+@*汇报详情*@
+<table class="table table-hover table-striped table-bordered" style="margin-bottom:0;">
+    <thead>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+   
+</table>
+<div class="submit-btns">
+    @using (Html.BeginForm("BusinessTrip_Check", "BusinessTrip", FormMethod.Post))
+    {
+        <input type="text" name="id" value="@Model.ID" style="display:none" />
+        <input type="radio" value="通过" name="checkType" />
+        <label>通过</label>
+        <input type="radio" value="不通过" name="checkType" />
+        <label>驳回</label>
+        <input type="submit" value="提交" />
+    }
+</div>

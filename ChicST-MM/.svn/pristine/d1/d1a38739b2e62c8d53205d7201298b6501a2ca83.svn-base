@@ -1,0 +1,105 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.CarReimViewModel>
+
+@{
+    ViewBag.Title = "CarReimIndexView";
+}
+
+<h2>CarReimIndexView</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.车辆数)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.用车开始时间)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.用车截止时间)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.搭乘人员)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.总计花费金额)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.备注)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.提交人ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.提交人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.提交时间)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.更新人ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.更新人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.更新时间)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.商务接待ID)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.车辆数)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.用车开始时间)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.用车截止时间)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.搭乘人员)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.总计花费金额)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.备注)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.提交人ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.提交人)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.提交时间)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.更新人ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.更新人)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.更新时间)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.商务接待ID)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>
