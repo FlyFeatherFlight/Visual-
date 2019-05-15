@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ChicST_MM.WEB.Models
+{
+
+    /// <summary>
+    /// 商场_租金年度统计
+    /// </summary>
+    public class Development_MarketRentalViewModel
+    {
+        public int ID { get; set; }
+        public int 商场ID { get; set; }
+        public string 租金年 { get; set; }
+        public Nullable<decimal> 租金金额 { get; set; }
+    }
+}

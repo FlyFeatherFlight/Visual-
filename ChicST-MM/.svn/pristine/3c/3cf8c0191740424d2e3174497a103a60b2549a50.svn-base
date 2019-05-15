@@ -1,0 +1,1019 @@
+﻿@model ChicST_MM.WEB.Models.BusinessRecReimburseViewModel
+
+@{
+    ViewBag.Title = "接待报销申请";
+}
+
+<h3>接待报销申请</h3>
+
+<script>
+    $(function () {
+        //获取省份数据 (来宾信息添加)
+    $.ajax({
+        type: "post",
+        data: {},
+        url: '@Url.Action( "GetProvince", "BusinessTrip")',
+        dataType: "json",
+        cache: false,
+        async: true,
+        success: function (data) {
+
+            $.each(data, function(i, m) {
+                $("#sheng").append("<option value=" + m + ">" + m + "</option>");
+                $("#shengE").append("<option value=" + m + ">" + m + "</option>");
+                $("#shengDet").append("<option value=" + m + ">" + m + "</option>");
+                $("#shengDetE").append("<option value=" + m + ">" + m + "</option>");
+            })
+
+        },
+        error: function (err) {
+            alert("点击过快或网络错误，请稍后重试！");;
+            console.log(err);
+        }
+
+        })
+        /********* 接待报销明细**************/
+        /****添加***/
+        //根据选择的省份，获取市数据
+        $("#shengDet").change(function () {
+            var province = $("#shengDet").val();
+            $("#shiDet").empty();
+            getShi(province, $("#shiDet"), $("#cityDet"), $("#NowCityDet"));
+        })
+        //显示当前选择的城市
+        $("#shiDet").change(function () {
+            showCity($("#cityDet"), $("#shengDet").val(), $("#shiDet").val(), $("#NowCityDet"));
+
+        })
+        /****修改***/
+        //根据选择的省份，获取市数据
+        $("#shengDetE").change(function () {
+            var province = $("#shengDetE").val();
+            $("#shiDetE").empty();
+            getShi(province, $("#shiDetE"), $("#cityDetE"), $("#NowCityDetE"));
+        })
+        //显示当前选择的城市
+        $("#shiDetE").change(function () {
+            showCity($("#cityDetE"), $("#shengDetE").val(), $("#shiDetE").val(), $("#NowCityDetE"));
+
+        })
+        /********* 接待报销分摊**************/
+          /****添加***/
+    //根据选择的省份，获取市数据
+    $("#sheng").change(function () {
+        var province = $("#sheng").val();
+        $("#shi").empty();
+        getShi(province, $("#shi"), $("#city"), $("#NowCity"));
+    })
+    //显示当前选择的城市
+    $("#shi").change(function () {
+        showCity($("#city"), $("#sheng").val(), $("#shi").val(), $("#NowCity"));
+
+    })
+    /****修改***/
+    //根据选择的省份，获取市数据
+    $("#shengE").change(function () {
+        var province = $("#shengE").val();
+        $("#shiE").empty();
+        getShi(province, $("#shiE"), $("#cityE"), $("#NowCityE"));
+    })
+    //显示当前选择的城市
+    $("#shiE").change(function () {
+        showCity($("#cityE"), $("#shengE").val(), $("#shiE").val(), $("#NowCityE"));
+
+    })
+    //显示当前选择的城市
+    function showCity(city, shengVal, shiVal, NowCity) {
+        city.val(shengVal + shiVal);
+        NowCity.text(city.val());
+    }
+
+    //获取市
+    function getShi(province, shi, city, NowCity) {
+
+         $.ajax({
+                type: "post",
+                data: { province: province },
+                url: '@Url.Action("GetRgion", "BusinessTrip")',
+                dataType: "json",
+                cache: false,
+                async: true,
+                success: function (data) {
+                    city.val("");
+                    NowCity.text('');
+                    shi.append("<option value=''> -请选择- </option>");
+                    $.each(data, function(i, m) {
+
+                        shi.append("<option value=" + m[1] + ">" + m[1]  + "</option>")
+
+                    })
+
+                },
+                error: function (err) {
+                    alert("点击过快或网络错误，请稍后重试！");;
+                    console.log(err);
+                }
+
+            })
+    }
+    })
+
+</script>
+<form id="mainForm">
+    @Html.AntiForgeryToken()
+
+    <input type="text" name="接待计划ID" value="@Model.接待计划ID" class="hidden" />
+    <table class="table table-hover table-bordered table-striped">
+        <tr>
+            <td>申请人</td>
+            <td colspan="3">@Model.提交人</td>
+        </tr>
+
+        <tr>
+            <td>时间</td>
+            <td>
+                <input type="text" name="时间" value="" class="form-control dateTime red" placeholder="请选择日期" oninput="sureRed()" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+
+            <td>金额</td>
+            <td>
+                <input type="text" name="金额" value="0" class="form-control red" oninput="sureRed()" id="MainMoneyE"
+                       onkeyup="value=value.replace(/[^\d.]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+
+        <tr>
+            <td>事由</td>
+            <td colspan="3">
+                <textarea rows="3" name="事由" class="form-control red" oninput="sureRed()"></textarea>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+
+    </table>
+    <div class="submit-btns">
+        <input type="button" value="下一步" onclick="plan()" />
+    </div>
+</form>
+
+@**** 接待报销明细 *****@
+<div id="grid-wrapDet" style="position:relative;width:95%;margin: 0 auto;">
+    <div class="mask-jsGrid maskFF"></div>
+    <div style="text-align:left; margin-bottom:10px;">
+        <input id="create-userDet" type="button" value="添加" class="btn " />
+
+        <sapn style="color: orange;display: block;margin: 5px 0 5px 0;">温馨提示：添加后请点击下一步</sapn>
+    </div>
+    <table id="gridDet"></table>
+    <div id="pagerDet"></div>
+    <div style="margin-top:10px;color:#333;text-align:center;">
+        <input type="button" value="下一步" onclick="netxDet()">
+    </div>
+</div>
+@*添加*@
+<div id="dialog-formDet" style="text-align:center;">
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td>城市</td>
+            <td colspan="3">
+                <select id="shengDet" class="search-input">
+                    <option value="">-请选择省-</option>
+                </select>
+                <select id="shiDet" class="search-input" style="margin-top:5px;">
+                    <option value="">-请选择市-</option>
+                </select>
+
+                <div>
+                    城市是：<span id="NowCityDet"></span>
+                    <input type="text" name="城市" id="cityDet" class="hidden" value="" />
+                </div>
+
+            </td>
+
+        </tr>
+        <tr>
+            <td>姓名</td>
+            <td>
+                <input type="text" id="nameDet" value="" class="form-control" />
+            </td>
+            <td>身份</td>
+            <td>
+                <input type="text" id="IdDet" value="" class="form-control" />
+            </td>
+        </tr>
+        <tr>
+
+            <td>事由</td>
+            <td colspan="3">
+                <textarea rows="3" value="" id="thingDet" class="form-control"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>日期</td>
+            <td >
+                <input type="text" id="dateDet" value="" class="form-control dateTime" readonly placeholder="请选择日期" />
+            </td>
+
+            <td>费用</td>
+            <td>
+                <input type="text" id="moneyDet" class="form-control" placeholder="请输入数字" />
+            </td>
+        </tr>
+
+
+    </table>
+
+</div>
+@*修改*@
+<form id="dialog-formDetE" style="text-align:center;">
+    <input type="text" name="接待报销ID" value="" id="recsetIDDet" class="hidden" />
+    <input type="text" name="ID" value="" id="editIDDet" class="hidden" />
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td>城市</td>
+            <td colspan="3">
+                <select id="shengDetE" class="search-input">
+                    <option value="">-请选择省-</option>
+                </select>
+                <select id="shiDetE" class="search-input" style="margin-top:5px;">
+                    <option value="">-请选择市-</option>
+                </select>
+
+                <div>
+                    城市是：<span id="NowCityDetE"></span>
+                    <input type="text" name="城市" id="cityDetE" class="hidden" value=""  />
+                </div>
+
+            </td>
+        </tr>
+        <tr>
+            <td>姓名</td>
+            <td>
+                <input type="text" name="姓名" id="nameDetE" value="" class="form-control" />
+            </td>
+            <td>身份</td>
+            <td>
+                <input type="text" name="身份" id="IdDetE" value="" class="form-control" />
+            </td>
+        </tr>
+        <tr>
+            <td>事由</td>
+            <td colspan="3">
+                <textarea rows="3" name="事由" value="" id="thingDetE" class="form-control"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>日期</td>
+            <td >
+                <input type="text" name="日期" id="dateDetE" value="" class="form-control dateTime" readonly placeholder="请选择日期" />
+            </td>
+            <td>费用</td>
+            <td>
+                <input type="text" name="费用" id="moneyDetE" class="form-control" placeholder="请输入数字" />
+            </td>
+        </tr>
+
+    </table>
+
+</form>
+
+@**** 接待分摊 *****@
+<div id="grid-wrap" style="position:relative;width:95%;margin: 10px auto 0;">
+    <div class="mask-jsGrid maskFF" ></div>
+    <div style="text-align:left; margin-bottom:10px;">
+        <input id="create-user" type="button" value="添加" class="btn " />
+
+        <sapn style="color: orange;display: block;margin: 5px 0 5px 0;">温馨提示：添加后请点击确定</sapn>
+    </div>
+    <table id="gridShare"></table>
+    <div id="pager"></div>
+    <div style="margin-top:10px;color:#333;text-align:center;">
+        <input type="button" value="确认" onclick="geDetail()" class="btn btn-success">
+    </div>
+</div>
+
+@*添加*@
+<div id="dialog-form" style="text-align:center;">
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td>城市</td>
+            <td>
+                <select id="sheng" class="form-control">
+                    <option value="">-请选择省-</option>
+                </select>
+                <select id="shi" class="form-control" style="margin-top:5px;">
+                    <option value="">-请选择市-</option>
+                </select>
+
+                <div>
+                    城市是：<span id="NowCity"></span>
+                    <input type="text" name="城市" id="city" class="hidden" value="" />
+                </div>
+
+            </td>
+        </tr>
+        <tr>
+            <td>经销商</td>
+            <td>
+                <input type="text" value="" id="dealer" class="form-control" />
+            </td>
+        </tr>
+        <tr>
+            <td>分摊金额</td>
+            <td>
+                <input type="text" id="money" class="form-control"
+                       onkeyup="value=value.replace(/[^\d.]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字" />
+            </td>
+        </tr>
+    </table>
+
+</div>
+@*修改*@
+<form id="dialog-formE" style="text-align:center;">
+    <input type="text" name="接待报销ID" value="" id="recsetID" class="hidden" />
+    <input type="text" name="ID" value="" id="editID" class="hidden" />
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td>城市</td>
+            <td>
+                <select id="shengE" class="form-control">
+                    <option value="">-请选择省-</option>
+                </select>
+                <select id="shiE" class="form-control" style="margin-top:5px;">
+                    <option value="">-请选择市-</option>
+                </select>
+
+                <div>
+                    城市是：<span id="NowCityE"></span>
+                    <input type="text" name="城市" id="cityE" class="hidden" value="" />
+                </div>
+
+            </td>
+        </tr>
+        <tr>
+            <td>经销商</td>
+            <td>
+                <input type="text" name="经销商" value="" id="dealerE" class="form-control" />
+            </td>
+        </tr>
+        <tr>
+            <td>分摊金额</td>
+            <td>
+                <input name="金额" type="text" id="moneyE" class="form-control"
+                       onkeyup="value=value.replace(/[^\d.]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字" />
+            </td>
+        </tr>
+    </table>
+
+</form>
+
+
+
+<script>
+   
+    var setID = '';
+    //安排计划日程向后端传数据并从后端获取ID数据
+    function plan() {
+        var mainStatus = false;
+        $("#mainForm .red").each(function (i, m) {
+            if (m.value == "" || m.value == null) {
+                return mainStatus = true;
+            }
+        })
+        if (mainStatus) {
+            alert("请完善信息！");
+        } else {
+
+
+        $.ajax({
+            url: '@Url.Action("BusinessRec_Add", "Reimbursement")',
+            type: 'post',
+            dataType: 'json',
+            data: $("#mainForm").serialize(),
+            async: true,
+            success: function (data) {
+                console.log(data);
+                if (data.success) {
+                    setID = data.data.ID;//接待报销主表ID
+                    $("#recsetID").val(data.data.ID);
+                    $("#recsetIDDet").val(data.data.ID)
+                    alert("提交成功，请填写报销明细详情")
+                    $("#grid-wrapDet .mask-jsGrid").addClass("hidden");
+                } else {
+                    alert(data.msg);
+                }
+
+            },
+            error: function (err) {
+                alert("点击过快或网络错误，请稍后重试！");;
+                console.log(err);
+            }
+
+            })
+        }
+    }
+    //明细中的下一步
+    function netxDet() {
+        var sum = 0;
+        var BudMoney = parseFloat($("#MainMoneyE").val());
+        var data = $("#gridDet").jqGrid("getRowData");//获取jqgrid表格所有数据
+        $(data).each(function (i, m) {
+            sum += parseFloat(m.费用);
+        })
+        if (BudMoney < sum) {
+            var numfull = sum - BudMoney;
+            alert("当前分摊金额已超出，请合理分摊！超出" + numfull + "元");
+        } else {
+            $("#grid-wrap .mask-jsGrid").addClass("hidden");
+        }
+    }
+    /***********接待报销明细****************/
+       $('#moneyDet').on({
+           input: function (e) {
+           
+            var flag = e.target.isNeedPrevent;
+            if (flag) return;
+            numDetection(moneyDet);
+        },
+        compositionstart: function (e) {
+            e.target.isNeedPrevent = true;
+        },
+        compositionend: function (e) {
+            e.target.isNeedPrevent = false;
+        }
+    })
+
+    //添加模态金额检测
+    function numDetection(money) {
+        money.value = money.value.replace(/[^\d.]/g, '');
+        
+        var TatolMoney = parseFloat($("#MainMoneyE").val());//主表总金额
+        var moneyDet = parseFloat($(money).val());//单个金额
+        var sumMoney = 0;//计算副表加上当前单金额
+        var sum = 0;//副表表格中金额和
+        var data = $("#gridDet").jqGrid("getRowData");//获取jqgrid表格所有数据
+        $(data).each(function (i, m) {
+            sum += parseFloat(m.金额);
+        })
+        sumMoney = sum + moneyDet;
+        if (TatolMoney < moneyDet || TatolMoney < sumMoney) {
+            alert("分摊金额超出总金额，请重新输入！")
+        }
+        console.log(sumMoney);
+        console.log(TatolMoney);
+    }
+        //jqgrid表格配置
+    jQuery("#gridDet").jqGrid({
+            url: "",
+            datatype: "local",//显示数据
+
+            mtype: "post",
+            colModel: [
+                { label: 'ID', name: 'ID', index: 'ID', sorttype: "int", width: 50, align: "center" },
+                { label: '城市', name: '城市', index: '城市', sortable: false, align: "center" },
+                { label: '身份', name: '身份', index: '身份', sortable: false, align: "center" },
+                { label: '姓名', name: '姓名', index: '姓名', sortable: false, align: "center" },
+                { label: '事由', name: '事由', index: '事由', sortable: false, align: "center" },
+                { label: '日期', name: '日期', index: '日期', sortable: false, align: "center" },
+                { label: '费用', name: '费用', index: '费用', sortable: false, align: "center" },
+                { label: '修改', name: 'Edit', index: 'id', width: 80, align: "center" },
+                { label: '删除', name: 'Delete', index: 'id', sortable: false, align: "center" },
+                
+            ],
+            caption: "接待报销明细展示",
+            loadonce: true,    //排序翻页等操作在服务端完成
+            //rowNum: 5,
+            //rowList: [5, 10, 20],  //设置分页下拉列表
+            pager: "#pagerDet",
+            viewrecords: true,
+            width: 500, height: "auto",
+            jsonReader: { repeatitems: false }, //prmNames: { id: "No" },
+            sortorder: "asc",
+            sortname: "No",//传递给服务端的排序字段名
+            autowidth: true,
+            gridComplete: function () {  //在此事件中循环为每一行添加删除/修改链接
+                var ids = jQuery("#gridDet").jqGrid('getDataIDs');
+
+                for (var i = 0; i < ids.length; i++) {
+
+                    //var rowId = ids[i];
+                    //console.log(rowId)
+                    //// 通过当前行id获取所需ID
+                    //var rowData = $("#gridDet").jqGrid('getRowData', rowId);
+                    //var id = rowData.ID;
+                    var id = ids[i];
+                    edit = "<span     class='Aspan' onclick='RecEditDet(" + id + ")' >修改</span>";
+                    del = "<span     class='Aspan' onclick='RecdeleteDet(" + id + ")' >删除</span>";
+                    jQuery("#gridDet").jqGrid('setRowData', ids[i], { Edit: edit, Delete: del });
+
+                }
+            }
+        });
+        // 点击添加打开模态框
+    $("#create-userDet").button()
+            .click(function () {
+                var sum = 0;
+                var BudMoney = parseFloat($("#MainMoneyE").val());
+                var data = $("#gridDet").jqGrid("getRowData");//获取jqgrid表格所有数据
+              
+                $(data).each(function (i, m) {
+                    sum += parseFloat(m.费用);
+                })
+                if (BudMoney == sum) {
+                    alert("当前分摊金额已满！");
+                } else if (BudMoney < sum) {
+                    alert("当前分摊金额已超出，请合理分摊！");
+                } else {
+                    $("#dialog-formDet").dialog("option", "title", "接待报销报销详情填写").dialog("open");
+                }
+
+            });
+        //接待报销分摊模态框
+    $("#dialog-formDet").dialog({
+            autoOpen: false,
+            height: 500,
+            width: 860,
+            modal: true,
+            buttons: {
+
+                "取消": function () { $(this).dialog("close") },
+                "提交": function () {
+                    var nameDet = $.trim($("#nameDet").val()),//姓名
+                        IdDet = $.trim($("#IdDet").val()),//身份
+                        cityDet = $.trim($("#cityDet").val()),//城市
+                        moneyDet = $.trim($("#moneyDet").val()),//费用
+                        thingDet = $.trim($("#thingDet").val()),//事由
+                        dateDet = $.trim($("#dateDet").val());//日期
+
+
+                    //console.log(setID)
+                    var params = {
+                        "接待报销ID": setID,
+                        "姓名": nameDet,
+                        "身份": IdDet ,
+                        "城市": cityDet,
+                        "费用": moneyDet,
+                        "事由": thingDet,
+                        "日期": dateDet
+                    };
+                    //console.log(params)
+                    var TatolMoney = parseFloat($("#MainMoneyE").val());
+                    var sumMoney = 0;//计算副表加上当前单金额
+                    var sum = 0;//副表表格中金额和
+                    var data = $("#gridDet").jqGrid("getRowData");//获取jqgrid表格所有数据
+                    $(data).each(function (i, m) {
+                        sum += parseFloat(m.费用);
+                    })
+                    sumMoney = sum + parseFloat(moneyDet);
+
+                    if (TatolMoney < parseFloat(money) || TatolMoney < sumMoney) {
+                        alert("分摊金额超出总金额，请重新输入！")
+                    }
+                    else {
+                        //提交模态框的数据
+                        $.ajax({
+                            url: "@Url.Action("BusinessRecReim_DetailsAdd", "Reimbursement")",
+                            type: "post",   //默认为get
+                            data: params,   //传递给服务端的数据
+                            dataType: "json",
+                            cache: false,
+                            success: function (data, textStatus) {
+                                console.log(data)
+                                // 如果提交成功就显示在页面
+                                if (data.success) {
+                                    if (data.data.日期!=null) {
+                                        data.data.日期 = new Date(parseInt(data.data.日期.substr(6, 19))).toLocaleDateString();
+                                    }
+                                   
+                                    var dataRow = data.data;
+                                    //console.log(dataRow)
+
+                                    $("#gridDet").jqGrid("addRowData", data.data.ID, dataRow, "last");//没有选定行则添加在第一行
+
+                                    // 添加成功模态框关闭
+                                    $("#dialog-formDet").dialog("close");
+                                    alert("添加操作成功!");
+                                    console.log(data.msg);
+                                } else {
+                                    alert("添加操作失败!");
+                                    console.log(data.msg);
+                                }
+
+                            },
+
+                            error: function (textStatus, errorThrown) {
+                                console.log("系统ajax交互错误: " + JSON.stringify(textStatus));
+                            },
+                        });
+                    }
+
+                }
+            }
+        });
+        //修改
+    $("#dialog-formDetE").dialog({
+            autoOpen: false,
+            height: 500,
+            width: 860,
+            modal: true,
+            buttons: {
+
+                "取消": function () { $(this).dialog("close") },
+                "提交": function () {
+
+
+                        //提交模态框的数据
+                        $.ajax({
+                            url: '@Url.Action("BusinessRecReim_DetailsEdit", "Reimbursement")',
+                            type: "post",   //默认为get
+                            data: $("#dialog-formDetE").serialize(),   //传递给服务端的数据
+                            dataType: "json",
+                            cache: false,
+                            success: function (data, textStatus) {
+                                console.log(data)
+
+                                if (data.success) {
+                                    //页面修改数据
+                                    var selectedId = $("#gridDet").jqGrid("getGridParam", "selrow");
+                                    if (data.data.日期 != null) {
+                                        data.data.日期 = new Date(parseInt(data.data.日期.substr(6, 19))).toLocaleDateString();
+                                    }
+                                    var dataRow = data.data;
+
+                                    // 添加成功模态框关闭
+                                    $("#dialog-formDetE").dialog("close");
+                                    $("#gridDet").jqGrid('setRowData', selectedId, dataRow, { color: "" });
+
+                                    alert(data.msg);
+                                } else {
+                                    alert("修改失败！");
+                                    console.log(data.msg);
+                                }
+
+
+                            },
+
+                            error: function (textStatus, errorThrown) {
+                                console.log("系统ajax交互错误: " + JSON.stringify(textStatus));
+                            },
+                        });
+
+
+                }
+            }
+        });
+    // 接待报销明细行编辑
+    function RecEditDet(id) {
+        console.log('当前编辑的是'+id)
+
+        var model = $("#gridDet").jqGrid('getRowData', id);
+        console.log(model)
+
+        // 给修改模态框的赋值
+        $("#editIDDet").val(id);
+       $("#nameDetE").val(model.姓名),//姓名
+        $("#IdDetE").val(model.身份),//身份
+        $("#cityDetE").val(model.城市),//城市
+        $("#NowCityDetE").text(model.城市),//城市文本
+        $("#moneyDetE").val(model.费用),//费用
+       $("#thingDetE").val(model.事由),//事由
+        $("#dateDetE").val(model.日期);//日期
+        // recsetIDDet 
+        $("#dialog-formDetE").dialog("option", "title", "修改接待报销明细内容").dialog("open");
+
+
+    };
+
+    //接待报销明细行删除
+    function RecdeleteDet(id) {
+        console.log(id)//当前的表上ID和行号ID一样
+        if (confirm("确定删除当前数据?")) {
+            $.ajax({
+                url: "@Url.Action("BusinessRecReim_DetailsDel", "Reimbursement")",
+                type: "post",
+                data: { id: id },
+                dataType: 'json',
+                cache: false,
+                error: function (textStatus, errorThrown) { alert("交互错误" + JSON.stringify(textStatus)); },
+                success: function (data) {
+
+                    if (data.success) {
+                        $("#gridDet").jqGrid("delRowData", id);
+
+                        alert(data.msg);
+
+                    } else {
+                        alert("删除失败！");
+                        console.log(data.msg);
+                    }
+                }
+            });
+            }
+    };
+
+
+
+
+
+
+
+
+
+
+    @************ 接待报销分摊 **************@
+    //添加模态框金额实时监测=>数字检测/金额检测
+    $('#money').on({
+        input: function (e) {
+            var flag = e.target.isNeedPrevent;
+            if (flag) return;
+            numDetection(money);
+        },
+        compositionstart: function (e) {
+            e.target.isNeedPrevent = true;
+        },
+        compositionend: function (e) {
+            e.target.isNeedPrevent = false;
+        }
+    })
+
+    //添加模态金额检测
+    function numDetection(money) {
+        money.value = money.value.replace(/[^\d.]/g, '');
+        var TatolMoney = parseFloat($("#MainMoneyE").val());//主表总金额
+        var money = parseFloat($(money).val());//单个金额
+        var sumMoney = 0;//计算副表加上当前单金额
+        var sum = 0;//副表表格中金额和
+        var data = $("#gridShare").jqGrid("getRowData");//获取jqgrid表格所有数据
+        $(data).each(function (i, m) {
+            sum += parseFloat(m.金额);
+        })
+        sumMoney = sum + money;
+        if (TatolMoney < money || TatolMoney < sumMoney) {
+            alert("分摊金额超出总金额，请重新输入！")
+        }
+    }
+        //jqgrid表格配置
+    jQuery("#gridShare").jqGrid({
+            url: "",
+            datatype: "local",//显示数据
+
+            mtype: "post",
+            colModel: [
+                { label: 'ID', name: 'ID', index: 'ID', sorttype: "int", width: 50, align: "center" },
+                { label: '城市', name: '城市', index: '城市', sortable: false, align: "center" },
+                { label: '经销商', name: '经销商', index: '经销商', sortable: false, align: "center" },
+                { label: '金额', name: '金额', index: '金额', sortable: false, align: "center" },
+                { label: '修改', name: 'Edit', index: 'id', width: 80, align: "center" },
+                { label: '删除', name: 'Delete', index: 'id', sortable: false, align: "center" },
+
+
+
+            ],
+            caption: "接待报销分摊展示",
+            loadonce: true,    //排序翻页等操作在服务端完成
+            //rowNum: 5,
+            //rowList: [5, 10, 20],  //设置分页下拉列表
+            pager: "#pager",
+            viewrecords: true,
+            width: 500, height: "auto",
+            jsonReader: { repeatitems: false }, //prmNames: { id: "No" },
+            sortorder: "asc",
+            sortname: "No",//传递给服务端的排序字段名
+            autowidth: true,
+            gridComplete: function () {  //在此事件中循环为每一行添加删除/修改链接
+                var ids = jQuery("#gridShare").jqGrid('getDataIDs');
+
+                for (var i = 0; i < ids.length; i++) {
+
+                    var id = ids[i];
+
+                    console.log(id)
+                    edit = "<span     class='Aspan' onclick='RecEdit(" + id + ")' >修改</span>";
+                    del = "<span     class='Aspan' onclick='Recdelete(" + id + ")' >删除</span>";
+                    jQuery("#gridShare").jqGrid('setRowData', ids[i], { Edit: edit, Delete: del });
+
+                }
+            }
+        });
+        // 点击添加打开模态框
+    $("#create-user").button()
+            .click(function () {
+                var sum = 0;
+                var BudMoney = parseFloat($("#MainMoneyE").val());
+                var data = $("#gridShare").jqGrid("getRowData");//获取jqgrid表格所有数据
+                var money = parseFloat($("#money").val());//当前输入的金额
+                $(data).each(function (i, m) {
+                    sum += parseFloat(m.金额);
+                })
+                if (BudMoney == sum) {
+                    alert("当前分摊金额已满！");
+                } else if (BudMoney < sum) {
+                    alert("当前分摊金额已超出，请合理分摊！");
+                } else {
+                    $("#dialog-form").dialog("option", "title", "接待报销分摊详情填写").dialog("open");
+                }
+
+            });
+        //接待报销分摊模态框
+        $("#dialog-form").dialog({
+            autoOpen: false,
+            height: 400,
+            width: 500,
+            modal: true,
+            buttons: {
+
+                "取消": function () { $(this).dialog("close") },
+                "提交": function () {
+                    var city = $.trim($("#city").val());//城市
+                    var dealer  = $.trim($("#dealer ").val());//时间
+                    var money = $.trim($("#money").val());//金额
+
+                    console.log(setID)
+                    var params = {
+                        "接待报销ID": setID,
+                        "城市": city,
+                        "经销商": dealer ,
+                        "金额": money
+                    };
+                    console.log(params)
+                    var TatolMoney = parseFloat($("#MainMoneyE").val());
+                    var sumMoney = 0;//计算副表加上当前单金额
+                    var sum = 0;//副表表格中金额和
+                    var data = $("#gridShare").jqGrid("getRowData");//获取jqgrid表格所有数据
+                    $(data).each(function (i, m) {
+                        sum += parseFloat(m.金额);
+                    })
+                    sumMoney = sum + parseFloat(money);
+
+                    if (TatolMoney < parseFloat(money) || TatolMoney < sumMoney) {
+                        alert("分摊金额超出总金额，请重新输入！")
+                    }
+                    else {
+                        //提交模态框的数据
+                        $.ajax({
+                            url: "@Url.Action("BusinessRecShare_Add", "Reimbursement")",
+                            type: "post",   //默认为get
+                            data: params,   //传递给服务端的数据
+                            dataType: "json",
+                            cache: false,
+                            success: function (data, textStatus) {
+                                //console.log(data)
+                                // 如果提交成功就显示在页面
+                                if (data.success) {
+                                    var dataRow = {
+                                        "ID":data.data,
+                                        "城市": city,
+                                        "经销商": dealer ,
+                                        "金额": money
+                                    };
+                                    //console.log(dataRow)
+
+                                    $("#gridShare").jqGrid("addRowData", data.data, dataRow, "last");//没有选定行则添加在第一行
+
+                                    // 添加成功模态框关闭
+                                    $("#dialog-form").dialog("close");
+                                    alert("添加操作成功!");
+                                    console.log(data.msg);
+                                } else {
+                                    alert("添加操作失败!");
+                                    console.log(data.msg);
+                                }
+
+                            },
+
+                            error: function (textStatus, errorThrown) {
+                                console.log("系统ajax交互错误: " + JSON.stringify(textStatus));
+                            },
+                        });
+                    }
+
+                }
+            }
+        });
+        //修改
+        $("#dialog-formE").dialog({
+            autoOpen: false,
+            height: 400,
+            width: 500,
+            modal: true,
+            buttons: {
+
+                "取消": function () { $(this).dialog("close") },
+                "提交": function () {
+
+
+                        //提交模态框的数据
+                        $.ajax({
+                            url: '@Url.Action("BusinessRecShare_Edit", "Reimbursement")',
+                            type: "post",   //默认为get
+                            data: $("#dialog-formE").serialize(),   //传递给服务端的数据
+                            dataType: "json",
+                            cache: false,
+                            success: function (data, textStatus) {
+                                //console.log(data)
+
+                                if (data.success) {
+                                    //页面修改数据
+                                    var selectedId = $("#gridShare").jqGrid("getGridParam", "selrow");
+                                    var cityE = $.trim($("#cityE").val());//城市
+                                    var dealerE = $.trim($("#dealerE").val());//时间
+                                    var moneyE = $.trim($("#moneyE").val());//金额
+
+                                    var dataRow = {
+                                        "ID": data.data.ID,
+                                        "城市": cityE,
+                                        "时间": dealerE,
+                                        "金额": moneyE
+                                    };
+
+                                    // 添加成功模态框关闭
+                                    $("#dialog-formE").dialog("close");
+                                    $("#gridShare").jqGrid('setRowData', selectedId, dataRow, { color: "" });
+
+                                    alert(data.msg);
+                                } else {
+                                    alert("修改失败！");
+                                    console.log(data.msg);
+                                }
+
+
+                            },
+
+                            error: function (textStatus, errorThrown) {
+                                console.log("系统ajax交互错误: " + JSON.stringify(textStatus));
+                            },
+                        });
+
+
+                }
+            }
+        });
+    // 接待分摊行编辑
+    function RecEdit(id) {
+        console.log('当前编辑的是'+id)
+
+        var model = $("#gridShare").jqGrid('getRowData', id);
+        console.log(model)
+
+        // 给修改模态框的赋值
+        $("#editID").val(id);
+        $.trim($("#cityE").val(model.城市));//城市
+        $.trim($("#NowCityE").text(model.城市));//城市
+         $.trim($("#dealerE").val(model.经销商));//时间
+         $.trim($("#moneyE").val(model.金额));//金额
+
+        $("#dialog-formE").dialog("option", "title", "修改接待报销分摊内容").dialog("open");
+
+
+    };
+
+    // 会议事项行删除
+    function Recdelete(id) {
+        console.log(id)//当前的表上ID和行号ID一样
+        if (confirm("确定删除当前数据?")) {
+            $.ajax({
+                url: "@Url.Action("BusinessRecShare_Del", "Reimbursement")",
+                type: "get",
+                data: { id: id },
+                dataType: 'json',
+                cache: false,
+                error: function (textStatus, errorThrown) { alert("交互错误" + JSON.stringify(textStatus)); },
+                success: function (data) {
+
+                    if (data.success) {
+                        $("#gridShare").jqGrid("delRowData", id);
+
+                        alert(data.msg);
+
+                    } else {
+                        alert("删除失败！");
+                        console.log(data.msg);
+                    }
+                }
+            });
+            }
+    };
+    //前往详情
+    function geDetail() {
+        var sum = 0;
+        var BudMoney = parseFloat($("#MainMoneyE").val());
+        var data = $("#gridShare").jqGrid("getRowData");//获取jqgrid表格所有数据
+        $(data).each(function (i, m) {
+            sum += parseFloat(m.金额);
+        })
+        if (BudMoney < sum) {
+            var numfull = sum - BudMoney;
+            alert("当前分摊金额已超出，请合理分摊！超出" + numfull + "元");
+        } else {
+
+            window.location.href = "@Url.Action("BusinessRec_InfoView", "Reimbursement")?id=" + @Model.接待计划ID;
+        }
+
+    }
+</script>
+

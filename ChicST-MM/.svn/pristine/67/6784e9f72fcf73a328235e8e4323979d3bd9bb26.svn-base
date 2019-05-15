@@ -1,0 +1,57 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.Development_FranchiserContactsViewModel>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.姓名)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.性别)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.年龄)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.职务)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.联系方式)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.经销商档案ID)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.姓名)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.性别)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.年龄)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.职务)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.联系方式)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.经销商档案ID)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

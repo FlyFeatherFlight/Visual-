@@ -1,0 +1,125 @@
+﻿@model ChicST_MM.WEB.Models.ReviewRecordViewModel
+@{
+    ViewBag.Title = "5S评审详情";
+}
+
+<h3>5S评审详情</h3>
+
+<table class="table table-striped table-bordered table-hover" style="margin: 0 auto;">
+    <tr>
+        <td>经销商名字</td>
+        <td colspan="4">@Model.经销商名字</td>
+        <td>展厅名称</td>
+        <td colspan="3">@Model.展厅名称</td>
+    </tr>
+    <tr>
+        <td>陈列负责人</td>
+        <td colspan="4">@Model.门店负责人</td>
+        <td>运营负责人</td>
+        <td colspan="3">@Model.运营负责人</td>
+    </tr>
+    <tr>
+        <td>巡店日期</td>
+        <td colspan="8">@Model.巡店日期.ToString("d")</td>
+    </tr>
+
+    <tr>
+        <td>门店需调整内容</td>
+        <td colspan="8">@Model.陈列建议</td>
+    </tr>
+    <tr>
+        <td>奖惩制度提出意见</td>
+        <td colspan="8">@Model.奖惩制度提出意见</td>
+    </tr>
+    <tr>
+        <td colspan="9">
+            <span>5S评审详情</span>
+            <input type="button" onclick="btn_excl()" value="导出评审详情数据" style="margin-left:2.5%;" />
+        </td>
+    </tr>
+</table>
+<div style="position:relative;width:95%; margin:auto;">
+
+    <table class="table table-striped table-bordered " id="tab" style="width:100% !important; margin:auto;">
+        <tr class="font-middle">
+            <th>序号</th>
+            <th>评估项目</th>
+            <th>具体内容</th>
+            <th>评估标准</th>
+            <th>分值</th>
+            <th>扣分标准</th>
+            <th>扣分情况</th>
+            <th>实际得分</th>
+            <th style="width:15%;">备注/提升</th>
+            <th style="width:10%;">凭证</th>
+        </tr>
+        @foreach (var item in Model.ReviewRecord_DetailsViewModels)
+        {
+            <tr style="text-align:center; width:auto !important;">
+                <td class="num">@item.评分标准序号</td>
+                <td>@item.评估项目</td>
+                <td>@item.具体内容</td>
+                <td>@item.评估标准</td>
+                <td>@item.分值</td>
+                <td>@item.扣分标准</td>
+                <td>@item.扣分</td>
+                <td>@item.得分</td>
+                <td>@item.备注</td>
+                <td>
+
+                    @if (item.proofs != null)
+                    {
+                        <a href="#" class="downFile">下载</a>
+                        <table class="files-tab hidden">
+                            @foreach (var ite in item.proofs)
+                            {
+                                <tr><td>@ite.ToString()</td></tr>
+                            }
+                        </table>
+
+                    }
+                    else
+                    {
+                        <a href="#" style="color:gray;">无凭证</a>
+                    }
+
+
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+<script>
+    function btn_excl() {
+        var str =" @Model.展厅名称-5s评审详情表";
+        var table1 = document.querySelector("#tab");
+            var sheet = XLSX.utils.table_to_sheet(table1);//将一个table对象转换成一个sheet对象
+            openDownloadDialog(sheet2blob(sheet), str +'(@DateTime.Now.ToString("yyyy年MM月dd日")).xlsx');
+        }
+    $(function () {
+         $(".downFile").click(function () {
+        var _this = this;
+        var fileIds = $(_this).next().find("td");
+        for (var i = 0; i < fileIds.length; i++) {
+
+            var fileId = $(fileIds[i]).text();
+            var action = '@Url.Action("DownLoadFiles", "Review_5S")' ;
+            var form = $("<form>");
+            form.attr("style", "display:none");
+            form.attr("target", "_blank");
+            form.attr("method", "get");
+            form.attr("action", action );
+            var input1 = $("<input>");
+            input1.attr("type", "hidden");
+            input1.attr("name", "id");
+            input1.attr("value", fileId);
+            $("body").append(form);
+            form.append(input1);
+            form.submit();
+            form.remove();
+        }
+
+
+    })
+    })
+</script>

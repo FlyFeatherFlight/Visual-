@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E3D2D1D3-0DDD-4E6B-96A2-3BCC3E0D20E2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ChicST_MM.BLL</RootNamespace>
+    <AssemblyName>ChicST-MM.BLL</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\ChicST-MM.WEB\DLL\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\ChicST-MM.WEB\DLL\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccountBLL.cs" />
+    <Compile Include="AfterSalesBLL.cs" />
+    <Compile Include="AfterSales_ClassifyBLL.cs" />
+    <Compile Include="AfterSales_CostComputationBLL.cs" />
+    <Compile Include="AfterSales_ProofBLL.cs" />
+    <Compile Include="AfterSales_TrackBLL.cs" />
+    <Compile Include="AirFaresBLL.cs" />
+    <Compile Include="AirfareSharingBLL.cs" />
+    <Compile Include="BaseServiceBLL.cs" />
+    <Compile Include="BusinessReceptionBLL.cs" />
+    <Compile Include="BusinessReception_BudgetBLL.cs" />
+    <Compile Include="BusinessReception_GuestBLL.cs" />
+    <Compile Include="BusinessReception_MattersBLL.cs" />
+    <Compile Include="BusinessReception_PlansBLL.cs" />
+    <Compile Include="BusinessRec_CarReimBLL.cs" />
+    <Compile Include="BusinessRec_HotelReimBLL.cs" />
+    <Compile Include="BusinessTripBLL.cs" />
+    <Compile Include="BusinessTrip_DetailsBLL.cs" />
+    <Compile Include="BusinessTrip_ReportBLL.cs" />
+    <Compile Include="BusinessTrip_ReportProofBLL.cs" />
+    <Compile Include="BusinessTrip_TypeBLL.cs" />
+    <Compile Include="CarReim_DetailsBLL.cs" />
+    <Compile Include="CarReim_SharingBLL.cs" />
+    <Compile Include="CommodityFile_CommodityBLL.cs" />
+    <Compile Include="CustomerInfoBLL.cs" />
+    <Compile Include="CustomerTrackingBLL.cs" />
+    <Compile Include="Development_CityBLL.cs" />
+    <Compile Include="Development_CompetesBLL.cs" />
+    <Compile Include="Development_FranchiserBLL.cs" />
+    <Compile Include="Development_MarketBLL.cs" />
+    <Compile Include="HotelReimSharingBLL.cs" />
+    <Compile Include="Reimbursement_BusinessRecDetailsBLL.cs" />
+    <Compile Include="Reimbursement_BusinessReceptionBLL.cs" />
+    <Compile Include="Reimbursement_ReceptionSharingBLL.cs" />
+    <Compile Include="Review_5SBLL.cs" />
+    <Compile Include="DepartmentBLL.cs" />
+    <Compile Include="DistributorBLL.cs" />
+    <Compile Include="EmployeeInformationBLL.cs" />
+    <Compile Include="OtherReimburseBLL.cs" />
+    <Compile Include="OtherReimburse_DetailsBLL.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReceiptBLL.cs" />
+    <Compile Include="RegionBLL.cs" />
+    <Compile Include="Review_5S_RcordBLL.cs" />
+    <Compile Include="Review_5S_RecordDetailsBLL.cs" />
+    <Compile Include="Review_5S_RecordProofBLL.cs" />
+    <Compile Include="SalesRecordBLL.cs" />
+    <Compile Include="StoreBLL.cs" />
+    <Compile Include="StoreEmployeeBLL.cs" />
+    <Compile Include="TrackGoalBLL.cs" />
+    <Compile Include="TravelReimbursementBLL.cs" />
+    <Compile Include="TravelReimbursement_DetailsBLL.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ChicST-MM.IBLL\ChicST-MM.IBLL.csproj">
+      <Project>{2F61AD02-3DD6-4A35-9E52-6AC257EEDED4}</Project>
+      <Name>ChicST-MM.IBLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ChicST-MM.IDAL\ChicST-MM.IDAL.csproj">
+      <Project>{ACF6B4DB-5EEC-4C46-89A9-BA1D53310677}</Project>
+      <Name>ChicST-MM.IDAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ChicST-MM.Model\ChicST-MM.Model.csproj">
+      <Project>{9a790174-64aa-4bb7-bd31-9da5be253859}</Project>
+      <Name>ChicST-MM.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -1,0 +1,79 @@
+﻿using ChicST_MM.IBLL;
+using ChicST_MM.WEB.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace ChicST_MM.WEB.Controllers
+{
+    public class DevelopmentDocController : Controller
+    {
+
+        private IDevelopment_CityBLL development_CityBLL;
+        private IAccountBLL accountBLL;
+        private IDevelopment_CompetesBLL development_CompetesBLL;
+        private IDevelopment_FranchiserBLL development_FranchiserBLL;
+        private IDevelopment_MarketBLL development_MarketBLL;
+        private IEmployeeInformationBLL employeeInformationBLL;
+
+        public DevelopmentDocController(IDevelopment_CityBLL development_CityBLL, IAccountBLL accountBLL, IDevelopment_CompetesBLL development_CompetesBLL, IDevelopment_FranchiserBLL development_FranchiserBLL, IDevelopment_MarketBLL development_MarketBLL, IEmployeeInformationBLL employeeInformationBLL)
+        {
+            this.development_CityBLL = development_CityBLL;
+            this.accountBLL = accountBLL;
+            this.development_CompetesBLL = development_CompetesBLL;
+            this.development_FranchiserBLL = development_FranchiserBLL;
+            this.development_MarketBLL = development_MarketBLL;
+            this.employeeInformationBLL = employeeInformationBLL;
+        }
+
+
+
+
+
+        // GET: DevelopmentDoc
+        /// <summary>
+        /// 城市档案
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult CityView()
+        {
+            var models = BuildCityModels();
+            return View(models);
+        }
+
+        /// <summary>
+        /// 构建单个城市实体
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        private Development_CityViewModel BuildCityModel(拓展_城市档案 model) {
+            Development_CityViewModel cityViewModel = new Development_CityViewModel();
+            cityViewModel.ID = model.ID;
+            cityViewModel.城市分级 = model.城市分级;
+            cityViewModel.市 = model.市;
+            cityViewModel.录入人ID = model.录入人ID;
+            cityViewModel.录入人 = accountBLL.GetModel(p => p.ID == model.录入人ID).姓名;
+            cityViewModel.是否为目标城市 = model.是否为目标城市;
+            cityViewModel.更新时间 = model.更新时间;
+            cityViewModel.省 = model.省;
+            return cityViewModel;
+        }
+        /// <summary>
+        /// 构建城市实体集
+        /// </summary>
+        /// <returns></returns>
+        private List<Development_CityViewModel> BuildCityModels() {
+            var models = development_CityBLL.GetModels(p => true);
+            List<Development_CityViewModel> lis = new List<Development_CityViewModel>();
+            foreach (var item in models)
+            {
+                var model = BuildCityModel(item);
+                lis.Add(model);
+            }
+            return lis;
+        }
+
+    }
+}

@@ -1,0 +1,983 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.Development_FranchiserViewModel>
+
+@{
+    ViewBag.Title = "经销商";
+}
+
+<h3>经销商</h3>
+<button id="addDealer" style="cursor:pointer;margin-left:2.5%;" class="btn btn-primary">添加经销商</button>
+<form action="@Url.Action("FranchiserView","DevelopmentDoc")" method="post" style="margin-left:2.5%;padding:5px 0;">
+    <select class=" search-input" id="sheng">
+        <option value="">-请选择省-</option>
+    </select>
+    <select class="search-input" id="shi" name="cid">
+        <option value="">-请选择市-</option>
+    </select>
+    <input type="submit" name="" value="查询" />
+</form>
+@*添加*@
+<form id="add-diolog" action="@Url.Action("FranchiserAdd","DevelopmentDoc")" method="post">
+
+    <table class="table table-bordered table-hover table-striped" style="width:95%;margin:0px auto;">
+
+        <tr>
+            <td>城市</td>
+            <td>
+                <select class="search-input" id="shengA">
+                    <option>-请选择省-</option>
+                </select>
+                <select class="search-input red" id="shiA" name="城市ID">
+                    <option>-请选择市-</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>城市等级</td>
+            <td>
+                <input id="level" type="text" class="form-control red" name="城市等级" autocomplete="off" readonly />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>企业名称</td>
+            <td colspan="3">
+                <input type="text" class="form-control" name="企业名称" />
+            </td>
+
+        </tr>
+        <tr>
+            <td>联系人</td>
+            <td>
+                <input type="text" class="form-control" name="联系人" />
+            </td>
+            <td>联系方式</td>
+            <td>
+                <input type="text" class="form-control" name="联系方式" />
+            </td>
+        </tr>
+        <tr>
+            <td>职务</td>
+            <td>
+                <input type="text" class="form-control" name="职务" />
+            </td>
+            <td>性别</td>
+            <td>
+                <select class="form-control" name="性别">
+                    <option value="男">男</option>
+                    <option value="女">女</option>
+                </select>
+
+            </td>
+        </tr>
+        <tr>
+            <td>年龄</td>
+            <td>
+                <input type="text" class="form-control" name="年龄" />
+            </td>
+            <td>地址</td>
+            <td>
+                <input type="text" class="form-control" name="地址" />
+            </td>
+        </tr>
+        <tr>
+            <td>社会资源描述</td>
+            <td colspan="3">
+                <textarea class="form-control" name="社会资源描述"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>代理品牌</td>
+            <td>
+                <input type="text" class="form-control" name="代理品牌" />
+            </td>
+            <td>是否现代品牌</td>
+            <td>
+                <select class="form-control red" name="是否现代品牌">
+                    <option value=true>是</option>
+                    <option value=false>否</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>经营年限</td>
+            <td>
+                <input type="text" class="form-control" name="经营年限" />
+            </td>
+            <td>年销售额(万元) </td>
+            <td>
+                <input type="text" class="form-control red" name="年销售额" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>团队人数</td>
+            <td>
+                <input type="text" class="form-control red" name="团队人数" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>入驻商场</td>
+            <td>
+                <input type="text" class="form-control" name="入驻商场" />
+            </td>
+        </tr>
+        <tr>
+            <td>门店数量</td>
+            <td><input type="text" class="form-control" name="门店数量" /></td>
+            <td>投资预算(元/平方)</td>
+            <td>
+                <input type="text" class="form-control red" name="投资预算" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>意向商场</td>
+            <td>
+                <select class="form-control red" name="意向商场ID" id="delearMarket"></select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>商场等级</td>
+            <td>
+                <input type="text" name="商场等级" class="form-control red" id="market-level" readonly />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>预算面积</td>
+            <td>
+                <input type="text" class="form-control red" name="预算面积" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>意向位置分级</td>
+            <td>
+                <select class="form-control" name="意向位置分级">
+                    <option value="">-请选择等级-</option>
+                    <option value="A+">A+</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>理念描述</td>
+            <td colspan="3">
+                <textarea rows="3" class="form-control" name="理念描述"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>是否符合</td>
+            <td>
+                <select class="form-control red" name="是否符合">
+                    <option value=true>是</option>
+                    <option value=false>否</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+
+            <td>是否了解希可</td>
+            <td>
+                <select class="form-control" name="是否了解希可">
+                    <option value=true>是</option>
+                    <option value=false>否</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>是否有意向</td>
+            <td>
+                <select class="form-control" name="是否有意向">
+                    <option value=true>是</option>
+                    <option value=false>否</option>
+                </select>
+            </td>
+            <td>意向等级</td>
+            <td>
+                <select class="form-control" name="意向等级">
+                    <option value="">-请选择等级-</option>
+                    <option value="高">高</option>
+                    <option value="中">中</option>
+                    <option value="低">低</option>
+                    <option value="无">无</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>备注</td>
+            <td colspan="3">
+                <input type="text" class="form-control" name="备注" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+@*修改*@
+<form id="edit-diolog">
+    <input type="text" name="ID" value="" id="editID" class="hidden"/>
+    <table class="table table-bordered table-hover table-striped" style="width:95%;margin:0px auto;">
+
+        <tr>
+            <td>城市</td>
+            <td>
+                <select class="search-input" id="shengE">
+                    <option>-请选择省-</option>
+                </select>
+                <select class="search-input" id="shiE" name="城市ID">
+                    <option>-请选择市-</option>
+                </select>
+                <div id="lastCity">
+                    上次选中的城市是：
+                    <span></span>
+                    <input type="text" name="所属城市ID" value="" class="hidden" />
+                </div>
+            </td>
+            <td>城市等级</td>
+            <td>
+                <input id="levelE" type="text" class="form-control" name="城市等级" autocomplete="off" readonly />
+            </td>
+        </tr>
+        <tr>
+
+            <td>企业名称</td>
+            <td colspan="3">
+                <input id="firmNameE" type="text" class="form-control" name="企业名称" />
+            </td>
+
+        </tr>
+        <tr>
+            <td>联系人</td>
+            <td>
+                <input id="NameE" type="text" class="form-control" name="联系人" />
+            </td>
+            <td>联系方式</td>
+            <td>
+                <input id="PhoneE" type="text" class="form-control" name="联系方式" />
+            </td>
+        </tr> 
+        <tr>
+            <td>职务</td>
+            <td>
+                <input id="dutyE" type="text" class="form-control" name="职务" />
+            </td>
+            <td>性别</td>
+            <td>
+                <select id="genderE" class="form-control" name="性别">
+                    <option value="男">男</option>
+                    <option value="女">女</option>
+                </select>
+
+            </td>
+        </tr>
+        <tr>
+            <td>年龄</td>
+            <td>
+                <input id="ageE" type="text" class="form-control" name="年龄" />
+            </td>
+            <td>地址</td>
+            <td>
+                <input id="siteE" type="text" class="form-control" name="地址" />
+            </td>
+        </tr>
+        <tr>
+            <td>社会资源描述</td>
+            <td colspan="3">
+                <textarea id="resourceDesE" class="form-control" name="社会资源描述"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>代理品牌</td>
+            <td>
+                <input id="agencyE" type="text" class="form-control" name="代理品牌" />
+            </td>
+            <td>是否现代品牌</td>
+            <td>
+                <select id="modernE" class="form-control" name="是否现代品牌">
+                    <option value=true>是</option>
+                    <option value=false>否</option>
+                </select>
+
+            </td>
+        </tr>
+        <tr>
+          
+            <td>经营年限</td>
+            <td>
+                <input id="ageLimitE" type="text" class="form-control" name="经营年限" />
+            </td>
+            <td>年销售额(万元) </td>
+            <td>
+                <input id="yearSaleE" type="text" class="form-control" name="年销售额" />
+            </td>
+        </tr>
+        <tr>
+            <td>团队人数</td>
+            <td>
+                <input id="teamNumE" type="text" class="form-control" name="团队人数" />
+            </td>
+            <td>入驻商场</td>
+            <td>
+                <input id="inMallE" type="text" class="form-control" name="入驻商场" />
+            </td>
+        </tr>
+        <tr>
+            <td>门店数量</td>
+            <td><input id="shopNumE" type="text" class="form-control" name="门店数量" /></td>
+            <td>投资预算(元/平方)</td>
+            <td>
+                <input id="budE" type="text" class="form-control" name="投资预算" />
+            </td>
+        </tr>
+        <tr>
+            <td>意向商场</td>
+            <td>
+                <select class="form-control" name="" id="delearMarketE"></select>
+                <div id="lastMarket">
+                    上次选中的意向商场是：
+                    <span></span>
+                    <input type="text" name="意向商场ID" value="" class="hidden" />
+                </div>
+            </td>
+            <td>商场等级</td>
+            <td> <input type="text" name="商场等级" class="form-control" id="market-levelE" readonly /></td>
+        </tr>
+        <tr>
+            <td>预算面积</td>
+            <td><input id="areE" type="text" class="form-control" name="预算面积" /></td>
+            <td>意向位置分级</td>
+            <td>
+                <select id="delearSiteLevelE" class="form-control" name="意向位置分级">
+                    <option value="">-请选择等级-</option>
+                    <option value="A+">A+</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>理念描述</td>
+            <td colspan="3">
+                <textarea id="conceptDesE" rows="3" class="form-control" name="理念描述"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>是否符合</td>
+            <td>
+                <select id="conformE" class="form-control" name="是否符合">
+                    <option value=true>是</option>
+                    <option value=false>否</option>
+                </select>
+            </td>
+           
+            <td>是否了解希可</td>
+            <td>
+                <select id="CHICE" class="form-control" name="是否了解希可">
+                    <option value=true>是</option>
+                    <option value=false>否</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>是否有意向</td>
+            <td>
+                <select id="mindE" class="form-control" name="是否有意向">
+                    <option value=true>是</option>
+                    <option value=false>否</option>
+                </select>
+            </td>
+            <td>意向等级</td>
+            <td>
+                <select id="mindLevelE" class="form-control" name="意向等级">
+                    <option value="">-请选择等级-</option>
+                    <option value="高">高</option>
+                    <option value="中">中</option>
+                    <option value="低">低</option>
+                    <option value="无">无</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>备注</td>
+            <td colspan="3">
+                <input id="notesE" type="text" class="form-control" name="备注" />
+            </td>
+        </tr>
+    </table>
+</form>
+<table class="table table-bordered table-hover table-striped">
+    <tr>
+        @*<th>
+            @Html.DisplayNameFor(model => model.ID)
+        </th>*@
+        @*<th>
+            @Html.DisplayNameFor(model => model.城市ID)
+        </th>*@
+        <th>
+            @Html.DisplayNameFor(model => model.城市)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.城市等级)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.企业名称)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.联系人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.联系方式)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.职务)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.性别)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.年龄)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.地址)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.社会资源描述)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.代理品牌)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.是否现代品牌)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.经营年限)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.年销售额)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.团队人数)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.入驻商场)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.门店数量)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.投资预算)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.意向商场)
+        </th>
+        @*<th>
+            @Html.DisplayNameFor(model => model.意向商场ID)
+        </th>*@
+        <th>
+            @Html.DisplayNameFor(model => model.商场等级)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.预算面积)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.意向位置分级)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.理念描述)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.是否符合)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.是否了解希可)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.是否有意向)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.意向等级)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.备注)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.录入人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.更新日期)
+        </th>
+        <th>操作</th>
+    </tr>
+
+    @if (Model.Count() > 0)
+    {
+        foreach (var item in Model)
+        {
+    <tr>
+        <td class="Id hidden">
+            @Html.DisplayFor(modelItem => item.ID)
+        </td>
+        <td class="cityId hidden">
+            @Html.DisplayFor(modelItem => item.城市ID)
+        </td>
+        <td class="city">
+            @Html.DisplayFor(modelItem => item.城市)
+        </td>
+        <td class="level">
+            @Html.DisplayFor(modelItem => item.城市等级)
+        </td>
+        <td class="firmName">
+            @Html.DisplayFor(modelItem => item.企业名称)
+        </td>
+        <td class="Name">
+            @Html.DisplayFor(modelItem => item.联系人)
+        </td>
+        <td class="Phone">
+            @Html.DisplayFor(modelItem => item.联系方式)
+        </td>
+        <td class="duty">
+            @Html.DisplayFor(modelItem => item.职务)
+        </td>
+        <td class="gender">
+            @Html.DisplayFor(modelItem => item.性别)
+        </td>
+        <td class="age">
+            @Html.DisplayFor(modelItem => item.年龄)
+        </td>
+        <td class="site">
+            @Html.DisplayFor(modelItem => item.地址)
+        </td>
+        <td class="resourceDes">
+            @Html.DisplayFor(modelItem => item.社会资源描述)
+        </td>
+        <td class="agency">
+            @Html.DisplayFor(modelItem => item.代理品牌)
+        </td>
+        <td class="modern">
+            @if (item.是否现代品牌 == true)
+            {
+                <span>是</span>
+            }
+            else
+            {
+                <span>否</span>
+            }
+
+        </td>
+        <td class="ageLimit">
+            @Html.DisplayFor(modelItem => item.经营年限)
+        </td>
+        <td class="yearSale">
+            @Html.DisplayFor(modelItem => item.年销售额)
+        </td>
+        <td class="teamNum">
+            @Html.DisplayFor(modelItem => item.团队人数)
+        </td>
+        <td class="inMall">
+            @Html.DisplayFor(modelItem => item.入驻商场)
+        </td>
+        <td class="shopNum">
+            @Html.DisplayFor(modelItem => item.门店数量)
+        </td>
+        <td class="bud">
+            @Html.DisplayFor(modelItem => item.投资预算)
+        </td>
+        <td class="delearMarket">
+            @Html.DisplayFor(modelItem => item.意向商场)
+        </td>
+        <td class="delearMarketID hidden">
+            @Html.DisplayFor(modelItem => item.意向商场ID)
+        </td>
+        <td class="market-level">
+            @Html.DisplayFor(modelItem => item.商场等级)
+        </td>
+        <td class="are">
+            @Html.DisplayFor(modelItem => item.预算面积)
+        </td>
+        <td class="delearSiteLevel">
+            @Html.DisplayFor(modelItem => item.意向位置分级)
+        </td>
+        <td class="conceptDes">
+            @Html.DisplayFor(modelItem => item.理念描述)
+        </td>
+        <td class="conform">
+            @if (item.是否符合 == true)
+            {
+                <span>是</span>
+            }
+            else
+            {
+                <span>否</span>
+            }
+        </td>
+        <td class="CHIC">
+            @if (item.是否了解希可 == true)
+            {
+                <span>是</span>
+            }
+            else
+            {
+                <span>否</span>
+            }
+        </td>
+        <td class="mind">
+            @if (item.是否有意向 == true)
+            {
+                <span>是</span>
+            }
+            else
+            {
+                <span>否</span>
+            }
+        </td>
+        <td class="mindLevel">
+            @Html.DisplayFor(modelItem => item.意向等级)
+        </td>
+        <td class="notes">
+            @Html.DisplayFor(modelItem => item.备注)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.录入人)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.更新日期)
+        </td>
+        <td><span class="Aspan" onclick="EditDealer(this)">修改</span></td>
+    </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="32" style="height:120px;">暂无数据!</td>
+        </tr>
+    }
+
+</table>
+<script>
+
+     //获取省份数据
+    $.ajax({
+        type: "post",
+        data: {},
+        url: '@Url.Action("GetProvince", "DevelopmentDoc")',
+        dataType: "json",
+        cache: false,
+        async: true,
+        success: function (data) {
+            $.each(data, function(i, m) {
+                $("#sheng").append("<option value=" + m + ">" + m + "</option>");
+                $("#shengA").append("<option value=" + m + ">" + m + "</option>");
+                $("#shengE").append("<option value=" + m + ">" + m + "</option>");
+
+            })
+
+        },
+        error: function (err) {
+            alert("点击过快或网络错误，请稍后重试！");;
+            console.log(err);
+        }
+
+    })
+
+    //根据选择的省份，获取市数据
+    /****查询***/
+    $("#sheng").change(function () {
+        $("#shi").empty();
+        getShi($("#sheng").val(), $("#shi"));
+    })
+    /***添加***/
+    $("#shengA").change(function () {
+        $("#shiA").empty();
+        getShi($("#shengA").val(), $("#shiA"));
+    })
+    /****修改***/
+    $("#shengE").change(function () {
+        $("#lastCity span").text("");
+        $("#lastCity input").val("");
+        $("#lastMarket span").text("");
+        $("#lastMarket input").val("");
+        $("#market-levelE").val("");
+        $("#level").val("");
+        $("#shiE").empty();
+        getShi($("#shengE").val(), $("#shiE"));
+    })
+
+    //根据当前选择的城市加载商场下拉框 并给城市等级赋值
+    $("#shiA").change(function () {
+        $("#delearMarket").empty();
+        getMarket($("#delearMarket"), $("#shiA").val());
+        //为城市分级赋值
+        //调用选中文本
+        activeText($("#shiA"));
+        var level = $("#shiA").find("option.active").data("level");
+        $("#level").val(level);
+
+    })
+    //修改
+    $("#shiE").change(function () {
+        $("#lastCity input").val($("#shiE").val());
+        $("#delearMarketE").empty();
+        getMarket($("#delearMarketE"), $("#shiE").val());
+        //为城市分级赋值
+        //调用选中文本
+        activeText($("#shiE"));
+        var level = $("#shiE").find("option.active").data("level");
+        $("#levelE").val(level);
+
+    })
+    //添加 商场改变修改商场等级
+    $("#delearMarket").change(function () {
+        //调用选中文本
+        activeText($("#delearMarket"));
+        //为商场等级赋值
+        var level = $("#delearMarket").find("option.active").data("level");
+        $("#market-level").val(level);
+    })
+    //修改 商场改变修改商场等级
+    $("#delearMarketE").change(function () {
+        $("#lastMarket input").val($("#delearMarketE").val());
+        //调用选中文本
+        activeText($("#delearMarketE"));
+        //为商场等级赋值
+        var level = $("#delearMarketE").find("option.active").data("level");
+        $("#market-levelE").val(level);
+    })
+
+    //添加商场
+    $("#add-diolog").dialog({
+        autoOpen: false,
+        height: 600,
+        width: 960,
+        modal: true,
+        buttons: {
+
+            "取消": function () { $(this).dialog("close") },
+            "提交": function () {
+                var reds = $("#add-diolog .red"),
+                status = false;
+                $(reds).each(function (i,m) {
+                    if (m.value == "" || m.value == null) {
+                        return status = true;
+                    }
+                })
+                if (!status) {
+                    //$("#add-diolog").submit();
+                    $("#add-diolog").dialog("close");
+                } else {
+                    alert("必填项不能为空！");
+                }
+               
+            }
+        }
+    })
+    $("#addDealer").click(function () {
+        $("#add-diolog").dialog("option", "title", "添加经销商").dialog("open");
+    })
+    
+     //修改
+    function EditDealer(_this) {
+            //给修改模态框赋值
+        var city = $.trim($(_this).parent().siblings(".city").text()),//城市
+            level = $.trim($(_this).parent().siblings(".level").text()),//城市等级
+            firmName = $.trim($(_this).parent().siblings(".firmName").text()),//企业名称
+            Name = $.trim($(_this).parent().siblings(".Name").text()),//联系人
+            Phone = $.trim($(_this).parent().siblings(".Phone").text()),//联系方式
+            duty = $.trim($(_this).parent().siblings(".duty").text()),//职务
+            gender = $.trim($(_this).parent().siblings(".gender").text()),//性别
+            age = $.trim($(_this).parent().siblings(".age").text()),//年龄
+            site = $.trim($(_this).parent().siblings(".site").text()),//地址
+            resourceDes = $.trim($(_this).parent().siblings(".resourceDes").text()),//社会资源描述
+            agency = $.trim($(_this).parent().siblings(".agency").text()),//代理
+            modern = $.trim($(_this).parent().siblings(".modern").text()),//是否现代
+            ageLimit = $.trim($(_this).parent().siblings(".ageLimit").text()),//经营年限
+            yearSale = $.trim($(_this).parent().siblings(".yearSale").text()),//年销售额
+            teamNum = $.trim($(_this).parent().siblings(".teamNum").text()),//门店人员
+            inMall = $.trim($(_this).parent().siblings(".inMall").text()),//入驻商场
+            shopNum = $.trim($(_this).parent().siblings(".shopNum").text()),//入驻商场
+            bud = $.trim($(_this).parent().siblings(".bud").text()),//投资预算
+            delearMarket = $.trim($(_this).parent().siblings(".delearMarket").text()),//意向商场
+            delearMarketID = $.trim($(_this).parent().siblings(".delearMarketID").text()),//意向商场
+            marketLevel = $.trim($(_this).parent().siblings(".market-level").text()),//商场等级
+            are = $.trim($(_this).parent().siblings(".are").text()),//预算面积
+            delearSiteLevel = $.trim($(_this).parent().siblings(".delearSiteLevel").text()),//意向位置分级
+            conceptDes = $.trim($(_this).parent().siblings(".conceptDes").text()),//理念描述
+            conform = $.trim($(_this).parent().siblings(".conform").text()),//是否符合
+            CHIC = $.trim($(_this).parent().siblings(".CHIC").text()),//是否了解希可
+            mind = $.trim($(_this).parent().siblings(".mind").text()),//是否有意向
+            mindLevel = $.trim($(_this).parent().siblings(".mindLevel").text()),//意向等级
+            notes = $.trim($(_this).parent().siblings(".notes").text()),//备注
+            Id = $.trim($(_this).parent().siblings(".Id").text());//修改的id
+            cityId = $.trim($(_this).parent().siblings(".cityId").text()),
+            arry = [modern, conform, CHIC, mind],
+                arryNew=[];//城市id
+        if (delearSiteLevel =="-请选择商场-") {
+            delearSiteLevel = "";
+        }
+        $(arry).each(function (i,m) {
+            if (m == "是") {
+                m = "true";
+            } else {
+                m = "false";
+            }
+            arryNew.push(m);
+        })
+        //给下拉框设置默认选中属性  //              
+        
+        common($("#genderE option"), gender);
+        common($("#delearSiteLevelE option"), gender);
+        common($("#mindLevelE option"), mindLevel);
+
+        common($("#modernE option"), arryNew[0]);
+        common($("#conformE option"), arryNew[1]);
+        common($("#CHICE option"), arryNew[2]);
+        common($("#mindE option"), arryNew[3]);
+       
+
+        $("#lastCity span").text(city);
+        $("#lastCity input").val(cityId); 
+        $("#lastMarket span").text(delearMarket);
+        $("#lastMarket input").val(delearMarketID); 
+        $("#levelE").val(level);
+        $("#firmNameE").val(firmName);
+        $("#NameE").val(Name);
+        $("#PhoneE").val(Phone);
+        $("#dutyE").val(duty);
+        $("#ageE").val(age);
+        $("#resourceDesE").val(resourceDes);
+        $("#agencyE").val(agency);
+        $("#siteE").val(site);
+        $("#ageLimitE").val(ageLimit);
+        $("#yearSaleE").val(yearSale);
+        $("#teamNumE").val(teamNum);
+        $("#inMallE").val(inMall);
+        $("#shopNumE").val(shopNum);
+        $("#budE").val(bud);
+        $("#market-levelE").val(marketLevel);
+        $("#areE").val(are);
+        $("#delearSiteLevelE").val(delearSiteLevel);
+        $("#conceptDesE").val(conceptDes);
+        $("#notesE").val(notes);
+        $("#editID").val(Id);
+        $("#edit-diolog").dialog("option", "title", "修改经销商").dialog("open");
+    }
+   
+    //修改经销商
+    $("#edit-diolog").dialog({
+        autoOpen: false,
+        height: 600,
+        width: 960,
+        modal: true,
+        buttons: {
+
+            "取消": function () { $(this).dialog("close") },
+            "提交": function () {
+                $.ajax({
+                    url: "@Url.Action("FranchiserEdit", "DevelopmentDoc")",
+                    data: $("#edit-diolog").serialize(),
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.success) {
+                            alert(data.msg);
+                            window.location.reload(); 
+                        } else {
+                            alert(data.msg);
+                           
+                        }
+                    },
+                    error: function (err) {
+                        alert("点击过快或网络错误，请稍后重试！")
+                        console.log(err);
+                    }
+                })
+             
+                $("#edit-diolog").dialog("close")
+            }
+        }
+    })
+
+     //获取市
+    function getShi(province, shi ) {
+         $.ajax({
+                type: "post",
+                data: { province: province },
+                url: '@Url.Action("GetRgion", "DevelopmentDoc")',
+                dataType: "json",
+                cache: false,
+                async: true,
+                success: function (data) {
+                    //console.log(data)
+                 shi.append("<option value='' class='active' > -请选择- </option>");
+                    $.each(data, function(i, m) {
+                        $.each(m, function (n, d) {
+                            shi.append("<option data-level='" + d.Level+"' value='" + d.ID + "'>" + d.City + "</option>")
+                        })
+                    })
+                },
+                error: function (err) {
+                    alert("点击过快或网络错误，请稍后重试！");;
+                    console.log(err);
+                }
+
+            })
+    }
+
+ //获取商场
+    function getMarket(market,id){
+         $.ajax({
+                type: "post",
+                data: { cid: id },
+                url: '@Url.Action("GetMarket", "DevelopmentDoc")',
+                dataType: "json",
+                cache: false,
+                async: true,
+             success: function (data) {
+                 console.log(data)
+                 market.append("<option value='' class='active' data-level=''>-请选择商场-</option>")
+                    $.each(data, function(i, m) {
+                        $.each(m, function (n, d) {
+                            market.append("<option value='" + d.ID + "' data-level='" + d.Level + "'>" + d.Name + "</option>")
+                        })
+                    })
+                },
+                error: function (err) {
+                    alert("点击过快或网络错误，请稍后重试！");;
+                    console.log(err);
+                }
+
+            })
+    }
+    // 获取选中时的文本 添加.active
+    function activeText(Jopts) {
+
+        var value = Jopts.val();//这个值就是你获取的值;
+        if (value != "") {
+            for (var i = 0; i < Jopts.find("option").length; i++) {
+                if (value == Jopts.find("option")[i].value) {
+
+                    if ($(Jopts.find("option")[i]).hasClass("active")) {
+                        return;
+                    } else {
+                        $(Jopts.find("option")[i]).siblings().removeClass("active")
+                        $(Jopts.find("option")[i]).addClass("active");
+
+                    }
+                    break;
+                }
+            }
+        }
+
+    }
+    //修改时给下拉框添加.selected
+    function common(option, Name) {
+
+        if (Name != "" || Name != null) {
+            var options = option;
+            $(options).each(function (i, m) {
+                if (Name == m.value) {
+
+                    $(m).attr("selected", "selected")
+                }
+            })
+        }
+    }
+</script>

@@ -1,0 +1,62 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.Development_FranchiserContactsViewModel>
+
+@{ 
+    Layout = null;
+}
+<table class="table table-bordered">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.姓名)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.性别)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.年龄)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.职务)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.联系方式)
+        </th>
+       
+        <th>操作</th>
+    </tr>
+
+@if (Model.Count()>0) {
+    foreach (var item in Model) {
+    <tr>
+        <td class="name">
+            @Html.DisplayFor(modelItem => item.姓名)
+        </td>
+        <td class="gender">
+            @Html.DisplayFor(modelItem => item.性别)
+        </td>
+        <td class="age">
+            @Html.DisplayFor(modelItem => item.年龄)
+        </td>
+        <td class="duty">
+            @Html.DisplayFor(modelItem => item.职务)
+        </td>
+        <td class="phone">
+            @Html.DisplayFor(modelItem => item.联系方式)
+        </td>
+        <td class="dealerId hidden">
+            @Html.DisplayFor(modelItem => item.经销商档案ID)
+        </td>
+        <td class="Id hidden">
+            @Html.DisplayFor(modelItem => item.ID)
+        </td>
+        <td>
+            <span class="Aspan" onclick="Edit(this)">修改</span>
+            <span class="Aspan" onclick="Del(this)">删除</span>
+        </td>
+    </tr>
+    }
+} else {
+
+    <tr>
+        <td colspan="6">暂无数据！</td>
+    </tr>
+}</table>

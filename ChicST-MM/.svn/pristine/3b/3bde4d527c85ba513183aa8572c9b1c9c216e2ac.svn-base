@@ -1,0 +1,4 @@
+﻿.table tbody tr td:nth-child(2n-1) {
+    text-align: center;
+    width: 58px;
+}

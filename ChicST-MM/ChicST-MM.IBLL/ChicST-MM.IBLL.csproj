@@ -67,6 +67,14 @@
     <Compile Include="ICustomerInfoBLL.cs" />
     <Compile Include="ICustomerTrackingBLL.cs" />
     <Compile Include="IDepartmentBLL.cs" />
+    <Compile Include="IDevelopment_CityBLL.cs" />
+    <Compile Include="IDevelopment_CompetesAnnualSalesBLL.cs" />
+    <Compile Include="IDevelopment_CompetesBLL.cs" />
+    <Compile Include="IDevelopment_FranchiserBLL.cs" />
+    <Compile Include="IDevelopment_FranchiserContactsBLL.cs" />
+    <Compile Include="IDevelopment_MarketBLL.cs" />
+    <Compile Include="IDevelopment_MarketContactBLL.cs" />
+    <Compile Include="IDevelopment_Market_RentalBLL.cs" />
     <Compile Include="IDistributorBLL.cs" />
     <Compile Include="IEmployeeInformationBLL.cs" />
     <Compile Include="IHotelReimSharingBLL.cs" />
@@ -74,6 +82,7 @@
     <Compile Include="IOtherReimburse_DetailsBLL.cs" />
     <Compile Include="IReceiptBLL.cs" />
     <Compile Include="IRegionBLL.cs" />
+    <Compile Include="IReimbursement_BusinessRecDetailsBLL.cs" />
     <Compile Include="IReimbursement_BusinessReceptionBLL.cs" />
     <Compile Include="IReimbursement_ReceptionSharingBLL.cs" />
     <Compile Include="IReview_5SBLL.cs" />

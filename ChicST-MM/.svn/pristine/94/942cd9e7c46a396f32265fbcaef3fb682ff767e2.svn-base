@@ -1,0 +1,46 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.Development_CometesAnnualSalesViewModel>
+
+@{ 
+    Layout = null;
+}
+
+<table class="table table-bordered" style="font-size:12px;">
+    <tr>
+        <td>
+            @Html.DisplayNameFor(model => model.销售年)
+        </td>
+        <td>
+            @Html.DisplayNameFor(model => model.年销售额)
+        </td>
+        <td>操作</td>
+    </tr>
+
+@if (Model.Count()>0)
+{
+    foreach (var item in Model)
+    {
+    <tr>
+        <td class="comId hidden">
+            @Html.DisplayFor(modelItem => item.竞品档案ID)
+        </td>
+        <td class="Id hidden">
+            @Html.DisplayFor(modelItem => item.ID)
+        </td>
+        <td class="year">
+            @Html.DisplayFor(modelItem => item.销售年)
+        </td>
+        <td class="money">
+            @Html.DisplayFor(modelItem => item.年销售额)
+        </td>
+        <td>
+            <span class="Aspan" onclick="Edit(this)">修改</span>
+            @*<span class="Aspan" onclick="Del(this)">删除</span>*@
+        </td>
+    </tr>
+    }
+}
+else {
+<tr>
+    <td colspan="3">暂无数据！</td>
+</tr>
+}</table>

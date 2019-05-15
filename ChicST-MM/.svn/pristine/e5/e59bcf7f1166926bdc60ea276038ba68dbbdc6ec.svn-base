@@ -1,0 +1,27 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ChicST_MM.WEB.Models
+{
+    /// <summary>
+    /// 接待报销明细
+    /// </summary>
+    public class BusinessRec_DetailsViewModel
+    {
+        public int ID { get; set; }
+        public string 经销商 { get; set; }
+        public string 事由 { get; set; }
+        public DateTime? 日期 { get; set; }
+        public decimal? 费用 { get; set; }
+        public int 接待报销ID { get; set; }
+        public int? 提交人ID { get; set; }
+        public string 提交人 { get; set; }
+        public DateTime? 提交日期 { get; set; }
+        public int? 更新人ID { get; set; }
+        public DateTime? 更新日期 { get; set; }
+        public string 城市 { get; set; }
+
+    }
+}

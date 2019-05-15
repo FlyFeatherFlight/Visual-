@@ -1,0 +1,235 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9A790174-64AA-4BB7-BD31-9DA5BE253859}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ChicST_MM.Model</RootNamespace>
+    <AssemblyName>ChicST-MM.Model</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\ChicST-MM.WEB\DLL\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\ChicST-MM.WEB\DLL\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="C5S_评审标准.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="C5S_评审记录.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="C5S_评审记录_凭证.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="C5S_评审记录详细.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HR_人员信息表.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HR_出差对象类型.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HR_出差汇报.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HR_出差汇报凭证.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HR_出差计划.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HR_出差计划详细.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="stmmEntity.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>stmmEntity.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="stmmEntity.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="stmmEntity.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>stmmEntity.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="商品档案_商品.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="地区.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="客服_售后分类.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="客服_售后发起单.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="客服_售后发起单凭证.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="客服_售后费用分摊.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="客服_售后跟进日志.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="系统_部门.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="系统用户.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="营销_接待来宾信息.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="营销_接待来访主要事项.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="营销_接待计划.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="营销_接待计划明细.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="营销_接待计划费用预估.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="财务_其他报销_副表.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="财务_其它报销.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="财务_出差报销单.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="财务_出差报销详细.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="财务_接待住宿报销.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="财务_接待住宿报销分摊.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="财务_接待报销.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="财务_接待报销分摊.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="财务_接待车辆报销.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="财务_收款单.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="财务_机票明细分摊.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="财务_核算分类.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="财务_车辆报销分摊.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="财务_车辆报销明细.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="销售_店铺员工档案.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="销售_店铺档案.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="销售_意向追踪日志.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="销售_接待成交单.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="销售_接待记录.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="销售_经销商档案.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="销售_职务.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="销售_订单.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="销售_跟进目标数申请表.cs">
+      <DependentUpon>stmmEntity.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+    <EntityDeploy Include="stmmEntity.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>stmmEntity.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="stmmEntity.edmx.diagram">
+      <DependentUpon>stmmEntity.edmx</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="stmmEntity.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>stmmEntity.edmx</DependentUpon>
+      <LastGenOutput>stmmEntity.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="stmmEntity.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>stmmEntity.edmx</DependentUpon>
+      <LastGenOutput>stmmEntity.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

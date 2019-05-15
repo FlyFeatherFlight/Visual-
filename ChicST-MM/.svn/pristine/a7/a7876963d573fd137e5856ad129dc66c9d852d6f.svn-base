@@ -1,0 +1,7 @@
+﻿
+@{
+    ViewBag.Title = "StoreMonthView";
+}
+
+<h2>门店月报</h2>
+

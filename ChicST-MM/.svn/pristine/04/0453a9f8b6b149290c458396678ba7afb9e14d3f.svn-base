@@ -1,0 +1,225 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.Development_FranchiserViewModel>
+
+@{
+    ViewBag.Title = "FranchiserView";
+}
+
+<h2>FranchiserView</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.城市ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.城市)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.城市等级)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.企业名称)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.联系人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.联系方式)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.职务)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.性别)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.年龄)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.地址)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.社会资源描述)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.代理品牌)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.是否现代品牌)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.经营年限)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.年销售额)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.团队人数)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.入驻商场)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.门店数量)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.投资预算)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.意向商场ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.意向商场)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.商场等级)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.预算面积)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.意向位置分级)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.理念描述)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.是否符合)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.是否了解希可)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.是否有意向)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.意向等级)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.备注)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.录入人ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.录入人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.更新日期)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.城市ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.城市)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.城市等级)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.企业名称)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.联系人)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.联系方式)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.职务)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.性别)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.年龄)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.地址)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.社会资源描述)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.代理品牌)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.是否现代品牌)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.经营年限)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.年销售额)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.团队人数)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.入驻商场)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.门店数量)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.投资预算)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.意向商场ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.意向商场)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.商场等级)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.预算面积)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.意向位置分级)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.理念描述)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.是否符合)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.是否了解希可)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.是否有意向)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.意向等级)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.备注)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.录入人ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.录入人)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.更新日期)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

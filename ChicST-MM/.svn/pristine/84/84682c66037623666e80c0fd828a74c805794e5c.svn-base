@@ -1,0 +1,7 @@
+﻿
+@{
+    ViewBag.Title = "CityView";
+}
+
+<h2>CityView</h2>
+

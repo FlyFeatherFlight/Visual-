@@ -1,0 +1,46 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.Development_MarketRentalViewModel>
+
+@{ 
+    Layout = null;
+}
+<table class="table table-bordered" style="font-size:12px;">
+    <tr>
+
+        <th>
+            @Html.DisplayNameFor(model => model.租金年)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.租金金额)
+        </th>
+        <th>操作</th>
+    </tr>
+
+@if (Model.Count() > 0)
+{
+    foreach (var item in Model)
+    {
+    <tr>
+        <td class="shopId hidden">
+            @Html.DisplayFor(modelItem => item.商场ID)
+        </td>
+        <td class="Id hidden">
+            @Html.DisplayFor(modelItem => item.ID)
+        </td>
+        <td class="year">
+            @Html.DisplayFor(modelItem => item.租金年)
+        </td>
+        <td class="money">
+            @Html.DisplayFor(modelItem => item.租金金额)
+        </td>
+        <td>
+            <span class="Aspan" onclick="Edit(this)">修改</span>
+            <span class="Aspan" onclick="Del(this)">删除</span>
+        </td>
+    </tr>
+    }
+}
+else {
+<tr>
+    <td colspan="3">暂无数据!</td>
+</tr>
+}</table>

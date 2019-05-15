@@ -1,0 +1,68 @@
+﻿@model ChicST_MM.WEB.Models.ReceiptViewModel
+
+@{
+    ViewBag.Title = "收款详情";
+}
+@*收款详情*@
+<h3>收款详情</h3>
+<input type="button" onclick="exl()" value="导出数据" style="margin-left:2.5%;" />
+<table class="table table-bordered table-striped table-hover " id="Table">
+    <tr>
+        <td class="bold">发起人</td>
+        <td colspan="4">@Model.提交人员</td>
+    </tr>
+    <tr>
+        <td class="bold" rowspan="3">
+            <span class="vertical-font">付款</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="bold">付款方</td>
+        <td colspan="3">@Model.付款方</td>
+    </tr>
+    <tr>
+        <td class="bold">付款银行</td>
+        <td>@Model.付款银行</td>
+        <td class="bold">付款账号</td>
+        <td>@Model.付款账号</td>
+    </tr>
+    <tr>
+        <td class="bold" rowspan="3">
+            <span class="vertical-font">收款</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="bold">收款方</td>
+        <td colspan="3">@Model.收款方</td>
+    </tr>
+    <tr>
+        <td class="bold">收款银行</td>
+        <td>@Model.收款银行</td>
+        <td class="bold">收款账号</td>
+        <td>@Model.收款账号</td>
+    </tr>
+    <tr>
+        <td class="bold" rowspan="2">付款/到账时间</td>
+    </tr>
+    <tr>
+        <td class="bold">付款时间</td>
+        <td>@Model.付款时间</td>
+        <td class="bold">到账时间</td>
+        <td>@Model.到账时间</td>
+    </tr>
+    <tr>
+        <td class="bold">备注</td>
+        <td colspan="4">@Model.备注</td>
+    </tr>
+    <tr>
+        <td class="bold">提交时间</td>
+        <td colspan="4">@Model.提交时间</td>
+    </tr>
+</table>
+<script>
+     function exl()
+    {
+         str = "@Model.付款方-收款详情表";
+        btn_export(str);
+    }
+</script>

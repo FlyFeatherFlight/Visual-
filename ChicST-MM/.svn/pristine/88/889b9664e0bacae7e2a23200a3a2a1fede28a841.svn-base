@@ -1,0 +1,300 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.StoreCustomer_TrackViewModel>
+
+@{
+    ViewBag.Title = "跟进客户列表";
+}
+<style>
+    #Table {
+        width: 100%;
+        color: #848282;
+    }
+
+        #Table tr td,
+        #Table tr th,
+        #Tab tr th {
+          
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        #Table tr td div,
+        #Table tr th div,
+        #Tab tr th div {
+            margin:8px;
+        }
+        .width-50 {
+        width: 50px;
+    }
+
+    .width-102 {
+        width: 102px;
+    }
+
+    .width-60 {
+        width: 60px;
+    }
+
+    .width-30 {
+        width: 30px;
+    }
+
+    .width-42 {
+        width: 42px;
+    }
+
+    .width-56 {
+        width: 56px;
+    }
+
+    .width-75 {
+        width: 75px;
+    }
+
+    .width-200 {
+        width: 200px;
+    }
+
+    .width-250 {
+        width: 250px;
+    }
+</style>
+<h3>跟进客户列表</h3>
+
+    <form action="@Url.Action("CustomerTrackListView", "StoreAnalyze")" method="post" style="margin-left:2.5%;margin-bottom:10px;">
+        查询条件：
+        @**根据时间查询**@
+        <input type="text" name="storeid" value="@ViewBag.StoreID" class="hidden"/>
+        <input type="text" name="startDate" value="@ViewBag.StartDate.ToString("yyyy-MM-dd")" class="dateTime search-input" id="startTime" placeholder="开始时间" />
+        <label>至</label>
+        <input type="text" name="EndDate" value="@ViewBag.EndDate.ToString("yyyy-MM-dd")" class="dateTime search-input" id="endTime" placeholder="结束时间" />
+        <input type="text" name="phoneNum" value="@ViewBag.PhNum" class="search-input" placeholder="请输入电话号码" />
+
+        <select class="search-input" id="storeMan" name="emid">
+            <option value="" class="active">-选择员工-</option>
+        </select>
+        <label>操作:</label>
+        <input type="submit" value="查询" />
+        <input type="button" onclick=" btn_export('跟进报表')" value="导出数据" />
+    </form>
+    <div><span style="color:red">Tips:默认显示当月数据，其它时间数据，请根据上面查询方案选择查询。</span></div>
+    <div>
+        <div class="table-responsive hidden Top" style="overflow-x:hidden; overflow-y:scroll;">
+            <table id="Tab">
+                <tr>
+                    <th>
+                        <div class="width-50">店铺</div>
+                    </th>
+
+                    <th>
+                        <div class="width-60"> 客户姓名</div>
+                    </th>
+
+                    <th>
+                        <div class="width-200">客户电话</div>
+                    </th>
+                    <th>
+                        <div class="width-75">跟进人</div>
+                    </th>
+                    <th>
+                        <div class="width-75">跟进时间</div>
+                    </th>
+                    <th>
+                        <div class="width-75">跟进方式</div>
+                    </th>
+                    <th>
+                        <div class="width-75">跟进内容</div>
+                    </th>
+                    <th>
+                        <div class="width-75">跟进结果</div>
+                    </th>
+
+                    <th>
+                        <div class="width-75">备注</div>
+                    </th>
+                    <th>
+
+                        <div class="width-75">是否申请设计师</div>
+                    </th>
+                </tr>
+            </table>
+        </div>
+        <div class="table-responsive Botoom" style="height:600px;overflow-y:scroll;">
+            <table class=" text-center" id="Table">
+                <tr>
+                    <th>
+                        <div class="width-50">店铺</div>
+                    </th>
+
+                    <th>
+                        <div class="width-60"> 客户姓名</div>
+                    </th>
+
+                    <th>
+                        <div class="width-200">客户电话</div>
+                    </th>
+                    <th>
+                        <div class="width-75">跟进人</div>
+                    </th>
+                    <th>
+                        <div class="width-75">跟进时间</div>
+                    </th>
+                    <th>
+                        <div class="width-75">跟进方式</div>
+                    </th>
+                    <th>
+                        <div class="width-75">跟进内容</div>
+                    </th>
+                    <th>
+                        <div class="width-75">跟进结果</div>
+                    </th>
+
+                    <th>
+                        <div class="width-75">备注</div>
+                    </th>
+                    <th>
+
+                        <div class="width-75">是否申请设计师</div>
+                    </th>
+                </tr>
+                @if (Model.Count() > 0)
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.店铺)
+                            </td>
+                            <td>
+                                @Html.ActionLink(item.客户姓名, "CustomerInfoView", "StoreAnalyze", new { id = item.接待ID }, new { })
+                                @*@Html.DisplayFor(modelItem => item.客户姓名)*@
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.客户电话)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.跟进人)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.跟进时间)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.跟进方式)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.跟进内容)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.跟进结果)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.备注)
+                            </td>
+                            <td>
+                                @if (item.是否申请设计师 == true)
+                                {
+                                    <span>申请</span>
+                                }
+                                else if (item.是否申请设计师 == false)
+                                {
+                                    <span>未申请</span>
+                                }
+                                else
+                                {
+                                    <span>未确认</span>
+                                }
+                            </td>
+
+
+                        </tr>
+                    }
+                }
+                else
+                {
+
+                    <tr><td colspan="10">本月无跟进客户！</td></tr>
+                }
+
+                </table>
+        </div>
+    </div>
+
+
+
+}
+<script>
+    modelCheck($("#storeMan option"), "@ViewBag.EmID");
+    
+     //根据是否滚动显示表头
+    var T = document.querySelector(".Top");
+    var B = document.querySelector(".Botoom");
+    B.addEventListener("scroll", function () {
+        if (B.scrollTop >= 58) {
+            $(".Top").removeClass("hidden");
+            T.scrollLeft = B.scrollLeft;
+        } else {
+            $(".Top").addClass("hidden");
+        }
+        
+    })
+     //加载员工数据
+        $.ajax({
+
+        type: "post",
+        data: { storeid: @ViewBag.StoreID },
+        url: '@Url.Action("GetStoreEmployees", "StoreAnalyze")',
+        dataType: "json",
+        cache: false,
+        async: true,
+        success: function (data) {
+                // console.log(data);
+            $("#storeMan").append("<option value='0'>全部</option>")
+            $.each(data, (i, m) => {
+
+                $("#storeMan").append("<option value=" + m.ID + ">" + m.姓名 + "</option>")
+
+            })
+        },
+            error: function (err) {
+                alert("点击过快或网络错误，请稍后重试！");
+            console.log(err)
+        }
+
+        })
+    $("#storeMan").on("change", function () {
+  
+        getText($("#storeMan"));
+
+    })
+    //获取文本
+    function getText(Jopts) {
+
+        var value = Jopts.val();//这个值就是你获取的值;
+        if (value != "") {
+            for (var i = 0; i < Jopts.find("option").length; i++) {
+                if (value == Jopts.find("option")[i].value) {
+                    //console.log(Jopts.find("option")[i]);
+                    if ($(Jopts.find("option")[i]).hasClass("active")) {
+                        return;
+                    } else {
+                        $(Jopts.find("option")[i]).siblings().removeClass("active")
+                        $(Jopts.find("option")[i]).addClass("active");
+
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    //默认选中
+    function modelCheck(input, Model) {
+
+        if (Model != null) {
+            input.each(function (i, m) {
+                if (m.value == Model) {
+                    $(m).attr("checked", "checked");
+                    $(m).addClass("active");
+                }
+
+            })
+        }
+    }
+</script>

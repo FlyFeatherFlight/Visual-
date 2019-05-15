@@ -1,0 +1,108 @@
+﻿@model JPager.Net.PagerResult<ChicST_MM.WEB.Models.BusinessReceiving_RecordsViewModel>
+
+<style>
+    .table tbody tr td:nth-child(2n-1) {
+        text-align: center;
+        width: auto
+    }
+</style>
+@if (ViewBag.ReCheck == true)
+{
+    {
+
+        ViewBag.Title = "接待报销审核";
+
+    }
+    <h3>接待报销审核</h3>
+}
+else
+{
+    {
+
+        ViewBag.Title = "接待报销";
+
+    }
+    <h3>接待报销</h3>
+}
+<div style="padding-left:2.5%; margin:10px 0;">
+    <form method="get" action="~/Reimbursement/BusinessRec_ReimIndexView">
+        根据提交人查询：
+        <input name="searchString" class="search-input" />
+        <input type="submit" value="查询" class="city-sure" style="position: relative;top: 0;" />
+    </form>
+</div>
+
+<table class="table table-bordered table-hover table-striped text-center">
+    <tr>
+        <th>提交人</th>
+        <th>抵达日期</th>
+        <th>费用总预算</th>
+        <th>提交时间</th>
+        <th>审核状态</th>
+        <th>车辆报销</th>
+        <th>住宿报销</th>
+        <th>接待报销</th>
+    </tr>
+    @if (Model.DataList == null)
+    {
+        <tr><td colspan="8">暂无数据</td></tr>
+    }
+    else
+    {
+        foreach (var item in Model.DataList)
+        {
+        <tr>
+            <td>@item.提交人</td>
+            <td>@item.抵达日期</td>
+            <td>@item.费用总预算</td>
+            <td>@item.提交日期</td>
+
+            <td>
+                @if (item.审核状态 == true)
+                {
+                    <span class="green">通过</span>
+                }
+                else if (item.审核状态 == true)
+                {
+                    <span class="red">驳回</span>
+                }
+                else
+                {
+                    <span>未审核</span>
+                }
+            </td>
+            @if (ViewBag.ReCheck == true)
+            {
+                <td>
+                    @Html.ActionLink("车辆报销", "CarReimInfoView", new { id = item.ID, role = true, isEdit = false })
+                </td>
+                <td>
+                    @Html.ActionLink("住宿报销", "HotelReimInfoView", new { id = item.ID, role = true, isEdit = false })
+                </td>
+                <td>
+                    @Html.ActionLink("接待报销", "BusinessRec_InfoView", new { id = item.ID, role = true })
+                </td>
+            }
+            else
+            {
+
+                <td>
+                    @Html.ActionLink("车辆报销", "CarReimInfoView", new { id = item.ID, role = false, isEdit = false })
+                </td>
+                <td>
+                    @Html.ActionLink("住宿报销", "HotelReimInfoView", new { id = item.ID, role = false, isEdit = false })
+                </td>
+                <td>
+                    @Html.ActionLink("接待报销", "BusinessRec_InfoView", new { id = item.ID })
+                </td>
+            }
+        </tr>
+            
+        }
+    }
+
+</table>
+<div style="padding-left:2.5%; margin:10px 0; text-align:center;">
+    @Html.Raw(Model.PagerHtml()) 共 @Model.Total 条
+</div>
+

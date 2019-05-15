@@ -14,9 +14,9 @@ public partial class 销售_经销商档案
 {
     public 销售_经销商档案()
     {
+        this.C5S_评审记录 = new HashSet<C5S_评审记录>();
         this.系统用户 = new HashSet<系统用户>();
         this.销售_店铺档案 = new HashSet<销售_店铺档案>();
-        this.C5S_评审记录 = new HashSet<C5S_评审记录>();
     }
 
     public int ID { get; set; }
@@ -29,7 +29,7 @@ public partial class 销售_经销商档案
     public Nullable<System.DateTime> 制单日期 { get; set; }
     public Nullable<bool> 是否已签约 { get; set; }
 
+    public virtual ICollection<C5S_评审记录> C5S_评审记录 { get; set; }
     public virtual ICollection<系统用户> 系统用户 { get; set; }
     public virtual ICollection<销售_店铺档案> 销售_店铺档案 { get; set; }
-    public virtual ICollection<C5S_评审记录> C5S_评审记录 { get; set; }
 }

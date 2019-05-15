@@ -1,0 +1,266 @@
+﻿
+@{
+    ViewBag.Title = "门店月报";
+}
+<style>
+    #Table, #Tab {
+        color: #848282;
+        margin-left: 2.5%;
+    }
+    #Table tr td,
+    #Table tr th,
+    #Tab tr th {
+        text-align: center;
+        padding:8px;
+        border: 1px solid #ddd;
+    }
+
+    #Table tr td div,
+    #Table tr th div,
+    #Tab tr th div {
+        margin: 8px;
+    }
+    .width-85 {
+        width: 85px;
+    }
+
+    .width-102 {
+        width: 102px;
+    }
+
+    .width-60 {
+        width: 60px;
+    }
+    .width-126 {
+        width: 126px;
+    }
+</style>
+<h3>门店月报</h3>
+<form style="margin-left:2.5%;">
+    <select class="search-input" id="store">
+        <option value="0" class="active">全国</option>
+    </select>
+    @*<select class="search-input" name="emid" id="storeMan" disabled="disabled">
+            <option value="" class="active">-选择员工-</option>
+        </select>*@
+    <select class="search-input" name="month" id="Month">
+        <option value="" class="active">-选择月份-</option>
+        <option value="1">1月</option>
+        <option value="2">2月</option>
+        <option value="3">3月</option>
+        <option value="4">4月</option>
+        <option value="5">5月</option>
+        <option value="6">6月</option>
+        <option value="7">7月</option>
+        <option value="8">8月</option>
+        <option value="9">9月</option>
+        <option value="10">10月</option>
+        <option value="11">11月</option>
+        <option value="12">12月</option>
+    </select>
+    <input type="button" name="name" value="查询" onclick="searchBtn()" />
+    <input type="button" onclick="Excel_export()" value="导出数据" />
+</form>
+<div>
+    <div class="table-responsive hidden Top" style="overflow-x:hidden; overflow-y:scroll;">
+        <table class="text-center" id="Tab">
+            <tr>
+                <th><div class="width-60">接待月份</div></th>
+                <th><div class="width-60">城市</div></th>
+                <th><div class="width-102">店铺</div></th>
+                <th><div class="width-60">面积</div></th>
+                <th><div class="width-60">进店客流</div></th>
+                <th><div class="width-60">确认数</div></th>
+                <th><div class="width-85">确认率（%）</div></th>
+                <th><div class="width-60">成交数</div></th>
+                <th><div class="width-85">成交率（%）</div></th>
+                <th><div class="width-126">本月销售目标（元）</div></th>
+                @*<th><div class="width-60">实际达成（元）</div></th>*@
+                <th><div class="width-85">达成率（%）</div></th>
+                <th><div class="width-60">坪效</div></th>
+                <th><div class="width-102">本月CHIC门店自营业绩</div></th>
+                <th><div class="width-102">本月CHIC业务业绩</div></th>
+                <th><div class="width-60">平均单值（元）</div></th>
+                <th><div class="width-60">最大单值（元）</div></th>
+            </tr>
+        </table>
+    </div>
+
+    <div class="table-responsive Botoom" style="height:600px;overflow-y:scroll;">
+        <table class="text-center" id="Table">
+            <thead>
+                <tr>
+                    <th><div class="width-60">接待月份</div></th>
+                    <th><div class="width-60">城市</div></th>
+                    <th><div class="width-102">店铺</div></th>
+                    <th><div class="width-60">面积</div></th>
+                    <th><div class="width-60">进店客流</div></th>
+                    <th><div class="width-60">确认数</div></th>
+                    <th><div class="width-85">确认率（%）</div></th>
+                    <th><div class="width-60">成交数</div></th>
+                    <th><div class="width-85">成交率（%）</div></th>
+                    <th><div class="width-126">本月销售目标（元）</div></th>
+                    @*<th><div class="width-60">实际达成（元）</div></th>*@
+                    <th><div class="width-85">达成率（%）</div></th>
+                    <th><div class="width-60">坪效</div></th>
+                    <th><div class="width-102">本月CHIC门店自营业绩</div></th>
+                    <th><div class="width-102">本月CHIC业务业绩</div></th>
+                    <th><div class="width-60">平均单值（元）</div></th>
+                    <th><div class="width-60">最大单值（元）</div></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="18" class="loading" style="height:120px;">正在加载</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+    <script>
+        //根据是否滚动显示表头
+        var T = document.querySelector(".Top");
+        var B = document.querySelector(".Botoom");
+        B.addEventListener("scroll", function () {
+            if (B.scrollTop >= 58) {
+                $(".Top").removeClass("hidden");
+                T.scrollLeft = B.scrollLeft;
+            } else {
+                $(".Top").addClass("hidden");
+            }
+
+        })
+     //获取门店数据
+     $.ajax({
+        type: "get",
+        data: {},
+        url: '@Url.Action("Getstores", "StoreAnalyze")',
+        dataType: "json",
+        cache: false,
+        async: true,
+         success: function (data) {
+             //console.log(data);
+            $.each(data, (i, m) => {
+
+                $("#store").append("<option value=" + m.ID + ">" + m.Name + "</option>")
+
+            })
+        },
+         error: function (err) {
+             alert("点击过快或网络错误，请稍后重试！");
+            console.log(err)
+        }
+
+        })
+        $("#store").change(function () {
+            //获取选中的文本
+            var Jopts = $("#store");
+            getText(Jopts)
+        })
+    @*//根据门店获取员工
+    $("#store").change(function () {
+        var storeid = $("#store").val();
+         //根据选择的店铺加载员工数据
+         $.ajax({
+
+            type: "post",
+            data: { storeid: storeid },
+            url: '@Url.Action("GetStoreEmployees", "StoreAnalyze")',
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                   // console.log(data);
+                $("#storeMan").append("<option value='0'>全部</option>")
+                $.each(data, (i, m) => {
+
+                    $("#storeMan").append("<option value=" + m.ID + ">" + m.姓名 + "</option>")
+
+                })
+            },
+             error: function (err) {
+                 alert("点击过快或网络错误，请稍后重试！");
+                console.log(err)
+            }
+
+            })
+    })*@
+    //
+    var date = new Date;
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    storeMonth("", "", month);
+    //查询按钮
+    function searchBtn() {
+        var storeID = $("#store").val(),
+            //emID = $().val(),
+            month = $("#Month").val();
+        if (month == "" || month == null) {
+            alert("请选择月份！")
+        } else {
+            storeMonth(storeID, "", month);
+            $("#Table tbody").html('<tr><td colspan="18" class="loading" style="height:120px;">正在加载</td></tr>');
+        }
+       
+    }
+    //获取门店月报数据
+    function storeMonth(storeID,emID,month) {
+        $.ajax({
+            type: "post",
+            data: { storeID: storeID, emID: emID, month: month},
+            url: '@Url.Action("StoreMonthData", "StoreAnalyze")',
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                console.log(data);
+                var htmlStr = '';
+                $(data.data).each(function (i, m) {
+                    //成交日期 成交金额 接待日期 销售姓名
+                    htmlStr += `<tr><td>${m.接待月份}</td><td>${m.城市}</td><td>${m.店铺}</td><td>${m.店铺面积}</td><td>${m.接待人数}</td>
+                                    <td>${m.意向确认人数}</td><td>${m.确认率}</td><td>${m.成交人数}</td><td>${m.成交率}</td><td>${m.店铺销售目标}</td>
+                                    <td>${m.达成率}</td><td>${m.坪效}</td><td>${m.门店自营业绩}</td><td>${m.门店业务业绩}</td><td>${m.平均单值}</td>
+                                    <td>${m.最大单值}</td></tr>`;
+                })
+                $("#Table tbody").html(htmlStr);
+            },
+            error: function (err) {
+                alert("点击过快或网络错误，请稍后重试！")
+                console.log(err);
+            }
+        })
+        }
+        //获取文本
+        function getText(Jopts) {
+
+            var value = Jopts.val();//这个值就是你获取的值;
+            if (value != "") {
+                for (var i = 0; i < Jopts.find("option").length; i++) {
+                    if (value == Jopts.find("option")[i].value) {
+                        //console.log(Jopts.find("option")[i]);
+                        if ($(Jopts.find("option")[i]).hasClass("active")) {
+                            return;
+                        } else {
+                            $(Jopts.find("option")[i]).siblings().removeClass("active")
+                            $(Jopts.find("option")[i]).addClass("active");
+
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        //导出表格
+        function Excel_export() {
+            var str = '';
+          
+            if ($("#store").val() != "" && $("#Month").val() != "") {
+                str = $("#store").find(".active").text() + '-' + $("#Month").find(".active").text();
+                btn_export(str);
+                return;
+            } else {
+                btn_export("全国门店月报表");
+            }
+        }
+    </script>
+

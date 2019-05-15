@@ -1,0 +1,363 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.Development_CityViewModel>
+
+@{
+    ViewBag.Title = "城市";
+}
+<style>
+    #Table,
+    #Tab {
+        width: 100%;
+        color: #848282;
+    }
+    
+    #Table tr td,
+    #Table tr th,
+    #Tab tr th {
+        border: 1px solid #848282;
+        padding: 8px;
+    }
+</style>
+<h3>城市</h3>
+<button id="addCity" style="cursor:pointer;margin-left:2.5%;" class="btn btn-primary">添加城市</button>
+<input type="button" onclick="  btn_export('城市列表')" value="导出数据" />
+@*添加模态框*@
+<form id="add-diolog" action="@Url.Action("CityAdd","DevelopmentDoc")" method="post">
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td>城市</td>
+            <td>
+                <select class=" search-input" id="sheng" name="省">
+                    <option value="">-请选择省-</option>
+                </select>
+                <select class="search-input" id="shi" name="市">
+                    <option value="">-请选择市-</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>城市分级</td>
+            <td>
+                <select name="城市分级" class="form-control">
+                    <option value="A+">A+</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>是否为目标城市</td>
+            <td>
+                <select name="是否为目标城市" class="form-control">
+                    <option value=true>是</option>
+                    <option value=false>否</option>
+                   
+                </select>
+            </td>
+        </tr>
+    </table>
+</form>
+@*修改模态框*@
+<form id="edit-diolog" >
+    <input type="text" name="ID" value="" id="editID" class="hidden"/>
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td>城市</td>
+            <td>
+                <select class=" search-input" id="shengE" name="省">
+                    <option value=""></option>
+                </select>
+                <select class="search-input" id="shiE" name="市">
+                    <option value=""></option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>城市分级</td>
+            <td>
+                <select name="城市分级" class="form-control" id="gradeE">
+                    <option value="A+" >A+</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>是否为目标城市</td>
+            <td>
+                <select name="是否为目标城市" class="form-control" id="aimE">
+                    <option value=true>是</option>
+                    <option value=false>否</option>
+
+                </select>
+            </td>
+        </tr>
+    </table>
+</form>
+<div style="margin-left: 2.5%;width:80%;">
+    <div class="Top hidden" style="overflow-y:scroll;">
+        <table class="text-center" id="Tab">
+            <tr>
+                <th class="text-center" style="width:15%;">省</th>
+                <th class="text-center" style="width:30%;">市</th>
+                <th class="text-center" style="width:20%;">城市分级</th>
+                <th class="text-center" style="width:30%;">是否为目标城市</th>
+                <th class="text-center" style="width:5%;">修改</th>
+            </tr>
+        </table>
+    </div>
+    <div class="Botoom" style="height:700px;overflow-y:scroll;">
+        <table class="text-center" id="Table">
+            <tr>
+                <th class="text-center" style="width:15%;">
+                    @Html.DisplayNameFor(model => model.省)
+                </th>
+                <th class="text-center" style="width:30%;">
+                    @Html.DisplayNameFor(model => model.市)
+                </th>
+                <th class="text-center" style="width:20%;">
+                    @Html.DisplayNameFor(model => model.城市分级)
+                </th>
+                <th class="text-center" style="width:30%;">
+                    @Html.DisplayNameFor(model => model.是否为目标城市)
+                </th>
+                <th class="text-center" style="width:5%;">修改</th>
+            </tr>
+            @if (Model != null)
+            {
+                foreach (var item in Model)
+                {
+            <tr>
+                <td class="Id hidden" >@item.ID</td>
+                <td class="province">
+                    @Html.DisplayFor(modelItem => item.省)
+                </td>
+                <td class="city">
+                    @Html.DisplayFor(modelItem => item.市)
+                </td>
+                <td class="grade">
+                    @Html.DisplayFor(modelItem => item.城市分级)
+                </td>
+                <td class="aim">
+                    @if (item.是否为目标城市 == true)
+                    {
+                        <span>是</span>
+                    }
+                    else if (item.是否为目标城市 == false)
+                    {
+                        <span>否</span>
+                    }
+                    else
+                    {
+                        <span>未判定</span>
+                    }
+
+                </td>
+                <td>
+                    <span class="Aspan" onclick="Edit(this)">修改</span>
+                </td>
+            </tr>
+                }
+            }
+            else {
+                <tr><td colspan="5" style="height:120px;">暂无数据!</td></tr>
+            }</table>
+    </div>
+</div>
+<script>
+    //根据是否滚动显示表头
+    var T = document.querySelector(".Top");
+    var B = document.querySelector(".Botoom");
+    B.addEventListener("scroll", function () {
+        if (B.scrollTop >= 10) {
+            $(".Top").removeClass("hidden");
+        } else {
+            $(".Top").addClass("hidden");
+        }
+
+    })
+     //合并
+    var tab = document.getElementById("Table");
+    var maxCol = 2, val, count, start;
+
+    for (var col = maxCol - 1; col >= 0; col--) {
+        count = 1;
+        val = "";
+        for (var i = 0; i < tab.rows.length; i++) {
+            if (val == tab.rows[i].cells[col].innerHTML) {
+                count++;
+            } else {
+                if (count > 1) { //合并
+                    start = i - count;
+                    tab.rows[start].cells[col].rowSpan = count;
+                    for (var j = start + 1; j < i; j++) {
+                        tab.rows[j].cells[col].style.display = "none";
+                    }
+                    count = 1;
+                }
+                val = tab.rows[i].cells[col].innerHTML;
+            }
+        }
+        if (count > 1) { //合并，最后几行相同的情况下
+            start = i - count;
+            tab.rows[start].cells[col].rowSpan = count;
+            for (var j = start + 1; j < i; j++) {
+                tab.rows[j].cells[col].style.display = "none";
+            }
+        }
+    }
+     //获取省份数据
+    $.ajax({
+        type: "post",
+        data: {},
+        url: '@Url.Action("GetProvince", "DevelopmentDoc")',
+        dataType: "json",
+        cache: false,
+        async: true,
+        success: function (data) {
+            $.each(data, function(i, m) {
+                $("#sheng").append("<option value=" + m + ">" + m + "</option>");
+                $("#shengE").append("<option value=" + m + ">" + m + "</option>");
+            })
+
+        },
+        error: function (err) {
+            alert("点击过快或网络错误，请稍后重试！");;
+            console.log(err);
+        }
+
+        })
+          /****添加***/
+    //根据选择的省份，获取市数据
+    $("#sheng").change(function () {
+        var province = $("#sheng").val();
+        $("#shi").empty();
+        getShi(province, $("#shi"));
+    })
+    /****修改***/
+    //根据选择的省份，获取市数据
+    $("#shengE").change(function () {
+        var province = $("#shengE").val();
+        $("#shE").empty();
+        getShi(province, $("#shi"));
+    })
+    //获取市
+    function getShi(province, shi) {
+
+         $.ajax({
+                type: "post",
+                data: { province: province },
+                url: '@Url.Action("GetRgion", "DevelopmentDoc")',
+                dataType: "json",
+                cache: false,
+                async: true,
+             success: function (data) {
+                   
+                    shi.append("<option value=''> -请选择- </option>");
+                 $.each(data, function (i, m) {
+                     $(m).each(function (n,d) {
+                         shi.append("<option value=" + d.City + ">" + d.City + "</option>")
+                     })
+                       
+
+                    })
+                        
+                },
+                error: function (err) {
+                    alert("点击过快或网络错误，请稍后重试！");;
+                    console.log(err);
+                }
+
+            })
+    }
+
+    $("#addCity").click(function () {
+        $("#add-diolog").dialog("option", "title", "添加城市").dialog("open");
+    })
+    //添加城市
+    $("#add-diolog").dialog({
+        autoOpen: false,
+        height: 400,
+        width: 500,
+        modal: true,
+        buttons: {
+
+            "取消": function () { $(this).dialog("close") },
+            "提交": function () {
+                $("#add-diolog").submit();
+                $("#add-diolog").dialog("close")
+            }
+        }
+    })
+    //修改
+    function Edit(_this) {
+        var province = $.trim($(_this).parent().siblings(".province").text()),
+            city = $.trim($(_this).parent().siblings(".city").text()),
+            grade = $.trim($(_this).parent().siblings(".grade").text()),
+            aim = $.trim($(_this).parent().siblings(".aim").text()),
+            Id = $.trim($(_this).parent().siblings(".Id").text());
+        //给修改模态框赋值
+  
+        $("#shengE option:eq(0)").val(province);
+        $("#shengE option:eq(0)").text(province);
+        $("#shiE option:eq(0)").val(city);
+        $("#shiE option:eq(0)").text(city);
+        $("#editID").val(Id);
+        if (aim == "未判定") {
+            aim = "";
+        }
+        common($("#gradeE option"), grade);
+        common($("#aimE option"), aim);
+      
+
+        $("#edit-diolog").dialog("option", "title", "修改城市").dialog("open");
+    }
+    function common(option, Name) {
+
+        if (Name != "" || Name != null) {
+            var options = option;
+            $(options).each(function (i,m) {
+                if (Name == m.value) {
+                 
+                    $(m).attr("selected", "selected")
+                }
+            })
+        }
+    }
+    //修改城市
+    $("#edit-diolog").dialog({
+        autoOpen: false,
+        height: 400,
+        width: 500,
+        modal: true,
+        buttons: {
+
+            "取消": function () { $(this).dialog("close") },
+            "提交": function () {
+                $.ajax({
+                    url: "@Url.Action("CityEdit", "DevelopmentDoc")",
+                    data: $("#edit-diolog").serialize(),
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.success) {
+                            alert(data.msg);
+                            window.location.reload(); 
+                        } else {
+                            alert(data.msg);
+                           
+                        }
+                    },
+                    error: function (err) {
+                        alert("点击过快或网络错误，请稍后重试！")
+                        console.log(err);
+                    }
+                })
+             
+                $("#edit-diolog").dialog("close")
+            }
+        }
+    })
+   
+</script>

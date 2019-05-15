@@ -1,0 +1,39 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.Development_CometesAnnualSalesViewModel>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.竞品档案ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.销售年)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.年销售额)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.竞品档案ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.销售年)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.年销售额)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

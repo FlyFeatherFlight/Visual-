@@ -1,0 +1,562 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.Development_CompetesViewModel>
+
+@{
+    ViewBag.Title = "竞品";
+}
+<style>
+    .table tbody tr td:nth-child(2n-1) {
+        text-align: center;
+        width: auto;
+    }
+</style>
+<h3>竞品</h3>
+@Html.ActionLink("添加竞品", "ComeptesAddView", "DevelopmentDoc", new { },new { style="margin-left:2.5%;"})
+<form action="@Url.Action("CompetesView","DevelopmentDoc")" method="post" style="margin-left:2.5%;padding:5px 0;">
+    <select class=" search-input" id="sheng">
+        <option value="">-请选择省-</option>
+    </select>
+    <select class="search-input" id="shi" name="cid">
+        <option value="">-请选择市-</option>
+    </select>
+    <input type="submit" name="" value="查询" />
+</form>
+@*修改年销售*@
+<form id="edit-diologY">
+    <input type="text" name="竞品档案ID" value="" id="EditID" />
+    <input type="text" name="ID" value="" id="Id" />
+    <table class="table table-bordered table-hover table-striped" style="width:95%;margin:0px auto;">
+        <tr>
+            <td>销售年</td>
+            <td>
+                <input type="text" name="销售年" value="" id="year" />
+            </td>
+            <td>年销售额</td>
+            <td>
+                <input type="text" name="年销售额" value="" id="money" />
+            </td>
+        </tr>
+
+
+    </table>
+</form>
+@*修改*@
+<form id="edit-diolog">
+    <input type="text" name="ID" value="" id="EditId"/>
+    <table class="table table-bordered table-hover table-striped" style="width:95%;margin:0px auto;">
+        <tr>
+            <td>城市</td>
+            <td>
+                <select class=" search-input" id="shengE">
+                    <option value="">-请选择省-</option>
+                </select>
+                <select class="search-input" id="shiE" name=""></select>
+                <div id="lastCity">
+                    上次选中的城市是：
+                    <span></span>
+                    <input type="text" name="城市ID" value="" class="hidden" />
+                </div>
+            </td>
+            <td>商场</td>
+            <td>
+                <select id="marketE" class="form-control" name=""></select>
+                <div id="lastMarket">
+                    上次选中的商场是：
+                    <span></span>
+                    <input type="text" name="商场ID" value="" class="hidden" />
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>楼层</td>
+            <td>
+                <select class="form-control" id="floor" name="楼层">
+                    <option value="B2F">B2F</option>
+                    <option value="B1F">B1F</option>
+                    <option value="1F">1F</option>
+                    <option value="2F">2F</option>
+                    <option value="3F">3F</option>
+                    <option value="4F">4F</option>
+                    <option value="5F">5F</option>
+                    <option value="6F">6F</option>
+                    <option value="其他">其他</option>
+                </select>
+            </td>
+            <td>经营形态</td>
+            <td>
+
+                <select class="form-control" name="经营形态" id="status">
+                    <option value="自营">自营</option>
+                    <option value="经销">经销</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>位置</td>
+            <td>
+                <input id="siteE" type="text" class="form-control" name="位置" />
+            </td>
+            <td>面积</td>
+            <td>
+                <input id="areaE" type="text" class="form-control" name="面积" />
+            </td>
+        </tr>
+
+        <tr>
+            <td>入驻日期</td>
+            <td>
+                <input id="dateE" type="text" class="form-control dateTime" name="入住日期" />
+            </td>
+            <td>经销商</td>
+            <td>
+                <select id="dealerE" class="form-control" name=""></select>
+                <div id="lastDealer">
+                    上次选中的经销商是：
+                    <span></span>
+                    <input type="text" name="经销商ID" value="" class="hidden" />
+                </div>
+            </td>
+        </tr>
+
+    </table>
+</form>
+<table class="table table-bordered table-hover table-striped text-center">
+    <tr>
+
+        <th>
+            @Html.DisplayNameFor(model => model.城市)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.商场)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.楼层)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.位置)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.面积)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.经营形态)
+        </th>
+        <th>
+            入驻日期
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.经销商)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.年销售额)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.录入人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.更新日期)
+        </th>
+        <th>操作</th>
+    </tr>
+
+    @if (Model.Count()>0)
+    {
+
+        foreach (var item in Model)
+        {
+    <tr>
+
+        <td class="Id hidden">@item.ID</td>
+        <td class="cityId hidden">
+            @Html.DisplayFor(modelItem => item.城市ID)
+        </td>
+        <td class="city">
+            @Html.DisplayFor(modelItem => item.城市)
+        </td>
+        <td class="marketId hidden">
+            @Html.DisplayFor(modelItem => item.商场ID)
+        </td>
+        <td class="market">
+            @Html.DisplayFor(modelItem => item.商场)
+        </td>
+        <td class="floor">
+            @Html.DisplayFor(modelItem => item.楼层)
+        </td>
+        <td class="site">
+            @Html.DisplayFor(modelItem => item.位置)
+        </td>
+        <td class="area">
+            @Html.DisplayFor(modelItem => item.面积)
+        </td>
+        <td class="status">
+            @Html.DisplayFor(modelItem => item.经营形态)
+        </td>
+        <td class="date">
+            @Html.DisplayFor(modelItem => item.入住日期)
+        </td>
+        <td class="dealerId hidden">
+            @Html.DisplayFor(modelItem => item.经销商ID)
+        </td>
+        <td class="dealer">
+            @Html.DisplayFor(modelItem => item.经销商)
+        </td>
+        <td class="yearSale">
+            @Html.Action("CometesAnnualSalesView", "DevelopmentDoc", new { id = item.ID })
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.录入人)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.更新日期)
+        </td>
+        <td>
+            <span class="Aspan" onclick="EditCompetes(this)">修改</span>
+            <span class="Aspan" onclick="DelCompetes(this)">删除</span>
+        </td>
+    </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="10" style="height:120px;">暂无数据!</td>
+        </tr>
+    }
+</table>
+<script>
+    //转换日期格式
+    var dates = $(".table .date");
+    $(dates).each(function (i, m) {
+        if (m != null || m != "") {
+
+            var strTime = $(m).text();
+            strTime = strTime.split("/周");
+            strTime = strTime[0];
+            $(m).text(strTime);
+        }
+    })
+    //获取省份数据
+    $.ajax({
+        type: "post",
+        data: {},
+        url: '@Url.Action("GetProvince", "DevelopmentDoc")',
+        dataType: "json",
+        cache: false,
+        async: true,
+        success: function (data) {
+            $.each(data, function(i, m) {
+                $("#sheng").append("<option value=" + m + ">" + m + "</option>");
+                $("#shengE").append("<option value=" + m + ">" + m + "</option>");
+
+            })
+
+        },
+        error: function (err) {
+            alert("点击过快或网络错误，请稍后重试！");;
+            console.log(err);
+        }
+
+    })
+
+    //根据选择的省份，获取市数据
+    /****查询***/
+    $("#sheng").change(function () {
+        $("#shi").empty();
+        getShi($("#sheng").val(), $("#shi"));
+    })
+  
+    /****修改***/
+    $("#shengE").change(function () {
+        $("#lastCity input").val("");
+        $("#lastCity span").text("");
+        $("#shiE").empty();
+        getShi($("#shengE").val(), $("#shiE"));
+    })
+
+   
+    //修改
+    $("#shiE").change(function () {
+       
+        $("#lastCity input").val($("#shiE").val());
+        $("#lastMarket span").text("");
+        $("#lastMarket input").val("");
+        $("#lastDealer span").text("");
+        $("#lastDealer input").val("");
+
+        $("#marketE").empty();
+        $("#dealerE").empty();
+        getMarket($("#marketE"), $("#shiE").val());
+        getDealer($("#dealerE"), $("#shiE").val());
+    })
+    $("#marketE").change(function () {
+        $("#lastMarket input").val($("#marketE").val());
+
+    })
+    $("#dealerE").change(function () {
+
+        $("#lastDealer input").val($("#dealerE").val());
+    })
+
+    function EditCompetes(_this) {
+         // lastMarket lastCity       lastDealer
+        var dealer = $.trim($(_this).parent().siblings(".dealer").text()),
+            city = $.trim($(_this).parent().siblings(".city").text()),
+            site = $.trim($(_this).parent().siblings(".site").text()),
+            area = $.trim($(_this).parent().siblings(".area").text()),
+            market = $.trim($(_this).parent().siblings(".market").text()),
+            date = $.trim($(_this).parent().siblings(".date").text()),
+            floor = $.trim($(_this).parent().siblings(".floor").text()),
+            status = $.trim($(_this).parent().siblings(".status").text()),
+             
+            Id = $.trim($(_this).parent().siblings(".Id").text());
+            cityId = $.trim($(_this).parent().siblings(".cityId").text());
+            marketId = $.trim($(_this).parent().siblings(".marketId").text());
+            dealerId = $.trim($(_this).parent().siblings(".dealerId").text());
+        //给修改模态框赋值
+        $("#lastCity span").text(city);
+        $("#lastCity input").val(cityId);
+        $("#lastMarket span").text(market);
+        $("#lastMarket input").val(marketId);
+        $("#lastDealer span").text(dealer);
+        $("#lastDealer input").val(dealerId);
+        $("#siteE").val(site);
+        $("#areaE").val(area);
+        $("#dateE").val(date);
+        $("#EditId").val(Id);
+        common($("#floor option"), floor);
+        common($("#status option"), status)
+        $("#edit-diolog").dialog("option", "title", "修改竞品").dialog("open");
+    }
+     //修改竞品
+    $("#edit-diolog").dialog({
+        autoOpen: false,
+        height: 400,
+        width: 860,
+        modal: true,
+        buttons: {
+
+            "取消": function () { $(this).dialog("close") },
+            "提交": function () {
+                $.ajax({
+                    url: "@Url.Action("CompetesEdit", "DevelopmentDoc")",
+                    data: $("#edit-diolog").serialize(),
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.success) {
+                            alert(data.msg);
+                            window.location.reload(); 
+                        } else {
+                            alert(data.msg);
+                           
+                        }
+                    },
+                    error: function (err) {
+                        alert("点击过快或网络错误，请稍后重试！")
+                        console.log(err);
+                    }
+                })
+             
+                $("#edit-diolog").dialog("close")
+            }
+        }
+    })
+    //修改年销售
+    function Edit(_this) {
+       
+        var money = $.trim($(_this).parent().siblings(".money").text()),
+            year = $.trim($(_this).parent().siblings(".year").text()),
+            Id = $.trim($(_this).parent().siblings(".Id").text());
+        comId = $.trim($(_this).parent().siblings(".comId").text());
+     
+        //给修改模态框赋值
+        $("#year").val(year);
+        $("#money").val(money);
+        $("#Id").val(Id);
+        $("#EditID").val(comId);
+        $("#edit-diologY").dialog("option", "title", "修改竞品年销售").dialog("open");
+    }
+     //修改竞品年销售
+    $("#edit-diologY").dialog({
+        autoOpen: false,
+        height: 400,
+        width: 860,
+        modal: true,
+        buttons: {
+
+            "取消": function () { $(this).dialog("close") },
+            "提交": function () {
+                $.ajax({
+                    url: "@Url.Action("CometesAnnualSalesEdit", "DevelopmentDoc")",
+                    data: $("#edit-diologY").serialize(),
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.success) {
+                            alert(data.msg);
+                            window.location.reload(); 
+                        } else {
+                            alert(data.msg);
+                           
+                        }
+                    },
+                    error: function (err) {
+                        alert("点击过快或网络错误，请稍后重试！")
+                        console.log(err);
+                    }
+                })
+             
+                $("#edit-diologY").dialog("close")
+            }
+        }
+    })
+
+     //竞品删除
+    function DelCompetes(_this) {
+         var id = $.trim($(_this).parent().siblings(".Id").text()),
+             del = $(_this).parent().parent();
+         $.ajax({
+                type: "post",
+                data: { id: id },
+                url: '@Url.Action("CompetesDel", "DevelopmentDoc")',
+                dataType: "json",
+                cache: false,
+                async: true,
+             success: function (data) {
+                 console.log(data);
+                 if (data.success) {
+                     alert(data.msg);
+                   $(del).remove();
+                 } else {
+                     alert(data.msg);
+                 }
+                
+                },
+                error: function (err) {
+                    alert("点击过快或网络错误，请稍后重试！");;
+                    console.log(err);
+                }
+
+            })
+       
+
+    }
+     //年销售额删除
+     function Del(_this) {
+         var id = $.trim($(_this).parent().siblings(".Id").text()),
+             del = $(_this).parent().parent();
+         $.ajax({
+                type: "post",
+             data: { id: id },
+                url: '@Url.Action("CometesAnnualSalesDel", "DevelopmentDoc")',
+                dataType: "json",
+                cache: false,
+                async: true,
+             success: function (data) {
+                 console.log(data);
+                 if (data.success) {
+                     alert(data.msg);
+                   $(del).remove();
+                 } else {
+                     alert(data.msg);
+                 }
+                
+                },
+                error: function (err) {
+                    alert("点击过快或网络错误，请稍后重试！");;
+                    console.log(err);
+                }
+
+            })
+       
+
+    }
+    //获取市
+    function getShi(province, shi ) {
+         $.ajax({
+                type: "post",
+                data: { province: province },
+                url: '@Url.Action("GetRgion", "DevelopmentDoc")',
+                dataType: "json",
+                cache: false,
+                async: true,
+                success: function (data) {
+                    //console.log(data)
+                 shi.append("<option value='' class='active'> -请选择- </option>");
+                    $.each(data, function(i, m) {
+                        $.each(m, function (n, d) {
+                            shi.append("<option data-level='" + d.Level+"' value='" + d.ID + "'>" + d.City + "</option>")
+                        })
+                    })
+                },
+                error: function (err) {
+                    alert("点击过快或网络错误，请稍后重试！");;
+                    console.log(err);
+                }
+
+            })
+    }
+
+ //获取商场
+    function getMarket(market,id){
+         $.ajax({
+                type: "post",
+                data: { cid: id },
+                url: '@Url.Action("GetMarket", "DevelopmentDoc")',
+                dataType: "json",
+                cache: false,
+                async: true,
+             success: function (data) {
+                 console.log(data)
+                 market.append("<option value='' class='active'>-请选择商场-</option>")
+                    $.each(data, function(i, m) {
+                        $.each(m, function (n, d) {
+                            market.append("<option value='" + d.ID + "' data-level='" + d.Level + "'>" + d.Name + "</option>")
+                        })
+                    })
+                },
+                error: function (err) {
+                    alert("点击过快或网络错误，请稍后重试！");;
+                    console.log(err);
+                }
+
+            })
+    }
+    //获取经销商
+    function getDealer(dealer,id){
+         $.ajax({
+            type: "post",
+            data: { cid: id },
+            url: '@Url.Action("GetFranchiser", "DevelopmentDoc")',
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                console.log(data)
+                dealer.append("<option value='' class='active'>-请选择商场-</option>")
+                $.each(data, function(i, m) {
+                    $.each(m, function (n, d) {
+                        dealer.append("<option value='" + d.ID + "' >" + d.Name + "</option>")
+                    })
+                })
+            },
+            error: function (err) {
+                alert("点击过快或网络错误，请稍后重试！");;
+                console.log(err);
+            }
+
+        })
+    }
+    //修改时给下拉框添加.selected
+    function common(option, Name) {
+
+        if (Name != "" || Name != null) {
+            var options = option;
+            $(options).each(function (i, m) {
+                if (Name == m.value) {
+
+                    $(m).attr("selected", "selected")
+                }
+            })
+        }
+    }
+</script>

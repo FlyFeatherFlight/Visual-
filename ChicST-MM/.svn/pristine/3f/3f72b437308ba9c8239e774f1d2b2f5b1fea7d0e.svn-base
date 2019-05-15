@@ -1,0 +1,8 @@
+﻿@model ChicST_MM.WEB.Models.AirFaresViewModel
+
+@{
+    ViewBag.Title = "AirFareView";
+}
+
+<h2>AirFareView</h2>
+

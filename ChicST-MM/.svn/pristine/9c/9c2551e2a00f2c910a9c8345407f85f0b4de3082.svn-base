@@ -1,0 +1,159 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.SalesRecordViewModel>
+
+@{
+    ViewBag.Title = "销售成交列表";
+}
+<style>
+    .table tbody tr td:nth-child(2n-1) {
+        text-align: center;
+        width: auto !important;
+    }
+</style>
+<h3>销售成交列表</h3>
+<form action="@Url.Action("SalesRecordView","StoreAnalyze")" style="margin-left:2.5%;margin-bottom:10px;">
+    查询条件：
+    @**根据时间查询**@
+    <select class="search-input" id="store">
+        <option value="0" class="active">全国</option>
+    </select>
+    <select class="search-input" name="emid" id="storeMan" disabled="disabled">
+        <option value="" class="active">-选择员工-</option>
+    </select>
+    <input type="text" name="startDate" class="dateTime search-input" @*id="startTime"*@ placeholder="开始日期" readonly/>
+    <label>至</label>
+    <input type="text" name="EndDate" class="dateTime search-input" @*id="endTime"*@ placeholder="结束日期" readonly/>
+    <label>操作:</label>
+    <input type="submit" name="name" value="查询" />
+    <input type="button" onclick="btn_export('销售成交表')" value="导出数据" />
+</form>
+<table class="table table-bordered table-hover table-striped text-center" id="Table">
+    <tr>
+        <th>店铺</th>
+        <th>销售人员</th>
+        <th>
+            @Html.DisplayNameFor(model => model.销售日期)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.合同单号)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.销售金额)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.折扣)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.制单日期)
+        </th>
+        <th>
+            更新日期
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.备注)
+        </th>
+       
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>@item.店铺</td>
+        <td>@item.销售人员</td>
+        <td>
+            @item.销售日期.ToString("yyyy-MM-dd")
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.合同单号)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.销售金额)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.折扣)
+        </td>
+        <td>
+            @item.制单日期.ToString("yyyy-MM-dd")
+        </td>
+        <td>
+            @item.更新日期.ToString("yyyy-MM-dd")
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.备注)
+        </td>
+        
+    </tr>
+}
+</table>
+<script>
+    //获取门店数据
+     $.ajax({
+        type: "get",
+        data: {},
+        url: '@Url.Action("Getstores", "StoreAnalyze")',
+        dataType: "json",
+        cache: false,
+        async: true,
+         success: function (data) {
+             //console.log(data);
+            $.each(data, (i, m) => {
+                $("#store").append("<option value=" + m.ID + ">" + m.Name + "</option>");
+            })
+        },
+         error: function (err) {
+             alert("点击过快或网络错误，请稍后重试！");
+            console.log(err)
+        }
+
+    })
+    
+    //根据选择的门店显示数据
+    var storeid = '';
+    $("#store").on("change", function () {
+        $("#storeMan").removeAttr("disabled")
+        //获取选中的文本
+        //var Jopts = $("#store");
+        //getText(Jopts)
+       
+        $(".personNum").removeClass("hidden");//统计人数
+        ////存储数据在本地用于跟进
+        storeid = $("#store").val();
+        $(".storeid").val(storeid);//日期查询需要的值
+        var storeName = $("#store").find(".active").text();
+        var trackStore = {
+            nowStoreid: storeid,
+            nowStoreName: storeName
+        }
+        sessionStorage.setItem("nowStore", JSON.stringify(trackStore));
+        //清空员工下拉框内容
+        $("#storeMan").empty();
+        //根据选择的店铺加载员工数据
+         $.ajax({
+            
+            type: "post",
+            data: { storeid: storeid },
+            url: '@Url.Action("GetStoreEmployees", "StoreAnalyze")',
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                   // console.log(data);
+                $("#storeMan").append("<option value='0'>全部</option>")
+                $.each(data, (i, m) => {
+                   
+                    $("#storeMan").append("<option value=" + m.ID + ">" + m.姓名 + "</option>")
+
+                })
+            },
+             error: function (err) {
+                 alert("点击过快或网络错误，请稍后重试！");
+                console.log(err)
+            }
+
+            })
+     
+        
+    })
+   
+
+   
+   
+</script>

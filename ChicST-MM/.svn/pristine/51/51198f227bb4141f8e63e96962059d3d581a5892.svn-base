@@ -1,0 +1,38 @@
+﻿@model List<ChicST_MM.WEB.Models.AirFaresViewModel>
+
+@{
+    ViewBag.Title = "机票报销列表";
+}
+<style>
+    .table tbody tr td:nth-child(2n-1) {
+        text-align: center;
+        width:auto;
+    }
+</style>
+<h3>机票报销列表</h3>
+<table class="table table-bordered table-striped text-center">
+    <tr>
+        <th>乘机人</th>
+        <th>出发地</th>
+        <th>目的地</th>
+        <th>费用小计</th>
+        <th>制单日期</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td>@Html.ActionLink(item.乘机人员,"AirFareInfoView", "AirFare", new { id = item.ID },new { })</td>
+        <td>@item.出发地</td>
+        <td>@item.目的地</td>
+        <td>@item.费用小计</td>
+        <td>@item.制单日期</td>
+       
+    </tr>
+    }
+
+</table>
+
+
+
+
+

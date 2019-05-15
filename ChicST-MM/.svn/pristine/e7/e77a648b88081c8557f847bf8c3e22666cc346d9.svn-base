@@ -1,0 +1,196 @@
+﻿@model ChicST_MM.WEB.Models.BusinessTripViewModel
+@{
+    ViewBag.Title = "出差审核页";
+}
+<style>
+    .table-bordered > thead > tr > th, .table-bordered > thead > tr > td {
+        border-bottom-width: 1px;
+    }
+</style>
+<h3>出差审核页</h3>
+<input type="button" onclick="exl()" value="导出PDF" style="margin-left:2.5%;" />
+<div class="pDF-Tab">
+    <table class="table table-bordered table-hover table-striped" style="margin-bottom:1px;">
+        <tr>
+            <td class="bold">出差人</td>
+            <td colspan="10">@Model.出差人姓名</td>
+        </tr>
+        <tr>
+            <td class="bold">部门</td>
+            <td colspan="10">@Model.部门</td>
+        </tr>
+        <tr>
+            <td colspan="11" style="position:relative;">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 start-date">
+                    <span class="bold">开始日期</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="date">@Model.开始时间.ToString("d")</span>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <span class="bold">结束日期</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>@Model.结束时间.ToString("d")</span>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">关联审核人</td>
+            <td colspan="10">@Model.关联审核人</td>
+        </tr>
+        <tr>
+            <td class="bold">出差内容</td>
+            <td colspan="10">@Model.出差内容</td>
+        </tr>
+        <tr>
+            <td class="bold">备注</td>
+            <td colspan="10">@Model.备注</td>
+        </tr>
+        <tr>
+            <td class="bold" rowspan="3">费用预估</td>
+        </tr>
+        <tr>
+            <td class="bold">车船费预计</td>
+            <td colspan="2">@Model.车船费预计</td>
+            <td class="bold">住宿费预计</td>
+            <td colspan="2">@Model.住宿费预计</td>
+            <td class="bold">餐补费预计</td>
+            <td colspan="3">@Model.餐补费预计</td>
+        </tr>
+        <tr>
+            <td class="bold">合计</td>
+            <td colspan="9">@Model.合计</td>
+        </tr>
+        <tr>
+            <td class="bold">审核状态</td>
+            <td colspan="9">
+                @if (Model.审核状态 == true)
+                {
+                    <span>通过</span>
+                }
+                else if (Model.审核状态 == false)
+                {
+                    <span>驳回</span>
+                }
+                else
+                {
+                    <span>未审核</span>
+                }
+            </td>
+        </tr>
+    </table>
+    @*计划详情表*@
+    <table class="table table-hover table-striped table-bordered" style="margin-bottom:1px;" id="planDetail-tab">
+        <thead>
+            <tr>
+                <td colspan="12" class="text-center bold">计划详情</td>
+            </tr>
+            <tr class="text-center">
+                <td>ID</td>
+                <td>日期</td>
+                <td>城市</td>
+                <td>经销商</td>
+                <td>商场</td>
+                <td>门店</td>
+                <td>同行人</td>
+                <td>巡店目的</td>
+                <td>计划方案</td>
+                <td>计划内容</td>
+                <td>备注</td>
+                <td>提交时间</td>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    @*汇报详情*@
+    <table class="table table-hover table-striped table-bordered" style="margin-bottom:10px;" id="rport-tab">
+        <thead>
+            <tr><td colspan="13" class="text-center bold">汇报详情</td></tr>
+            <tr class="text-center">
+                <td>出差计划关联ID</td>
+
+                <td>巡店开始时间</td>
+                <td>巡店结束时间</td>
+                <td>工作成果</td>
+                <td>实际遇到的问题</td>
+                <td>解决的方案</td>
+                <td>需要的协助</td>
+                <td>预计完成时间</td>
+                <td>备注</td>
+                <td>提交时间</td>
+                <td>更新时间</td>
+                <td>是否为新增项</td>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+<div class="submit-btns">
+    @using (Html.BeginForm("BusinessTrip_Check", "BusinessTrip", FormMethod.Post))
+    {
+        <input type="text" name="id" value="@Model.ID" style="display:none" />
+        <input type="radio" value=true name="checkType" />
+        <label>通过</label>
+        <input type="radio" value=false name="checkType" />
+        <label>驳回</label>
+        <input type="submit" value="提交" />
+    }
+</div>
+<script>
+    //获取计划详情数据
+     $.ajax({
+        url: '@Url.Action("GetBusinessTrip_Details", "BusinessTrip")',
+        type: "post",
+        data: {id:@Model.ID},
+        dataType: "json",
+        cache: false,
+        async: true,
+         success: function (data) {
+             //console.log(data)
+             var detailTab = '';
+            $.each(data, function(i, m) {
+                // 转换日期格式
+                m.提交时间 = new Date(parseInt(m.提交时间.substr(6, 19))).toLocaleDateString();
+                m.出差时间 = new Date(parseInt(m.出差时间.substr(6, 19))).toLocaleDateString();
+                detailTab += "<tr ><td>" + m.ID + "</td><td>" + m.出差时间 + "</td><td>" + m.城市 + "</td><td>"
+                    + m.经销商 + "</td><td>" + m.商场 + "</td><td>" + m.门店 + "</td><td>" + m.同行人员+ "</td><td>"
+                    + m.巡店目的 + "</td><td>" + m.计划方案 + "</td><td>" + m.计划内容 + "</td><td>" + m.备注 + "</td><td>" + m.提交时间 + "</td></tr>";
+            })
+             $("#planDetail-tab tbody").append(detailTab)
+        },
+        error: function (err) {
+            alert("点击过快或网络异常！");
+            console.log(err);
+        }
+
+    })
+    //获取汇报详情数据
+     $.ajax({
+        url: '@Url.Action("BusinessTrip_RportList", "BusinessTrip")',
+        type: "post",
+         data: { tripID:@Model.ID},
+        dataType: "json",
+        cache: false,
+        async: true,
+         success: function (data) {
+            // console.log(data)
+             var detailTab = '';
+            $.each(data, function(i, m) {
+                // 转换日期格式  	   	 提交时间
+                m.巡店开始时间 = new Date(parseInt(m.巡店开始时间.substr(6, 19))).toLocaleString();
+                m.巡店结束时间 = new Date(parseInt(m.巡店结束时间.substr(6, 19))).toLocaleString();
+                m.提交时间 = new Date(parseInt(m.提交时间.substr(6, 19))).toLocaleDateString();
+                m.更新时间 = new Date(parseInt(m.更新时间.substr(6, 19))).toLocaleDateString();
+                m.预计完成时间 = new Date(parseInt(m.预计完成时间.substr(6, 19))).toLocaleDateString();
+                detailTab += "<tr><td>" + m.出差关联计划项ID + "</td><td>" + m.巡店开始时间 + "</td><td>"
+                    + m.巡店结束时间 + "</td><td>" + m.工作成果 + "</td><td>" + m.实际遇到的问题 + "</td><td>" + m.解决的方案+ "</td><td>"
+                    + m.需要的协助 + "</td><td>" + m.预计完成时间 + "</td><td>" + m.备注 + "</td><td>" + m.提交时间 + "</td><td>" + m.更新时间 + "</td><td>" + m.是否为新增项 + "</td></tr>";
+            })
+             $("#rport-tab tbody").append(detailTab)
+        },
+        error: function (err) {
+            alert("点击过快或网络异常！");
+            console.log(err);
+        }
+
+    })
+      function exl() {
+            str = "@Model.部门-@Model.出差人姓名-出差详情表";
+            makeMpdf(str);
+        }
+</script>

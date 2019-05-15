@@ -1,0 +1,65 @@
+﻿@model JPager.Net.PagerResult<ChicST_MM.WEB.Models.BusinessReceiving_RecordsViewModel>
+@{
+    ViewBag.Title = "商务接待记录";
+}
+
+<h3>商务接待记录</h3>
+<div>
+    <div style="padding-left:2.5%; margin:10px 0;">
+        <form method="get" action="~/BusinessReceiving/ReceivingRecordsIndex">
+            根据提交人查询：
+            <input name="searchString" class="search-input" />
+            <input type="submit" value="查询" class="city-sure" style="position: relative;top: 0;" />
+        </form>
+    </div>
+    <table class="table table-bordered table-striped table-hover " style="text-align:center;table-layout:fixed;" id="Table">
+        <tr>
+
+            <th>提交人</th>
+            <th>入住酒店</th>
+            <th>航班号</th>
+            <th>抵达日期</th>
+            <th>离开日期</th>
+            <th>出差内容</th>
+            <th>费用预估</th>
+            <th>提交时间</th>
+            <th>关联审核人</th>
+            <th>审核状态</th>
+
+        </tr>
+        @foreach (var item in Model.DataList)
+        {
+        <tr>
+
+            <td>@Html.ActionLink(item.提交人, "ReceivingRecords_DetailsView", new { id = item.ID })</td>
+            <td>@item.入住酒店</td>
+            <td>@item.航班号</td>
+            <td>@item.抵达日期</td>
+            <td>@item.离开日期</td>
+            <td class="ellipsis" title="@item.主要沟通内容">@item.主要沟通内容</td>
+            <td>@item.费用总预算</td>
+            <td>@item.提交日期</td>
+            <td>@item.审核人</td>
+            <td>
+                @if (item.审核状态 == true)
+                {
+
+                    <span>通过</span>
+                }
+                else if (item.审核状态 == false)
+                {
+                    <span>驳回</span>
+                }
+                else
+                {
+                    <span>未审核</span>
+                }
+            </td>
+        </tr>
+        }
+    </table>
+
+</div>
+<div style="padding-left:2.5%; margin:10px 0; text-align:center;">
+    @Html.Raw(Model.PagerHtml()) 共 @Model.Total 条
+</div>

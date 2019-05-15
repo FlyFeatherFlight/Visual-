@@ -1,0 +1,107 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.Development_CompetesViewModel>
+
+@{
+    ViewBag.Title = "竞品";
+}
+<style>
+    .table tbody tr td:nth-child(2n-1) {
+        text-align: center;
+        width: auto;
+    }
+</style>
+<h3>竞品</h3>
+
+<table class="table table-bordered table-hover table-striped">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.城市ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.城市)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.商场ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.商场)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.位置)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.面积)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.入住日期)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.经销商ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.经销商)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.年销售额)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.录入人ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.录入人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.更新日期)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.城市ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.城市)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.商场ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.商场)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.位置)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.面积)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.入住日期)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.经销商ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.经销商)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.年销售额)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.录入人ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.录入人)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.更新日期)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

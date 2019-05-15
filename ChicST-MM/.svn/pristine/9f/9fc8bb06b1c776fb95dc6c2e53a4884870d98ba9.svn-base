@@ -1,0 +1,769 @@
+﻿@model ChicST_MM.WEB.Models.HotelReimViewModel
+
+
+@if (ViewBag.IsEdit == true)
+{
+    <h3>修改住宿报销</h3>
+
+    <form action="@Url.Action("HotelReimInfoEdit", "Reimbursement")" method="post" id="myForm">
+        <input type="text" name="商务接待ID" value="@Model.商务接待ID" class="hidden" />
+        <input type="text" name="ID" value="@Model.ID" class="hidden" />
+        <table class="table table-bordered table-hover table-striped">
+            <tr>
+                <td>报销人</td>
+                <td>@Model.提交人</td>
+                <td>部门</td>
+                <td>@Model.部门</td>
+            </tr>
+            <tr>
+                <td>酒店名称</td>
+                <td>
+                    <input type="text" name="酒店名称" value="@Model.酒店名称" class="form-control red" oninput="sureRed()" />
+                    <span class="must" style="color:red;">*该选项为必填项</span>
+                </td>
+                <td>住宿人员</td>
+                <td>
+                    <input type="text" name="住宿人员" value="@Model.住宿人员" class="form-control red" oninput="sureRed()" />
+                    <span class="must" style="color:red;">*该选项为必填项</span>
+                </td>
+            </tr>
+
+            <tr>
+                <td>住宿时间</td>
+                <td>
+                    <input type="text" name="住宿时间" value="@Model.住宿时间" class="form-control red dateTime" oninput="sureRed()" />
+                    <span class="must" style="color:red;">*该选项为必填项</span>
+                </td>
+                <td>总金额</td>
+                <td>
+                    <input type="text" name="金额" value="@Model.金额" class="form-control red" oninput="sureRed()" id="MainMoneyE"
+                           onkeyup="value=value.replace(/[^\d]/g,'')"
+                           onblur="value=value.replace(/[^\d]/g,'')" />
+                    <span class="must" style="color:red;">*该选项为必填项</span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-center" colspan="4">住宿分摊</td>
+            </tr>
+
+            <tr>
+                <td colspan="4" style="position:relative;">
+                    <div style="text-align:start; margin-bottom:10px;">
+                        <input id="create-user" type="button" value="添加" class="btn" />
+                    </div>
+                    <table id="grid"></table>
+                    <div id="pager"></div>
+
+                </td>
+            </tr>
+
+        </table>
+        <div class="submit-btns">
+            <input type="button" value="保存修改" class="btn btn-success width-7" onclick="subForm()">
+            &nbsp;&nbsp;
+            <input type="button" value="取消" class="btn btn-danger width-7" onclick="javascript:history.back(-1);">
+        </div>
+
+    </form>
+    @**添加模态框*@
+    <div id="dialog-form" style="text-align:center;">
+        <table class="table table-bordered table-hover table-striped">
+            <tr>
+                <td>城市</td>
+                <td colspan="3">
+                    <select id="sheng" class="search-input">
+                        <option value="">-请选择省-</option>
+                    </select>
+                    <select id="shi" class="search-input" style="margin-top:5px;">
+                        <option value="">-请选择市-</option>
+                    </select>
+
+                    <div>
+                        城市是：<span id="NowCity"></span>
+                        <input type="text" id="city" class="hidden" autocomplete="off" />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>住宿人员</td>
+                <td>
+                    <input type="text" value="" class="form-control" id="hotelPerson" />
+                </td>
+                <td>住宿房间</td>
+                <td>
+                    <input type="text" value="" class="form-control" id="hotelRoom" />
+                </td>
+            </tr>
+            <tr>
+                <td>分摊金额</td>
+                <td>
+                    <input type="text" value="" class="form-control" id="shareMoney" placeholder="请输入数字" />
+                </td>
+                <td>对象类型</td>
+                <td>
+                    <select class="form-control" id="Type">
+                        <option value="经销商">经销商</option>
+                        <option value="物业">物业</option>
+                        <option value="门店">门店</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>住宿开始时间</td>
+                <td>
+                    <input type="text" value="" class="form-control dateTime" placeholder="请选择开始时间" id="startDate" />
+                </td>
+                <td>住宿截止时间</td>
+                <td>
+                    <input type="text" value="" class="form-control dateTime" placeholder="请选择结束时间" id="endDate" />
+                </td>
+            </tr>
+            <tr>
+                <td>备注</td>
+                <td colspan="3">
+                    <input type="text" value="" class="form-control " id="notes" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    @**修改*@
+    <form id="dialog-formE" style="text-align:center;">
+        <input type="text" name="ID" value="" id="editID" class="hidden" />
+        <table class="table table-bordered table-hover table-striped">
+            <tr>
+                <td>城市</td>
+                <td colspan="3">
+                    <select id="shengE" class="search-input">
+                        <option value="">-请选择省-</option>
+                    </select>
+                    <select id="shiE" class="search-input" style="margin-top:5px;">
+                        <option value="">-请选择市-</option>
+                    </select>
+
+                    <div>
+                        城市是：<span id="NowCityE"></span>
+                        <input type="text" name="城市" id="cityE" class="hidden" autocomplete="off" />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>住宿人员</td>
+                <td>
+                    <input type="text" name="住宿人员" value="" class="form-control" id="hotelPersonE" />
+                </td>
+                <td>住宿房间</td>
+                <td>
+                    <input type="text" name="住宿房间" value="" class="form-control" id="hotelRoomE" />
+                </td>
+            </tr>
+            <tr>
+                <td>分摊金额</td>
+                <td>
+                    <input type="text" name="分摊金额" value="" class="form-control" id="shareMoneyE"
+                           onkeyup="value=value.replace(/[^\d]/g,'')"
+                           onblur="value=value.replace(/[^\d]/g,'')" placeholder="请输入数字" />
+                </td>
+                <td>对象类型</td>
+                <td>
+                    <select class="form-control" name="对象类型" id="TypeE">
+                        <option value="经销商">经销商</option>
+                        <option value="物业">物业</option>
+                        <option value="门店">门店</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>住宿开始时间</td>
+                <td>
+                    <input type="text" name="住宿开始时间" value="" class="form-control dateTime" placeholder="请选择开始时间" id="startDateE" />
+                </td>
+                <td>住宿截止时间</td>
+                <td>
+                    <input type="text" name="住宿截止时间" value="" class="form-control dateTime" placeholder="请选择结束时间" id="endDateE" />
+                </td>
+            </tr>
+            <tr>
+                <td>备注</td>
+                <td colspan="3">
+                    <input type="text" name="备注" value="" class="form-control " id="notesE" />
+                </td>
+            </tr>
+        </table>
+    </form>
+    <script>
+         //修改主表日期格式
+                //字符串转日期格式
+        $("#myForm .dateTime").each(function (i, m) {
+            var strTime = m.value;
+            strTime = strTime.split("/周");
+            strTime = strTime[0];
+            m.value = strTime;
+            //console.log(strTime)
+
+        })
+        //主表的修改提交
+        function subForm() {
+
+
+
+            var status = false;
+            var sum = 0;
+            var totalMoney = parseFloat($("#MainMoneyE").val());
+            var data = $("#grid").jqGrid("getRowData");//获取jqgrid表格所有数据
+            $(data).each(function (i, m) {
+                sum += parseFloat(m.分摊金额);
+            })
+            if (totalMoney < sum) {
+                var numfull = sum - totalMoney;
+                alert("当前分摊金额已超出，请合理分摊！超出" + numfull + "元");
+            }
+            else {
+                $("#myForm .red").each(function (i, m) {
+                    if (m.value == null || m.value == "") {
+                        return status = true;
+                    }
+                })
+                if (status) {
+                    alert("请完善信息！")
+                } else {
+
+                    $("#myForm").submit();
+                }
+            }
+        }
+        //添加模态框金额实时监测=>数字检测/金额检测
+        $('#shareMoney').on({
+            input: function (e) {
+                var flag = e.target.isNeedPrevent;
+                if (flag) return;
+                numDetection(shareMoney);
+            },
+            compositionstart: function (e) {
+                e.target.isNeedPrevent = true;
+            },
+            compositionend: function (e) {
+                e.target.isNeedPrevent = false;
+            }
+        })
+
+        //添加模态金额检测
+        function numDetection(shareMoney) {
+            shareMoney.value = shareMoney.value.replace(/[^\d.]/g, '');
+            var TatolMoney = parseFloat($("#MainMoneyE").val());//主表总金额
+            var money = parseFloat($(shareMoney).val());//单个金额
+            var sumMoney = 0;//计算副表加上当前单金额
+            var sum = 0;//副表表格中金额和
+            var data = $("#grid").jqGrid("getRowData");//获取jqgrid表格所有数据
+            $(data).each(function (i, m) {
+                sum += parseFloat(m.分摊金额);
+            })
+            sumMoney = sum + money;
+            if (TatolMoney < money || TatolMoney < sumMoney) {
+                alert("分摊金额超出总金额，请重新输入！")
+            }
+        }
+        //console.log("总"+TatolMoney)
+        //console.log("输入"+money)
+
+
+        $(function () {
+
+        jQuery("#grid").jqGrid({
+            url: "",
+            datatype: "json",
+            styleUI: 'Bootstrap',
+            mtype: "get",
+            colModel: [
+                { label: 'ID', name: 'ID', index: 'ID', sorttype: "int" },
+                { label: '城市', name: '城市', index: '城市', align: "center"},
+                { label: '住宿人员', name: '住宿人员', index: '住宿人员',  sortable: false, align: "center"},
+                { label: '住宿房间', name: '住宿房间', index: '住宿房间', sortable: false, align: "center" },
+                { label: '分摊金额', name: '分摊金额', index: '分摊金额', align: "center" },
+                { label: '对象类型', name: '对象类型', index: '对象类型', sortable: false, align: "center" },
+                { label: '住宿开始时间', name: '住宿开始时间', index: '住宿开始时间', sortable: false, align: "center" },
+                { label: '住宿截止时间', name: '住宿截止时间', index: '住宿截止时间', align: "center" },
+                { label: '备注', name: '备注', index: '备注', sortable: false, align: "center" },
+                { label: '修改', name: 'Edit', index: 'id', sortable: false, align: "center" },
+                { label: '删除', name: 'Delete', index: 'id', sortable: false, align: "center" },
+
+            ],
+            caption: "其他报销展示",
+            loadonce: true,    //排序翻页等操作在服务端完成
+            rowNum: 5,
+            rowList: [5, 10, 20],  //设置分页下拉列表
+            pager: "#pager",
+            viewrecords: true,
+            width: 500, height: "auto",
+            jsonReader: { repeatitems: false }, //prmNames: { id: "No" },
+            sortorder: "asc",
+            sortname: "No",//传递给服务端的排序字段名
+            autowidth: true,
+            gridComplete: function () {  //在此事件中循环为每一行添加删除链接
+                var ids = jQuery("#grid").jqGrid('getDataIDs');
+                for (var i = 0; i < ids.length; i++) {
+                    var rowId = ids[i];
+                    // 通过当前行id获取所需ID
+                    var rowData = $("#grid").jqGrid('getRowData', rowId);
+                    var id = rowData.ID;
+                    edit = "<span  class='Aspan' onclick='Edit(" + id + "," + rowId + ")' >修改</span>";
+                    del = "<span  class='Aspan' onclick='Delete(" + id + "," + rowId + ")' >删除</span>";
+
+                    jQuery("#grid").jqGrid('setRowData', ids[i], { Edit:edit,Delete: del });
+                }
+            }
+        }).navGrid("#grid ", { edit: false, add: false, del: false, search: false });
+        // 配置对话框(使用Jquery-UI的dialog插件)
+        $('#dialog-form').dialog({ title: '住宿报销分摊内容' });
+
+    });
+        var setID = @Model.ID;
+   //配置模态框 添加
+    $("#dialog-form").dialog({
+        autoOpen: false,
+        height: 500,
+        width: 860,
+        modal: true,
+        buttons: {
+
+            "取消": function () { $(this).dialog("close") },
+            "提交": function () {
+                var city = $.trim($("#city").val()); //城市
+                var hotelPerson = $.trim($("#hotelPerson").val());     //住宿人员
+                var hotelRoom = $.trim($("#hotelRoom").val());//住宿房间
+                var shareMoney = $.trim($("#shareMoney").val());//分摊金额
+                var Type = $.trim($("#Type").val());//对象类型
+                var startDate = $.trim($("#startDate").val());//住宿开始时间
+                var endDate = $.trim($("#endDate").val());//住宿截止时间
+                var notes = $.trim($("#notes").val());//备注
+                //var selectedId = $("#grid").jqGrid("getGridParam", "selrow");
+                var actionUrl = "@Url.Action("HotelReimSharingAdd", "Reimbursement")";
+                var params = {
+
+                    "接待住宿报销ID": setID,
+                    "城市": city,
+                    "住宿人员": hotelRoom,
+                    "住宿房间": hotelPerson,
+                    "分摊金额": shareMoney,
+                    "对象类型": Type,
+                    "住宿开始时间": startDate,
+                    "住宿截止时间": endDate,
+                    "备注": notes
+
+                };
+                var TatolMoney = parseFloat($("#MainMoneyE").val());
+                var sumMoney = 0;//计算副表加上当前单金额
+                var sum = 0;//副表表格中金额和
+                var data = $("#grid").jqGrid("getRowData");//获取jqgrid表格所有数据
+                $(data).each(function (i, m) {
+                    sum += parseFloat(m.分摊金额);
+                })
+                sumMoney = sum + parseFloat(shareMoney);
+
+                if (TatolMoney < parseFloat(shareMoney) || TatolMoney < sumMoney) {
+                    alert("分摊金额超出总金额，请重新输入！")
+                }
+                else {
+                    $.ajax({
+                        url: actionUrl,
+                        type: "post",   //默认为get
+                        data: params,   //传递给服务端的数据
+                        dataType: "json",
+                        cache: false,
+                        error: function (textStatus, errorThrown) {
+                            alert("系统ajax交互错误: " + JSON.stringify(textStatus));
+                        },
+                        success: function (data, textStatus) {
+                            //console.log(data)
+                            if (data.success) {
+                                var dataRow = {
+                                    "ID": data.data.ID,
+                                    "城市": city,
+                                    "住宿人员": hotelRoom,
+                                    "住宿房间": hotelPerson,
+                                    "分摊金额": shareMoney,
+                                    "对象类型": Type,
+                                    "住宿开始时间": startDate,
+                                    "住宿截止时间": endDate,
+                                    "备注": notes
+                                };
+
+
+                                $("#grid").jqGrid("addRowData", data.data.ID, dataRow, "last");//没有选定行则添加在第一行
+
+                                $("#dialog-form").dialog("close");
+                                alert(data.msg);
+                            } else {
+                                console.log(data.msg);
+                                alert("添加操作失败!");
+
+                            }
+
+
+                        }
+                    });
+                }
+            }
+        }
+        });
+        //添加按钮
+    $("#create-user")
+        .button()
+        .click(function () {
+            var sum = 0;
+            var totalMoney = parseFloat($("#MainMoneyE").val());
+            var data = $("#grid").jqGrid("getRowData");//获取jqgrid表格所有数据
+            var shareMoney = parseFloat($("#shareMoney").val());//当前输入的金额
+            $(data).each(function (i, m) {
+                sum += parseFloat(m.分摊金额);
+            })
+            if (totalMoney == sum) {
+                alert("当前分摊金额已满！");
+            } else if (totalMoney < sum) {
+                alert("当前分摊金额已超出，请合理分摊！");
+            } else {
+                $("#dialog-form").dialog("open");
+            }
+            });
+
+           //修改
+        $("#dialog-formE").dialog({
+            autoOpen: false,
+            height: 500,
+            width: 860,
+            modal: true,
+            buttons: {
+
+                "取消": function () { $(this).dialog("close") },
+                "提交": function () {
+
+                        //提交模态框的数据
+                        $.ajax({
+                            url: '@Url.Action("HotelReimSharingEdit", "Reimbursement")',
+                            type: "post",   //默认为get
+                            data: $("#dialog-formE").serialize(),   //传递给服务端的数据
+                            dataType: "json",
+                            cache: false,
+                            success: function (data, textStatus) {
+                                console.log(data)
+
+                                if (data.success) {
+                                    //页面修改数据
+                                    var selectedId = $("#grid").jqGrid("getGridParam", "selrow");
+                                    data.data.住宿开始时间 = new Date(parseInt(data.data.住宿开始时间.substr(6, 19))).toLocaleDateString();
+                                    data.data.住宿截止时间 = new Date(parseInt(data.data.住宿截止时间.substr(6, 19))).toLocaleDateString();
+
+                                    var dataRow = {
+                                        "ID": data.data.ID,
+                                        "城市": data.data.城市,
+                                        "住宿人员": data.data.住宿人员,
+                                        "住宿房间": data.data.住宿房间,
+                                        "分摊金额": data.data.分摊金额,
+                                        "对象类型": data.data.对象类型,
+                                        "住宿开始时间": data.data.住宿开始时间,
+                                        "住宿截止时间": data.data.住宿截止时间,
+                                        "备注": data.data.备注
+                                    };
+
+                                    // 添加成功模态框关闭
+                                    $("#dialog-formE").dialog("close");
+                                    $("#grid").jqGrid('setRowData', selectedId, dataRow, { color: "" });
+
+                                    alert(data.msg);
+                                } else {
+                                    alert("修改失败！");
+                                    console.log(data.msg);
+                                }
+
+
+                            },
+
+                            error: function (textStatus, errorThrown) {
+                                console.log("系统ajax交互错误: " + JSON.stringify(textStatus));
+                            },
+                        });
+
+
+                }
+            }
+        });
+    // 住宿分摊行编辑
+    function Edit(id,rowId) {
+        //console.log('当前编辑的是'+id)
+
+        var model = $("#grid").jqGrid('getRowData', rowId);
+        console.log(model)
+
+        // 给修改模态框的赋值
+        $("#editID").val(model.ID)
+        $("#cityE").val(model.城市); //城市
+        $("#NowCityE").text(model.城市); //文本城市
+        $("#hotelPersonE").val(model.住宿人员);//住宿人员
+        $("#hotelRoomE").val(model.住宿房间);//住宿房间
+        $("#shareMoneyE").val(model.分摊金额);//分摊金额
+        $("#TypeE").val(model.对象类型);//对象类型
+        $("#startDateE").val(model.住宿开始时间);//住宿开始时间
+        $("#endDateE").val(model.住宿截止时间);//住宿截止时间
+        $("#notesE").val(model.备注);//备注
+
+
+        $("#dialog-formE").dialog("option", "title", "修改住宿分摊内容").dialog("open");
+
+
+    };
+
+    // 行删除
+        function Delete(id, rowId) {
+        if (confirm("确定删除当前数据?")) {
+            $.ajax({
+            url: "@Url.Action("HotelReimSharingDel", "Reimbursement")",
+            type: "POST",
+            data: { id: id },
+            dataType: 'json',
+            cache: false,
+            error: function (textStatus, errorThrown) { alert("交互错误" + JSON.stringify(textStatus)); },
+                success: function (data) {
+                if (data) {
+                    $("#grid").jqGrid("delRowData", rowId);
+                    alert(data.msg);
+                } else {
+                    alert(data.msg);
+                }
+            }
+        });
+        }
+    };
+
+    </script>
+}
+else
+{
+
+    {
+        ViewBag.Title = "住宿报销详情";
+    }
+    <h3>住宿报销详情</h3>
+    if (ViewBag.IsHave == true)
+    {
+        if (ViewBag.Role != true)
+        {
+        @Html.ActionLink("修改住宿报销或添加分摊", "HotelReimInfoView", "Reimbursement", new { id = Model.商务接待ID, isEdit = true, role = false }, new { style = "margin-left:2.5%;" })
+        }
+            <table class="table table-bordered table-hover table-striped" id="detailTab">
+            <tr>
+                <td>报销人</td>
+                <td colspan="3">@Model.提交人</td>
+                <td>部门</td>
+                <td colspan="4">@Model.部门</td>
+            </tr>
+            <tr>
+                <td>酒店名称</td>
+                <td colspan="3">@Model.酒店名称</td>
+                <td>住宿人员</td>
+                <td colspan="4">@Model.住宿人员</td>
+            </tr>
+            <tr>
+                <td>住宿时间</td>
+                <td colspan="3">@Model.住宿时间</td>
+
+                <td>总金额</td>
+                <td colspan="4">@Model.金额</td>
+            </tr>
+            <tr>
+                <td>提交人</td>
+                <td colspan="3">@Model.提交人</td>
+                <td>提交时间</td>
+                <td colspan="4">@Model.提交时间</td>
+            </tr>
+            <tr>
+                <td>审核状态</td>
+                <td colspan="9">
+                    @if (Model.审核状态 == null)
+                    {
+                        <span>未审核</span>
+                    }
+                    else if (Model.审核状态 == true)
+                    {
+                        <span>通过</span>
+                    }
+                    else
+                    {
+                        <span>驳回</span>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center" colspan="9">住宿分摊</td>
+            </tr>
+            <tr>
+                <td>ID</td>
+                <td>城市</td>
+                <td>住宿人员</td>
+                <td>住宿房间</td>
+                <td>分摊金额</td>
+                <td>对象类型</td>
+                <td>住宿开始时间</td>
+                <td>住宿截止时间</td>
+                <td>备注</td>
+            </tr>
+
+        </table>
+    }
+    else
+    {
+        @Html.ActionLink("添加住宿报销", "HotelReimAddView", new { id = Model.商务接待ID }, new { style = "margin-left:2.5%;" })
+        <table class="table table-hover table-bordered table-striped">
+            <tr>
+                <td>暂无数据！</td>
+            </tr>
+        </table>
+    }
+    <div style="text-align:center;">
+        @if (ViewBag.Role == true)
+        {
+            using (Html.BeginForm("ReimbursementCheck", "Reimbursement", FormMethod.Post))
+            {
+
+                <input type="text" name="id" value="@Model.ID" class="hidden" id="recBudIDCheck" />
+                <input type="text" name="dataType" value="3" class="hidden" />
+                <input type="radio" value=true name="result" />
+                <label>通过</label>
+                <input type="radio" value=false name="result" />
+                <label>驳回</label>
+                <input type="submit" value="提交" />
+            }
+        }
+    </div>
+    <a href="javascript:history.back(-1);" style="margin-left:2.5%;font-size:18px;">返回上一页</a>
+}
+<script>
+    //获取住宿分摊详情数据并填充
+    $.ajax({
+            url: "@Url.Action("HotelReimSharingJson", "Reimbursement")",
+            type: "POST",
+            data: { id: @Model.ID },
+            dataType: 'json',
+            cache: false,
+            success: function (data) {
+                console.log(data)
+                if (data.data != null) {
+                    // 转换日期格式
+                    data.data.forEach(m => {
+                        if (m.住宿开始时间 != null && m.住宿开始时间 != "") {
+                            m.住宿开始时间 = new Date(parseInt(m.住宿开始时间.substr(6, 19))).toLocaleDateString();
+                        }
+                        if (m.住宿截止时间 != null && m.住宿截止时间 != "") {
+                            m.住宿截止时间 = new Date(parseInt(m.住宿截止时间.substr(6, 19))).toLocaleDateString();
+                        }
+
+                    })
+                   
+
+                    // 赋值
+                    mydata = data.data;
+                    console.log(mydata)
+
+                    //添加到表格
+                    for (var i = 0; i <= mydata.length; i++) {
+                        //console.log(mydata)
+                        jQuery("#grid").jqGrid('addRowData', i + 1, mydata[i]);
+                    }
+
+                    $(mydata).each(function (i,m) {
+                        $("#detailTab").append("<tr ><td>" + m.ID + "</td><td>" + m.城市 + "</td><td>" + m.住宿人员 + "</td><td>"
+                            + m.住宿房间 + "</td><td>" + m.分摊金额 + "</td><td>" + m.对象类型 + "</td><td>" + m.住宿开始时间 + "</td><td>"
+                            + m.住宿截止时间 + "</td><td>" + m.备注 + "</td></tr>")
+                    })
+
+                } else {
+                    $("#detailTab").append("<tr ><td colspan='9'>暂无数据！</td></tr>")
+                    alert("住宿分摊暂无数据！");
+                }
+            },
+
+           error: function (textStatus, errorThrown) { alert("交互错误" + JSON.stringify(textStatus)); },
+
+    });
+     //获取省份数据 (来宾信息添加)
+    $.ajax({
+        type: "post",
+        data: {},
+        url: '@Url.Action( "GetProvince", "BusinessTrip")',
+        dataType: "json",
+        cache: false,
+        async: true,
+        success: function (data) {
+
+            $.each(data, function(i, m) {
+                $("#sheng").append("<option value=" + m + ">" + m + "</option>");
+                $("#shengE").append("<option value=" + m + ">" + m + "</option>");
+
+            })
+
+        },
+        error: function (err) {
+            alert("点击过快或网络错误，请稍后重试！");;
+            console.log(err);
+        }
+
+        })
+          /****添加***/
+    //根据选择的省份，获取市数据
+    $("#sheng").change(function () {
+        var province = $("#sheng").val();
+        $("#shi").empty();
+        getShi(province, $("#shi"), $("#city"), $("#NowCity"));
+    })
+    //显示当前选择的城市
+    $("#shi").change(function () {
+        showCity($("#city"), $("#sheng").val(), $("#shi").val(), $("#NowCity"));
+
+        })
+        /****修改***/
+        //根据选择的省份，获取市数据
+        $("#shengE").change(function () {
+            var province = $("#shengE").val();
+            $("#shiE").empty();
+            getShi(province, $("#shiE"), $("#cityE"), $("#NowCityE"));
+        })
+        //显示当前选择的城市
+        $("#shiE").change(function () {
+            showCity($("#cityE"), $("#shengE").val(), $("#shiE").val(), $("#NowCityE"));
+
+        })
+    //显示当前选择的城市
+    function showCity(city, shengVal, shiVal, NowCity) {
+        city.val(shengVal + shiVal);
+        NowCity.text(city.val());
+    }
+
+    //获取市
+    function getShi(province, shi, city, NowCity) {
+
+         $.ajax({
+                type: "post",
+                data: { province: province },
+                url: '@Url.Action("GetRgion", "BusinessTrip")',
+                dataType: "json",
+                cache: false,
+                async: true,
+                success: function (data) {
+                    city.val("");
+                    NowCity.text('');
+                    shi.append("<option value=''> -请选择- </option>");
+                    $.each(data, function(i, m) {
+
+                        shi.append("<option value=" + m[1] + ">" + m[1]  + "</option>")
+
+                    })
+
+                },
+                error: function (err) {
+                    alert("点击过快或网络错误，请稍后重试！");;
+                    console.log(err);
+                }
+
+            })
+    }
+
+</script>

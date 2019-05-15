@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ChicST_MM.WEB.Models
+{
+    /// <summary>
+    /// 竞品_年度销售额
+    /// </summary>
+    public class Development_CometesAnnualSalesViewModel
+    {
+        public int ID { get; set; }
+        public int 竞品档案ID { get; set; }
+        public string 销售年 { get; set; }
+        public Nullable<decimal> 年销售额 { get; set; }
+    }
+}

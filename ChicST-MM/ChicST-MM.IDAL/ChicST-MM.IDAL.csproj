@@ -71,6 +71,14 @@
     <Compile Include="ICustomerInfoDAL.cs" />
     <Compile Include="ICustomerTrackingLogDAL.cs" />
     <Compile Include="IDepartmentDAL.cs" />
+    <Compile Include="IDevelopment_CityDAL.cs" />
+    <Compile Include="IDevelopment_CompetesAnnualSalesDAL.cs" />
+    <Compile Include="IDevelopment_CompetesDAL.cs" />
+    <Compile Include="IDevelopment_FranchiserContactsDAL.cs" />
+    <Compile Include="IDevelopment_FranchiserDAL.cs" />
+    <Compile Include="IDevelopment_MarketContactDAL.cs" />
+    <Compile Include="IDevelopment_MarketDAL.cs" />
+    <Compile Include="IDevelopment_Market_RentalDAL.cs" />
     <Compile Include="IDistributorDAL.cs" />
     <Compile Include="IEmployeeDAL.cs" />
     <Compile Include="IEmployeeInformationDAL.cs" />
@@ -79,6 +87,7 @@
     <Compile Include="IOtherReimburse_DetailsDAL.cs" />
     <Compile Include="IReceiptDAL.cs" />
     <Compile Include="IRegionDAL.cs" />
+    <Compile Include="IReimbursement_BusinessRecDetailsDAL.cs" />
     <Compile Include="IReimbursement_BusinessReceptionDAL.cs" />
     <Compile Include="IReimbursement_ReceptionSharingDAL.cs" />
     <Compile Include="IReview_5SDAL.cs" />

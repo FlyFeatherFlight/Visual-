@@ -1,0 +1,545 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.Development_MarketViewModel>
+
+@{
+    ViewBag.Title = "商场";
+}
+<style>
+    .table tbody tr td:nth-child(2n-1) {
+        text-align: center;
+        width: auto;
+    }
+</style>
+<h3>商场</h3>
+<button id="addMarket" style="cursor:pointer;margin-left:2.5%;" class="btn btn-primary">添加商场</button>
+<form action="@Url.Action("MarketView","DevelopmentDoc")" method="post" style="margin-left:2.5%;padding:5px 0;">
+    <select class=" search-input" id="sheng">
+        <option value="">-请选择省-</option>
+    </select>
+    <select class="search-input" id="shi" name="cid">
+        <option value="">-请选择市-</option>
+    </select>
+    <input type="submit" name="" value="查询" />
+</form>
+<form id="add-diolog" action="@Url.Action("MarketAdd","DevelopmentDoc")" method="post">
+    <table class="table table-bordered table-hover table-striped" style="width:95%;margin:0px auto;">
+        <tr>
+            <td>城市</td>
+            <td>
+                <select class="search-input" id="shengA">
+                    <option>-请选择省-</option>
+                </select>
+                <select class="search-input" id="shiA" name="所属城市ID">
+                   
+                </select>
+            </td>
+            <td>城市等级</td>
+            <td>
+                <input type="text" class="form-control" name="城市等级" id="level" autocomplete="off" readonly/>
+            </td>
+        </tr>
+        <tr>
+            <td>商场名称</td>
+            <td>
+                <input type="text" name="商场名称" value="" class="form-control " />
+            </td>
+            <td>商场等级</td>
+            <td>
+                <select class="form-control" name="商场等级">
+                    <option value="">-请选择等级-</option>
+                    <option value="A+">A+</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>地址</td>
+            <td>
+                <input type="text" class="form-control" name="地址" />
+            </td>
+            <td>所处商圈</td>
+            <td>
+                <input type="text" class="form-control" name="所处商圈" />
+            </td>
+        </tr>
+        <tr>
+            <td>负责人</td>
+            <td>
+                <input type="text" class="form-control" name="负责人" />
+            </td>
+            <td>联系方式</td>
+            <td>
+                <input type="text" class="form-control" name="联系方式" onkeyup="value=value.replace(/[^\d.]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字"/>
+            </td>
+        </tr>
+        <tr>
+            <td>职务</td>
+            <td>
+                <input type="text" class="form-control" name="职务" />
+            </td>
+            <td>续约开始日期</td>
+            <td>
+                <input type="text" class="form-control dateTime" name="续约开始日期" placeholder="请选择日期" />
+            </td>
+        </tr>
+        <tr>
+            <td>总平方</td>
+            <td>
+                <input type="text" class="form-control" name="总平方" onkeyup="value=value.replace(/[^\d.]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字"/>
+            </td>
+            <td>招商面积</td>
+            <td>
+                <input type="text" class="form-control" name="招商面积" onkeyup="value=value.replace(/[^\d.]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字"/>
+            </td>
+        </tr>
+        <tr>
+            <td>租金</td>
+            <td colspan="3">
+                <input type="text" class="form-control" name="租金" onkeyup="value=value.replace(/[^\d.]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字"/>
+            </td>
+        </tr>
+    </table>
+</form>
+<form id="edit-diolog">
+    <input type="text" name="ID" value="" id="editID" class="hidden"/>
+    <table class="table table-bordered table-hover table-striped" style="width:95%;margin:0px auto;">
+        <tr>
+            <td>城市</td>
+            <td>
+                <select class="search-input" id="shengE">
+                    <option>-请选择省-</option>
+                </select>
+                <select class="search-input" id="shiE"></select>
+                <div id="lastCity">
+                    上次选中的城市是：
+                    <span></span>
+                    <input type="text" name="所属城市ID" value="" class="hidden"/>
+                </div>
+            </td>
+            <td>城市等级</td>
+            <td>
+                <input type="text" class="form-control" name="城市等级" id="levelE" autocomplete="off" readonly />
+            </td>
+        </tr>
+        <tr>
+            <td>商场名称</td>
+            <td>
+                <input type="text" class="form-control " id="marketE" name="商场名称"/>
+              
+            </td>
+            <td>商场等级</td>
+            <td>
+                <select class="form-control" name="商场等级" id="market-levelE" >
+                    <option value="">-请选择等级-</option>
+                    <option value="A+">A+</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                </select>
+              
+            </td>
+        </tr>
+        <tr>
+            <td>地址</td>
+            <td>
+                <input type="text" class="form-control" name="地址" id="siteE" />
+            </td>
+            <td>所处商圈</td>
+            <td>
+                <input type="text" class="form-control" name="所处商圈" id="AreaE" />
+            </td>
+        </tr>
+        <tr>
+           
+            <td>负责人</td>
+            <td>
+                <input type="text" class="form-control" name="负责人" id="principalE" />
+            </td>
+            <td>联系方式</td>
+            <td>
+                <input type="text" class="form-control" name="联系方式" id="PhoneE" onkeyup="value=value.replace(/[^\d.]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字" />
+            </td>
+        </tr>
+        <tr>
+            <td>职务</td>
+            <td>
+                <input type="text" class="form-control" name="职务" id="dutyE" />
+            </td>
+            <td>续约开始日期</td>
+            <td>
+                <input type="text" class="form-control dateTime" id="dateE" name="续约开始日期" placeholder="请选择日期" />
+            </td>
+        </tr>
+        <tr>
+            
+            <td>总平方</td>
+            <td>
+                <input type="text" class="form-control" name="总平方" id="totalE" onkeyup="value=value.replace(/[^\d.]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字" />
+            </td>
+            <td>招商面积</td>
+            <td>
+                <input type="text" class="form-control" name="招商面积" id="areaE" onkeyup="value=value.replace(/[^\d.]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字" />
+            </td>
+        </tr>
+        <tr>
+            <td>租金</td>
+            <td colspan="3">
+                <input type="text" class="form-control" name="租金" id="rentalE" onkeyup="value=value.replace(/[^\d.]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字" />
+            </td>
+        </tr>
+    </table>
+</form>
+<table class="table table-bordered table-striped text-center">
+    <tr>
+        
+        <th>
+            @Html.DisplayNameFor(model => model.所属城市)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.城市等级)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.商场名称)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.商场等级)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.地址)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.所处商圈)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.负责人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.联系方式)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.职务)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.续约开始日期)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.总平方)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.招商面积)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.租金)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.录入人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.更新日期)
+        </th>
+        <th>操作</th>
+    </tr>
+    @if (Model != null)
+    {
+        foreach (var item in Model)
+        {
+    <tr>
+        <td class="Id hidden">@item.ID</td>
+        <td class="shi">
+            @Html.DisplayFor(modelItem => item.所属城市)
+        </td>
+        <td class="cityId hidden">@item.所属城市ID</td>
+        <td class="level">
+            @Html.DisplayFor(modelItem => item.城市等级)
+        </td>
+        <td class="market">
+            @Html.DisplayFor(modelItem => item.商场名称)
+        </td>
+        <td class="market-level">
+            @Html.DisplayFor(modelItem => item.商场等级)
+        </td>
+        <td class="site">
+            @Html.DisplayFor(modelItem => item.地址)
+        </td>
+        <td class="Area">
+            @Html.DisplayFor(modelItem => item.所处商圈)
+        </td>
+        <td class="principal">
+            @Html.DisplayFor(modelItem => item.负责人)
+        </td>
+        <td class="Phone">
+            @Html.DisplayFor(modelItem => item.联系方式)
+        </td>
+        <td class="duty">
+            @Html.DisplayFor(modelItem => item.职务)
+        </td>
+        <td class="date">
+            @Html.DisplayFor(modelItem => item.续约开始日期)
+        </td>
+        <td class="total">
+            @Html.DisplayFor(modelItem => item.总平方)
+        </td>
+        <td class="area">
+            @Html.DisplayFor(modelItem => item.招商面积)
+        </td>
+        <td class="rental">
+            @Html.DisplayFor(modelItem => item.租金)
+        </td>
+
+        <td>
+            @Html.DisplayFor(modelItem => item.录入人)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.更新日期)
+        </td>
+        <td> <span class="Aspan" onclick="EditMarket(this)">修改</span></td>
+    </tr>
+        }
+    }
+    else {
+        <tr>
+            <td colspan="16" style="height:120px;">暂无数据!</td>
+        </tr>
+    }
+</table>
+<script>
+    //转换日期格式
+    var dates = $(".table .date");
+    $(dates).each(function (i,m) {
+        if (m != null || m != "") {
+           
+            var strTime = $(m).text();
+            strTime = strTime.split("/周");
+            strTime = strTime[0];
+            $(m).text(strTime);
+        }
+    })
+     //获取省份数据 (来宾信息添加)
+    $.ajax({
+        type: "post",
+        data: {},
+        url: '@Url.Action("GetProvince", "DevelopmentDoc")',
+        dataType: "json",
+        cache: false,
+        async: true,
+        success: function (data) {
+            $.each(data, function(i, m) {
+                $("#sheng").append("<option value=" + m + ">" + m + "</option>");
+                $("#shengA").append("<option value=" + m + ">" + m + "</option>");
+                $("#shengE").append("<option value=" + m + ">" + m + "</option>");
+
+            })
+
+        },
+        error: function (err) {
+            alert("点击过快或网络错误，请稍后重试！");;
+            console.log(err);
+        }
+
+    })
+    //根据选择的省份，获取市数据
+    /****查询***/
+    $("#sheng").change(function () {
+        $("#shi").empty();
+        getShi($("#sheng").val(), $("#shi"));
+    })
+    /***添加***/
+    $("#shengA").change(function () {
+        $("#shiA").empty();
+        getShi($("#shengA").val(), $("#shiA"));
+    })
+    /****修改***/
+    $("#shengE").change(function () {
+        $("#lastCity span").text("");
+        $("#lastCity input").val("");
+        $("#level").val("");
+        $("#shiE").empty();
+        getShi($("#shengE").val(), $("#shiE"));
+    })
+    //根据当前选择的城市加载商场下拉框 并给城市等级赋值
+    $("#shiA").change(function () {
+
+         //为城市分级赋值
+        //调用选中文本
+        activeText($("#shiA"));
+        var level = $("#shiA").find("option.active").data("level");
+        $("#level").val(level);
+
+    })
+    //修改
+    $("#shiE").change(function () {
+        $("#lastCity input").val($("#shiE").val());
+        //为城市分级赋值
+        //调用选中文本
+        activeText($("#shiE"));
+        var level = $("#shiE").find("option.active").data("level");
+        $("#levelE").val(level);
+
+    })
+    $("#addMarket").click(function () {
+        $("#add-diolog").dialog("option", "title", "添加商场").dialog("open");
+    })
+    //添加商场
+    $("#add-diolog").dialog({
+        autoOpen: false,
+        height: 600,
+        width: 960,
+        modal: true,
+        buttons: {
+
+            "取消": function () { $(this).dialog("close") },
+            "提交": function () {
+                $("#add-diolog").submit();
+                $("#add-diolog").dialog("close");
+            }
+        }
+    })
+     //修改
+    function EditMarket(_this) {
+            //给修改模态框赋值
+        var shi = $.trim($(_this).parent().siblings(".shi").text()),
+            level = $.trim($(_this).parent().siblings(".level").text()),
+            market = $.trim($(_this).parent().siblings(".market").text()),
+            marketLevel = $.trim($(_this).parent().siblings(".market-level").text()),
+            site = $.trim($(_this).parent().siblings(".site").text()),
+            Area = $.trim($(_this).parent().siblings(".Area").text()),
+            principal = $.trim($(_this).parent().siblings(".principal").text()),
+            Phone = $.trim($(_this).parent().siblings(".Phone").text()),
+            duty = $.trim($(_this).parent().siblings(".duty").text()),
+            date = $.trim($(_this).parent().siblings(".date").text()),
+            total = $.trim($(_this).parent().siblings(".total").text()),
+            area = $.trim($(_this).parent().siblings(".area").text()),
+            rental = $.trim($(_this).parent().siblings(".rental").text()),
+            Id = $.trim($(_this).parent().siblings(".Id").text());
+            cityId = $.trim($(_this).parent().siblings(".cityId").text());
+        if (market =="-请选择商场-") {
+            market = "";
+        }
+        common($("#market-levelE option"), marketLevel)
+        $("#lastCity span").text(shi);
+        $("#lastCity input").val(cityId);
+        $("#levelE").val(level);
+        $("#marketE").val(market);
+      
+        $("#siteE").val(site);
+        $("#AreaE").val(Area);
+        $("#principalE").val(principal);
+        $("#PhoneE").val(Phone);
+        $("#dutyE").val(duty);
+        $("#dateE").val(date);
+        $("#totalE").val(total);
+        $("#areaE").val(area);
+        $("#rentalE").val(rental);
+        $("#editID").val(Id);
+        
+        $("#edit-diolog").dialog("option", "title", "修改商场").dialog("open");
+    }
+   
+    //修改商场
+    $("#edit-diolog").dialog({
+        autoOpen: false,
+        height: 600,
+        width: 960,
+        modal: true,
+        buttons: {
+
+            "取消": function () { $(this).dialog("close") },
+            "提交": function () {
+                $.ajax({
+                    url: "@Url.Action("MarketEdit", "DevelopmentDoc")",
+                    data: $("#edit-diolog").serialize(),
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.success) {
+                            alert(data.msg);
+                            window.location.reload(); 
+                        } else {
+                            alert(data.msg);
+                           
+                        }
+                    },
+                    error: function (err) {
+                        alert("点击过快或网络错误，请稍后重试！")
+                        console.log(err);
+                    }
+                })
+             
+                $("#edit-diolog").dialog("close")
+            }
+        }
+    })
+    
+    //获取市
+    function getShi(province, shi ) {
+         $.ajax({
+                type: "post",
+                data: { province: province },
+                url: '@Url.Action("GetRgion", "DevelopmentDoc")',
+                dataType: "json",
+                cache: false,
+                async: true,
+             success: function (data) {
+                    console.log(data)
+                 shi.append("<option value='' class='active'> -请选择- </option>");
+                    $.each(data, function(i, m) {
+                        $.each(m, function (n, d) {
+                            shi.append("<option data-level='" + d.Level+"' value='" + d.ID + "'>" + d.City + "</option>")
+                        })
+                    })
+                },
+                error: function (err) {
+                    alert("点击过快或网络错误，请稍后重试！");;
+                    console.log(err);
+                }
+
+            })
+    }
+  
+    
+    // 获取选中时的文本 添加.active
+    function activeText(Jopts) {
+       
+            var value = Jopts.val();//这个值就是你获取的值;
+            if (value != "") {
+                for (var i = 0; i < Jopts.find("option").length; i++) {
+                    if (value == Jopts.find("option")[i].value) {
+                       
+                        if ($(Jopts.find("option")[i]).hasClass("active")) {
+                            return;
+                        } else {
+                            $(Jopts.find("option")[i]).siblings().removeClass("active")
+                            $(Jopts.find("option")[i]).addClass("active");
+
+                        }
+                        break;
+                    }
+                }
+            }
+     
+    }
+    //修改时给下拉框添加.selected
+    function common(option, Name) {
+
+        if (Name != "" || Name != null) {
+            var options = option;
+            $(options).each(function (i, m) {
+                if (Name == m.value) {
+
+                    $(m).attr("selected", "selected")
+                }
+            })
+        }
+    }
+
+
+</script>

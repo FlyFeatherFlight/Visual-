@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="81927e8bcff145be9fe9dfce034db2a5" Name="Diagram1" ZoomLevel="68">
+        <EntityTypeShape EntityType="stmmEntity.C5S_评审标准" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.C5S_评审记录" Width="1.5" PointX="5.25" PointY="66.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.C5S_评审记录_凭证" Width="1.5" PointX="7.5" PointY="60.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.C5S_评审记录详细" Width="1.5" PointX="10.5" PointY="64.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.HR_出差对象类型" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.HR_出差汇报" Width="1.5" PointX="5.25" PointY="74.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.HR_出差汇报凭证" Width="1.5" PointX="10.25" PointY="60.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.HR_出差计划" Width="1.5" PointX="0.75" PointY="65.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.HR_出差计划详细" Width="1.5" PointX="3" PointY="66" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.HR_人员信息表" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.财务_车辆报销分摊" Width="1.5" PointX="8.25" PointY="75.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.财务_车辆报销明细" Width="1.5" PointX="8.25" PointY="71.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.财务_出差报销单" Width="1.5" PointX="8.25" PointY="79.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.财务_出差报销详细" Width="1.5" PointX="13.5" PointY="79" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.财务_核算分类" Width="1.5" PointX="11.25" PointY="90.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.财务_机票明细分摊" Width="1.5" PointX="2.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.财务_接待报销" Width="1.5" PointX="7.5" PointY="103.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.财务_接待报销分摊" Width="1.5" PointX="9.75" PointY="110.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.财务_接待车辆报销" Width="1.5" PointX="10.5" PointY="104.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.财务_接待住宿报销" Width="1.5" PointX="10.5" PointY="98.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.财务_接待住宿报销分摊" Width="1.5" PointX="12.75" PointY="85" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.财务_其他报销_副表" Width="1.5" PointX="13.5" PointY="75.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.财务_其它报销" Width="1.5" PointX="11.25" PointY="75.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.财务_收款单" Width="1.5" PointX="5.25" PointY="113.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.地区" Width="1.5" PointX="0.75" PointY="50.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.客服_售后发起单" Width="1.5" PointX="8.25" PointY="64" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.客服_售后发起单凭证" Width="1.5" PointX="5.25" PointY="118.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.客服_售后费用分摊" Width="1.5" PointX="11.25" PointY="69.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.客服_售后分类" Width="1.5" PointX="11.25" PointY="79.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.客服_售后跟进日志" Width="1.5" PointX="13.5" PointY="70" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.商品档案_商品" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.系统_部门" Width="1.5" PointX="9" PointY="85.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.系统用户" Width="1.5" PointX="3" PointY="71.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.销售_店铺档案" Width="1.5" PointX="3" PointY="52.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.销售_店铺员工档案" Width="1.5" PointX="6" PointY="43.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.销售_订单" Width="1.5" PointX="5.25" PointY="52.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.销售_跟进目标数申请表" Width="1.5" PointX="5.25" PointY="48.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.销售_接待成交单" Width="1.5" PointX="4.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.销售_经销商档案" Width="1.5" PointX="0.75" PointY="54.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.销售_意向追踪日志" Width="1.5" PointX="5.25" PointY="60.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.销售_职务" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.营销_接待计划" Width="1.5" PointX="5.25" PointY="133.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.营销_接待计划费用预估" Width="1.5" PointX="7.5" PointY="132.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.营销_接待计划明细" Width="1.5" PointX="7.5" PointY="109.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.营销_接待来宾信息" Width="1.5" PointX="7.5" PointY="140.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="stmmEntity.营销_接待来访主要事项" Width="1.5" PointX="7.5" PointY="143.625" IsExpanded="true" />
+        <AssociationConnector Association="stmmEntity.FK_5S_评审记录_凭证_5S_评审记录" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_5S_评审记录_系统用户" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_5S_评审记录_系统用户1" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_5S_评审记录_系统用户2" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_5S_评审记录_系统用户3" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_5S_评审记录_销售_店铺档案" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_5S_评审记录_销售_经销商档案" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_5S_评审记录详细_5S_评审记录" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_5S_评审记录详细_系统用户" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_5S_评审记录详细_销售_店铺档案" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_HR_出差汇报_HR_出差规划" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_HR_出差汇报_HR_出差记录表" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_HR_出差汇报_系统用户" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_HR_出差汇报_系统用户1" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_HR_出差汇报凭证_HR_出差计划详细" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_HR_出差汇报凭证_HR_出差记录表" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_HR_出差详情_HR_出差记录表" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_车辆报销分摊_财务_接待车辆报销" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_车辆报销分摊_系统用户" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_车辆报销明细_财务_接待车辆报销" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_车辆报销明细_系统用户" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_差_接报销单_系统_部门" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_差_接报销单_系统用户" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_差_接报销单_系统用户1" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_差_接详报销细_财务_差_接报销单" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_差_接详报销细_系统用户" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_其他报销_副表_财务_核算分类" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_接待报销_系统用户" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_接待报销_系统用户1" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_接待报销_系统用户2" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_接待报销_营销_接待计划" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_接待报销分摊_财务_接待报销" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_接待车辆报销_系统用户" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_接待车辆报销_系统用户1" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_接待车辆报销_系统用户2" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_接待车辆报销_营销_接待计划" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_接待住宿报销_系统用户" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_接待住宿报销_系统用户1" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_接待住宿报销_系统用户2" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_接待住宿报销_营销_接待计划" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_接待住宿报销分摊_财务_接待住宿报销" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_接待住宿报销分摊_系统用户" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_接待住宿报销分摊_系统用户1" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_其他报销_副表_财务_其它报销" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_其它报销_系统_部门" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_其它报销_系统用户" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_其它报销_系统用户1" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_收款单_HR_人员信息表" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_财务_收款单_系统用户" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_销售_店铺档案_地区" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_营销_售后_系统用户" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_营销_售后_系统用户1" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_营销_售后_销售_店铺档案" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_营销_售后_销售_店铺员工档案2" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_营销_售后跟进日志_营销_售后发起单" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_营销_售后发起单凭证_系统用户" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_客服_售后费用分摊_客服_售后分类" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_客服_售后费用分摊_客服_售后分类1" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_客服_售后费用分摊_客服_售后分类2" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_客服_售后费用分摊_系统用户" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_客服_售后费用分摊_系统用户1" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_客服_售后跟进日志_客服_售后分类" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_客服_售后跟进日志_客服_售后分类1" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_客服_售后跟进日志_客服_售后分类2" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_营销_售后跟进日志_系统用户" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_营销_售后跟进日志_系统用户1" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_系统用户_销售_经销商档案" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_营销_接待计划_系统用户" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_营销_接待计划_系统用户1" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_营销_接待计划_系统用户2" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_营销_接待计划_系统用户3" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_营销_接待计划明细_系统用户" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_营销_接待计划明细_系统用户1" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_销售_店铺档案_销售_经销商档案" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_销售_订单_销售_店铺档案" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_销售_跟进目标数申请表_销售_店铺档案" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_销售_意向追踪日志_销售_店铺档案" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_营销_接待计划费用预估_营销_接待计划" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_营销_接待计划明细_营销_接待计划" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_营销_接待来宾信息_营销_接待计划" ManuallyRouted="false" />
+        <AssociationConnector Association="stmmEntity.FK_营销_接待来访主要事项_营销_接待计划" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="stmmEntity.财务_机票明细" Width="1.5" PointX="13.25" PointY="63.375" />
+        <AssociationConnector Association="stmmEntity.FK_财务_机票明细_HR_出差计划" />
+        <AssociationConnector Association="stmmEntity.FK_财务_机票明细_系统用户" />
+        <AssociationConnector Association="stmmEntity.FK_财务_机票明细_系统用户1" />
+        <AssociationConnector Association="stmmEntity.FK_财务_机票明细_系统用户2" />
+        <EntityTypeShape EntityType="stmmEntity.财务_接待报销明细" Width="1.5" PointX="9.75" PointY="113.875" />
+        <AssociationConnector Association="stmmEntity.FK_财务_接待报销明细_财务_接待报销" />
+        <EntityTypeShape EntityType="stmmEntity.销售_接待记录" Width="1.5" PointX="8.25" PointY="38.875" />
+        <AssociationConnector Association="stmmEntity.FK_销售_顾客档案明细_销售顾问" />
+        <EntityTypeShape EntityType="stmmEntity.拓展_城市档案" Width="1.5" PointX="0.75" PointY="7.75" />
+        <EntityTypeShape EntityType="stmmEntity.拓展_经销商档案表" Width="1.5" PointX="10.5" PointY="38.75" />
+        <EntityTypeShape EntityType="stmmEntity.拓展_竞品档案表" Width="1.5" PointX="12.75" PointY="43.75" />
+        <EntityTypeShape EntityType="stmmEntity.拓展_商场档案表" Width="1.5" PointX="5.25" PointY="37.125" />
+        <AssociationConnector Association="stmmEntity.FK_拓展_城市档案_系统用户" />
+        <AssociationConnector Association="stmmEntity.FK_拓展_经销商档案表_拓展_城市档案" />
+        <AssociationConnector Association="stmmEntity.FK_拓展_竞品档案表_拓展_城市档案" />
+        <AssociationConnector Association="stmmEntity.FK_拓展_商场档案表_拓展_城市档案" />
+        <AssociationConnector Association="stmmEntity.FK_拓展_经销商档案表_拓展_商场档案表" />
+        <AssociationConnector Association="stmmEntity.FK_拓展_经销商档案表_系统用户" />
+        <AssociationConnector Association="stmmEntity.FK_拓展_竞品档案表_拓展_经销商档案表" />
+        <AssociationConnector Association="stmmEntity.FK_拓展_竞品档案表_拓展_商场档案表" />
+        <AssociationConnector Association="stmmEntity.FK_拓展_竞品档案表_系统用户" />
+        <AssociationConnector Association="stmmEntity.FK_拓展_商场档案表_系统用户" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
