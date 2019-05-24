@@ -1,0 +1,979 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.BusinessTrip_DetailsViewModel>
+
+@{
+    ViewBag.Title = "添加出差计划详情";
+    Layout = null;
+}
+
+<h3>添加出差计划详情</h3>
+<input id="create-user" type="button" value="添加" class="btn btn-primary width-7" style="margin-left:2.5%;" />
+@**添加模态框*@
+<div id="dialog-form" style="text-align:center;">
+    @*添加出差计划详情*@
+    <form id="addForm" style="position:relative;">
+        <div class="mask hidden"></div>
+        <table class="table table-striped table-bordered table-hover">
+            <tr class="hidden">
+                <td>
+                    <input type="text" value="@ViewBag.ID" name="出差记录ID" />
+                </td>
+            </tr>
+            <tr>
+                <td>城市</td>
+                <td>
+                    <select id="sheng" class="search-input">
+                        <option value="" class="active">-请选择省-</option>
+                    </select>
+                    <select id="shi" class="search-input red" style="margin-top:5px;" name="城市ID">
+                        <option value="">-请选择市-</option>
+                    </select>
+                    <span class="must" style="color:red;">*该选项为必填项</span>
+
+                </td>
+                <td>出差时间</td>
+                <td width="35%">
+                    <input type="text" name="出差时间" class="dateTime form-control red" placeholder="请选择日期" onclick="sureRed()" readonly />
+                    <span class="must" style="color:red;">*该选项为必填项</span>
+                </td>
+
+            </tr>
+            <tr>
+                <td>同行人</td>
+                <td colspan="3">
+                    <input type="text" class="form-control " name="同行人员" />
+
+                </td>
+            </tr>
+
+            <tr>
+                <td style="vertical-align: top">巡店目的</td>
+                <td colspan="3">
+                    <textarea type="text" class=" form-control " name="巡店目的" placeholder="最多填写250个字" rows="3"></textarea>
+
+                </td>
+            </tr>
+            <tr>
+                <td style="vertical-align: top">计划方案</td>
+                <td colspan="3">
+                    <textarea type="text" class=" form-control" name="计划方案" placeholder="最多填写250个字" rows="3"></textarea>
+
+                </td>
+            </tr>
+            <tr>
+                <td style="vertical-align: top">计划内容</td>
+                <td colspan="3">
+                    <textarea type="text" class=" form-control" name="计划内容" placeholder="最多填写250个字" rows="3"></textarea>
+
+                </td>
+            </tr>
+            <tr>
+                <td>备注</td>
+                <td colspan="3">
+                    <input type="text" class="form-control" name="备注" />
+                </td>
+            </tr>
+        </table>
+        <div class="submit-btns">
+            <input type="button" name="" value="提交" class="btn btn-success" id="addForm-btn" />
+        </div>
+    </form>
+    @*拜访对象*@
+    <form id="Type" class="hidden">
+        <input type="text" name="name" value="" id="TypeId" class="hidden" />
+        <table class="table table-bordered" id="Tab">
+            <thead>
+                <tr>
+                    <th style="width:42%;">拜访对象类型</th>
+                    <th>拜访对象</th>
+                    <th>
+                        操作
+
+                    </th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <input type="button" name="name" value="添加" class="btn btn-primary" onclick="addTr()" />
+        <input type="button" name="name" value="提交" class="btn btn-success" onclick="TypeSub()" />
+    </form>
+</div>
+@*修改计划详情模态框*@
+<div id="dialog-formE">
+    @*修改出差计划详情*@
+    <form id="editForm" style="position:relative;">
+        <input type="text" value="" name="出差记录ID" id="editId" class="hidden" />
+        <input type="text" value="" name="ID" id="planId" class="hidden" />
+        <table class="table table-striped table-bordered table-hover">
+
+            <tr>
+                <td>城市</td>
+                <td>
+                    @*<select id="shengE" class="search-input">
+                            <option value="" class="active">-请选择省-</option>
+                        </select>
+                        <select id="shiE" class="search-input" style="margin-top:5px;" name="">
+                            <option value="">-请选择市-</option>
+                        </select>*@
+                    <div id="lastCity">
+                        <span></span>
+                        <input type="text" name="城市ID" value="" class="hidden" />
+                    </div>
+
+                </td>
+                <td>出差时间</td>
+                <td width="35%">
+                    <input type="text" name="出差时间" id="CdateE" class="dateTime form-control red" placeholder="请选择日期" onclick="sureRed()" readonly />
+                    <span class="must" style="color:red;">*该选项为必填项</span>
+                </td>
+
+            </tr>
+            <tr>
+                <td>同行人</td>
+                <td colspan="3">
+                    <input type="text" id="personE" class="form-control " name="同行人员" />
+
+                </td>
+            </tr>
+
+            <tr>
+
+                <td style="vertical-align: top">巡店目的</td>
+                <td colspan="3">
+                    <textarea type="text" id="visitAimE" class=" form-control " name="巡店目的" placeholder="最多填写250个字" rows="3"></textarea>
+
+                </td>
+            </tr>
+            <tr>
+                <td style="vertical-align: top">计划方案</td>
+                <td colspan="3">
+                    <textarea type="text" id="workPlanE" class=" form-control" name="计划方案" placeholder="最多填写250个字" rows="3"></textarea>
+
+                </td>
+            </tr>
+            <tr>
+                <td style="vertical-align: top">计划内容</td>
+                <td colspan="3">
+                    <textarea type="text" id="workContentE" class=" form-control" name="计划内容" placeholder="最多填写250个字" rows="3"></textarea>
+
+                </td>
+            </tr>
+            <tr>
+                <td>备注</td>
+                <td colspan="3">
+                    <input type="text" id="notesE" class="form-control" name="备注" />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+@*行内添加拜访对象*@
+<form id="addType-dialog">
+    <input type="text" name="" value="" id="TypeAplanId" class="hidden"/>
+    <input type="text" name="" value="" id="TypeAId-city" class="hidden"/>
+    <table class="table table-bordered">
+        <tr>
+            <td>对象类型</td>
+            <td>
+                <select id="TypeA" class="form-control" onchange="chooseObjA(this)">
+                    <option value="">-请选择-</option>
+                    <option value="商场">商场</option>
+                    <option value="门店">门店</option>
+                    <option value="经销商">经销商</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+
+            <td>对象名称</td>
+            <td>
+                <select class="form-control" id="ObjName">
+                    <option value="">-请选择-</option>
+
+                </select>
+            </td>
+        </tr>
+    </table>
+
+</form>
+@*行内修改拜访对象*@
+<form id="editType-dialog">
+    <input type="text" name="出差计划详细ID" value="" id="TypeAplanIdE" class="hidden"/>
+    <input type="text" name="ID" value="" id="visitTypeIdE" class="hidden" />
+    <input type="text" name="" value="" id="TypeAId-cityE" class="hidden" />
+    <table class="table table-bordered">
+        <tr>
+            <td>对象类型</td>
+            <td>
+                <select id="TypeE" name="拜访对象类型" class="form-control" onchange="chooseObjE(this)">
+                    <option value="">-请选择-</option>
+                    <option value="商场">商场</option>
+                    <option value="门店">门店</option>
+                    <option value="经销商">经销商</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+
+            <td>对象名称</td>
+            <td>
+           
+                <select class="form-control" id="ObjNameE">
+                    <option value="">-请选择-</option>
+                </select>
+                <div id="lastObjName">
+                    上次选中的对象是：
+                    <span></span>
+                    <input type="text" name="拜访对象ID" value="" class="" />
+                </div>
+            </td>
+        </tr>
+    </table>
+
+</form>
+
+
+<table class="table table-bordered text-center" id="Table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.出差时间)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.城市)
+        </th>
+        <th>拜访对象</th>
+        <th>
+            @Html.DisplayNameFor(model => model.同行人员)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.巡店目的)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.计划内容)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.计划方案)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.备注)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.提交时间)
+        </th>
+        <th>操作</th>
+    </tr>
+
+    @if (Model.Count() > 0)
+    {
+        foreach (var item in Model)
+        {
+            <tr>
+                <td class="Id hidden">
+                    @Html.DisplayFor(modelItem => item.出差记录ID)
+                </td>
+                <td class="planId hidden">
+                    @Html.DisplayFor(modelItem => item.ID)
+                </td>
+                <td class="Cdate date">
+
+                    @Html.DisplayFor(modelItem => item.出差时间)
+                </td>
+                <td class="cityId hidden">
+                    @Html.DisplayFor(modelItem => item.城市ID)
+                </td>
+                <td class="city">
+                    @Html.DisplayFor(modelItem => item.城市)
+                </td>
+                <td>
+                    <span class="Aspan" onclick="addType(this)">添加拜访对象</span>
+                    @Html.Action("BusinessTrip_VisitSubjectView", "BusinessTrip", new { id = item.ID })
+                </td>
+                <td class="person">
+                    @Html.DisplayFor(modelItem => item.同行人员)
+                </td>
+                <td class="visitAim">
+
+                    @Html.DisplayFor(modelItem => item.巡店目的)
+                </td>
+                <td class="workPlan">
+                    @Html.DisplayFor(modelItem => item.计划内容)
+                </td>
+                <td class="workContent">
+                    @Html.DisplayFor(modelItem => item.计划方案)
+                </td>
+                <td class="notes">
+                    @Html.DisplayFor(modelItem => item.备注)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.提交时间)
+                </td>
+                <td>
+                    <span class="Aspan" onclick="EditMain(this)">修改</span>
+                    <span class="Aspan" onclick="DelMain(this)">删除</span>
+                </td>
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="12">暂无数据！</td>
+        </tr>
+    }
+</table>
+<div class="submit-btns">
+    <input type="text" name="name" value="完成计划" class="btn btn-success width-7" onclick="goDetail()" />&nbsp;&nbsp;
+    <input type="text" name="name" value="取消" class="btn btn-danger width-7" />
+</div>
+<script>
+    //转换日期格式
+    var dates = $("#Table .date");
+    $(dates).each(function (i, m) {
+        if (m != null || m != "") {
+
+            var strTime = $(m).text();
+            strTime = strTime.split("/周");
+            strTime = strTime[0];
+            $(m).text(strTime);
+        }
+    })
+    // 配置对话框(使用Jquery-UI的dialog插件)
+    $('#dialog-form').dialog({ title: '出差行程计划详细内容' }).dialog("close");
+
+    //配置模态框
+    $("#dialog-form").dialog({
+        autoOpen: false,
+        height: 600,
+        width: 960,
+        modal: true,
+        buttons: {
+
+            "取消": function () { $(this).dialog("close") },
+            "确认": function () {
+                $("#addForm .mask").addClass("hidden");
+                $("#Type").addClass("hidden");
+                $("#dialog-form").dialog("close");
+                window.location.reload();
+            }
+        }
+    });
+    // 点击添加打开模态框
+    $("#create-user").click(function () {
+            $("#dialog-form").dialog("open");
+        });
+    //详细内容提交
+    $("#addForm-btn").click(function () {
+        var status = false;
+        $("#addForm .red").each(function (i,m) {
+            if (m.value == "" || m.value == null) {
+                return status = true;
+            }
+        })
+      if (status) {
+          alert("必填项不能为空！");
+        }else {
+            //提交模态框的数据
+          $.ajax({
+              url: '@Url.Action("BusinessTrip_DetailsAdd","BusinessTrip")',
+              type: "post",   //默认为get
+              data: $("#addForm").serialize(),   //传递给服务端的数据
+                dataType: "json",
+                cache: false,
+                success: function (data, textStatus) {
+                    console.log(data)
+                    // 如果提交成功就显示在页面
+                    if (data.Success) {
+                        $("#addForm .mask").removeClass("hidden");
+                        $("#Type").removeClass("hidden");
+                        $("#TypeId").val(data.businessid);
+                        alert("添加成功，请添加拜访对象！");
+
+                    } else {
+                        alert("添加失败!");
+                        console.log(data.msg);
+                    }
+
+                },
+                error: function (textStatus, errorThrown) {
+                    console.log("系统ajax交互错误: " + JSON.stringify(textStatus));
+                },
+            });
+        }
+    })
+    //拜访对象提交
+    function TypeSub() {
+        var trs = document.getElementById("Tab"),
+            datas = [];
+
+        for (var i = 1; i < trs.rows.length; i++) {
+
+            var objDate = {
+                "出差计划详细ID": $("#TypeId").val(),
+                "拜访对象类型": trs.rows[i].cells[0].getElementsByTagName("select")[0].value,
+                "拜访对象ID": trs.rows[i].cells[1].getElementsByTagName("select")[0].value,
+
+            }
+            datas.push(objDate);
+
+        }
+
+        $.ajax({
+            url: '@Url.Action("BusinessTrip_VisitSubjectAdd", "BusinessTrip")',
+            type: "post",   //默认为get
+            data: {lis:JSON.stringify(datas)},   //传递给服务端的数据
+            dataType: "json",
+            cache: false,
+            success: function (data, textStatus) {
+                console.log(data)
+                // 如果提交成功就显示在页面
+                if (data.success) {
+                    alert(data.msg);
+                    $("#dialog-form").dialog("close");
+                    window.location.reload();
+                } else {
+                    alert("添加失败!");
+                    console.log(data.msg);
+                }
+
+            },
+            error: function (textStatus, errorThrown) {
+                console.log("系统ajax交互错误: " + JSON.stringify(textStatus));
+            },
+        });
+
+    }
+
+    //添加拜访对象行
+    function addTr() {
+        var tr = ` <tr>
+                <td>
+                    <select class="Type form-control" onchange="chooseObj(this)">
+                        <option value="">-请选择-</option>
+                        <option value="商场">商场</option>
+                        <option value="门店">门店</option>
+                        <option value="经销商">经销商</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="visitObj form-control">
+                        <option value="">-请选择-</option>
+                    </select>
+                </td>
+                <td><span class="Aspan" onclick="Del(this)">删除</span></td>
+            </tr>`;
+        $("#Type tbody").append(tr);
+    }
+    //删除拜访对象行
+    function Del(_this) {
+        $(_this).parent().parent().remove();
+    }
+    //行内添加拜访对象模态框配置
+    $("#addType-dialog").dialog({
+        autoOpen: false,
+        height: 300,
+        width: 400,
+        modal: true,
+        buttons: {
+
+            "取消": function () { $(this).dialog("close") },
+            "确认": function () {
+                var datas = [
+                    {
+
+                        "出差计划详细ID": $("#TypeAplanId").val(),
+                        "拜访对象类型": $("#TypeA").val(),
+                        "拜访对象ID": $("#ObjName").val()
+                    },
+                ];
+        $.ajax({
+                type: "post",
+                data: { lis: JSON.stringify(datas) },
+                url: '@Url.Action("BusinessTrip_VisitSubjectAdd", "BusinessTrip")',
+                dataType: "json",
+                cache: false,
+                async: true,
+                success: function (data) {
+                    if (data.success) {
+                        alert(data.msg);
+                        $("#addType-dialog").dialog("close");
+                        window.location.reload();
+                    } else {
+                        alert(data.msg);
+                    }
+                    //console.log(data);
+                },
+                error: function (err) {
+                    alert("点击过快或网络错误，请稍后重试！");;
+                    console.log(err);
+                }
+
+            })
+               
+            }
+        }
+    });
+    //行内添加拜访对象
+    function addType(_this) {
+        var cityid = $.trim($(_this).parent().siblings(".cityId").text());
+        var id = $.trim($(_this).parent().siblings(".planId").text());
+        $("#TypeAId-city").val(cityid);
+        $("#TypeAplanId").val(id);
+        $("#addType-dialog").dialog("open");
+    }
+    //行内修改拜访对象模态框配置
+    $("#editType-dialog").dialog({
+        autoOpen: false,
+        height: 300,
+        width: 400,
+        modal: true,
+        buttons: {
+
+            "取消": function () { $(this).dialog("close") },
+            "确认": function () {
+              
+        $.ajax({
+                type: "post",
+                data: $("#editType-dialog").serialize(),
+                url: '@Url.Action("BusinessTrip_VisitSubjectEdit", "BusinessTrip")',
+                dataType: "json",
+                cache: false,
+                async: true,
+                success: function (data) {
+                    if (data.success) {
+                        alert(data.msg);
+                        $("#editType-dialog").dialog("close");
+                        window.location.reload();
+                    } else {
+                        alert(data.msg);
+                    }
+                    //console.log(data);
+                },
+                error: function (err) {
+                    alert("点击过快或网络错误，请稍后重试！");;
+                    console.log(err);
+                }
+
+            })
+                
+            }
+        }
+    });
+    //行内修改拜访对象
+    function EditType(_this) {
+        var cityid = $.trim($(_this).parents().find(".cityId").text()),//城市id
+            id = $.trim($(_this).parent().siblings(".planIdF").text());//计划详情id
+        visitTypeIdF = $.trim($(_this).parent().siblings(".visitTypeIdF").text()); //拜访详情Id
+            visitObjIDF = $.trim($(_this).parent().siblings(".visitObjIDF").text());//拜访对象Id
+            visitTypeNameF = $.trim($(_this).parent().siblings(".visitTypeNameF").text());//拜访对象名称
+            visitTypeF = $.trim($(_this).parent().siblings(".visitTypeF").text());//拜访对象类型
+
+        common($("#TypeE option"), visitTypeF)
+        $("#lastObjName input").val(visitObjIDF);
+        $("#lastObjName span").text(visitTypeNameF);
+        $("#visitTypeIdE").val(visitTypeIdF);
+       
+        $("#TypeAId-cityE").val(cityid);
+        $("#TypeAplanIdE").val(id);
+        $("#editType-dialog").dialog("open");
+    }
+
+    //删除行内拜访对象
+    function DelType(_this) {
+        var id = $.trim($(_this).parent().siblings(".visitTypeIdF").text()),
+             del = $(_this).parent().parent();
+        $.ajax({
+            type: "post",
+            data: { id: id },
+            url: '@Url.Action("BusinessTrip_VisitSubjectDel", "BusinessTrip")',
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                //console.log(data);
+                if (data.success) {
+                    alert(data.msg);
+                    $(del).remove();
+                } else {
+                    alert(data.msg);
+                }
+
+            },
+            error: function (err) {
+                alert("点击过快或网络错误，请稍后重试！");;
+                console.log(err);
+            }
+        })
+    }
+    //修改计划详情
+    function EditMain(_this) {
+
+        var Id = $.trim($(_this).parent().siblings(".Id").text()),
+            planId = $.trim($(_this).parent().siblings(".planId").text()),
+            Cdate = $.trim($(_this).parent().siblings(".Cdate").text()),
+            cityId = $.trim($(_this).parent().siblings(".cityId").text()),
+            city = $.trim($(_this).parent().siblings(".city").text()),
+            person = $.trim($(_this).parent().siblings(".person").text()),
+            visitAim = $.trim($(_this).parent().siblings(".visitAim").text()),
+            workPlan = $.trim($(_this).parent().siblings(".workPlan").text()),
+            workContent = $.trim($(_this).parent().siblings(".workContent").text()),
+            notes = $.trim($(_this).parent().siblings(".notes").text());
+        $("#lastCity input").val(cityId);
+        $("#lastCity span").text(city);
+        $("#editId").val(Id);
+        $("#planId").val(planId);
+        $("#CdateE").val(Cdate);
+        $("#personE").val(person);
+        $("#visitAimE").val(visitAim);
+        $("#workPlanE").val(workPlan);
+        $("#workContentE").val(workContent);
+        $("#notesE").val(notes);
+
+        $("#dialog-formE").dialog("open");
+    }
+    //修改计划详情 配置模态框
+    $("#dialog-formE").dialog({
+        autoOpen: false,
+        height: 600,
+        width: 960,
+        modal: true,
+        buttons: {
+
+            "取消": function () { $(this).dialog("close") },
+            "确认": function () {
+                var status = false;
+                $("#editForm .red").each(function (i, m) {
+                    if (m.value == "" || m.value == null) {
+                        return status = true;
+                    }
+                })
+                if (status) {
+                    alert("必填项不能为空！");
+                } else {
+
+                    $.ajax({
+                        type: "post",
+                        data: $("#editForm").serialize(),
+                        url: '@Url.Action("BusinessTrip_DetailsEdit", "BusinessTrip")',
+                        dataType: "json",
+                        cache: false,
+                        async: true,
+                        success: function (data) {
+                            console.log(data)
+                            if (data.success) {
+                                $("#dialog-form").dialog("close");
+                                alert(data.msg);
+                                window.location.reload();
+                            } else {
+                                alert(data.msg);
+                            }
+                        },
+                        error: function (err) {
+                            alert("点击过快或网络错误，请稍后重试！");;
+                            console.log(err);
+                        }
+
+                    })
+                }
+
+            }
+        }
+    });
+    //删除计划详情
+    function DelMain(_this) {
+        var id = $.trim($(_this).parent().siblings(".planId").text()),
+            del = $(_this).parent().parent();
+        $.ajax({
+            url: '@Url.Action("BusinessTrip_DetailsDel", "BusinessTrip")',
+            type: "get",
+            data:{id:id},
+
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                console.log(data)
+                if (data.success) {
+                    $(del).remove();
+                    alert(data.msg);
+                } else {
+                    alert(data.msg);
+                }
+            },
+            error: function (err) {
+                alert("点击过快或网络错误，请稍后重试！");;
+                console.log(err);
+            }
+
+        })
+    }
+
+    //添加拜访对象 选择对象类型后触发
+    function chooseObj(_this) {
+        //console.log($(_this).parent().next().children(".visitObj"));
+
+        var Val = $(_this).val(),
+            visitObj = $(_this).parent().next().children(".visitObj");//获取需要填充的下拉框
+        visitObj.empty();
+        visitObj.append("<option value=''>-请选择-</option>");
+        if (Val == "门店") {
+            //调用获取门店的函数
+            getStore($("#shi").val(), visitObj)
+            return;
+        }
+        if (Val == "经销商") {
+            //调用获取经销商的函数
+
+            getDealer($("#shi").val(),visitObj);
+            return;
+        }
+        if (Val == "商场") {
+            //调用获取门店的函数
+
+            getMarket($("#shi").val(),visitObj);
+            return;
+        }
+
+    }
+    //行内添加
+    //添加拜访对象 选择对象类型后触发
+    function chooseObjA(_this) {
+        var Val = $(_this).val(),
+            visitObj = $("#ObjName");//获取需要填充的下拉框
+        visitObj.empty();
+        visitObj.append("<option value=''>-请选择-</option>");
+        if (Val == "门店") {
+            //调用获取门店的函数
+            getStore($("#TypeAId-city").val(), visitObj);
+            return;
+        }
+        if (Val == "经销商") {
+            //调用获取经销商的函数
+            getDealer($("#TypeAId-city").val(), visitObj);
+            return;
+        }
+        if (Val == "商场") {
+            //调用获取门店的函数
+            getMarket($("#TypeAId-city").val(), visitObj);
+            return;
+        }
+
+    }
+    //行内修改
+    //修改拜访对象 选择对象类型后触发
+    function chooseObjE(_this) {
+        var Val = $(_this).val(),
+            visitObj = $("#ObjNameE");//获取需要填充的下拉框
+        visitObj.empty();
+        visitObj.append("<option value=''>-请选择-</option>");
+        //清空上次选中的
+        $("#lastObjName input").val("");
+        $("#lastObjName span").text("");
+
+        if (Val == "门店") {
+            //调用获取门店的函数
+            getStore($("#TypeAId-cityE").val(), visitObj);
+            return;
+        }
+        if (Val == "经销商") {
+            //调用获取经销商的函数
+            getDealer($("#TypeAId-cityE").val(), visitObj);
+            return;
+        }
+        if (Val == "商场") {
+            //调用获取门店的函数
+            getMarket($("#TypeAId-cityE").val(), visitObj);
+            return;
+        }
+
+    }
+    //行内修改变化
+    $("#ObjNameE").change(function () {
+        $("#lastObjName input").val($("#ObjNameE").val());
+    })
+    //获取门店
+    function getStore(id, _sel) {
+
+        $.ajax({
+            url: '@Url.Action("GetTripObj", "BusinessTrip")',
+            type: "post",
+            data: {id:id},
+            dataType: "json",
+            cache: false,
+            async: true,
+             success: function (data) {
+                 console.log(data);
+                 $.each(data.data, function (i, m) {
+                     $(_sel).append("<option value=" + m[0] + ">" + m[1]+"</option>");
+                })
+            },
+            error: function (err) {
+                alert("点击过快或网络错误，请稍后重试！");;
+                console.log(err);
+            }
+
+        })
+    }
+
+     //获取 经销商
+    function getDealer(id, _sel) {
+        $.ajax({
+            url: "@Url.Action("GetFranchiser", "DevelopmentDoc")",
+            type: "post",
+            data: { cid:id},
+            dataType: "json",
+            cache: false,
+            async: true,
+             success: function (data) {
+                 console.log(data);
+
+                 $.each(data, function (i, m) {
+                     $(m).each(function (a, b) {
+                         _sel.append("<option value=" + b.ID + ">" + b.Name + "</option>");
+                     })
+                })
+
+            },
+            error: function (err) {
+                alert("点击过快或网络错误，请稍后重试！");;
+                console.log(err);
+            }
+
+        })
+    }
+
+     //获取 商场
+    function getMarket(id,_sel) {
+        $.ajax({
+            url: "@Url.Action("GetMarket", "DevelopmentDoc")",
+            type: "post",
+            data: { cid:id},
+            dataType: "json",
+            cache: false,
+            async: true,
+             success: function (data) {
+                 console.log(data);
+
+                 $.each(data, function (i, m) {
+                     $(m).each(function (a,b) {
+
+                         _sel.append("<option value=" + b.ID + ">" + b.Name +"</option>");
+                     })
+
+                })
+
+            },
+            error: function (err) {
+                alert("点击过快或网络错误，请稍后重试！");;
+                console.log(err);
+            }
+
+        })
+    }
+       //获取省份数据
+        $.ajax({
+            type: "post",
+            data: {},
+            url: '@Url.Action("GetProvince", "DevelopmentDoc")',
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                $.each(data, function(i, m) {
+                    $("#sheng").append("<option value=" + m + ">" + m + "</option>")
+                    $("#shengE").append("<option value=" + m + ">" + m + "</option>")
+
+                })
+
+            },
+            error: function (err) {
+                alert("点击过快或网络错误，请稍后重试！");;
+                console.log(err);
+            }
+
+        })
+        //添加 根据选择的省份，获取市数据
+        $("#sheng").change(function () {
+
+            var province = $("#sheng").val();
+            $("#shi").empty();
+            getCity(province, $("#shi"))
+        })
+    //    //修改 根据选择的省份，获取市数据
+    //$("#shengE").change(function () {
+    //    $("#lastCity input").val("");
+    //    $("#lastCity span").text("");
+    //        var province = $("#shengE").val();
+    //        $("#shiE").empty();
+    //        getCity(province, $("#shiE"))
+    //    })
+    //    $("#shiE").change(function () {
+    //        $("#lastCity input").val($("#shiE").val());
+
+    //    })
+    function getCity(province,city) {
+         $.ajax({
+                type: "post",
+                data: { province: province },
+                url: '@Url.Action("GetRgion", "DevelopmentDoc")',
+                dataType: "json",
+                cache: false,
+                async: true,
+                success: function (data) {
+                   // console.log(data)
+                    city.append("<option value='' class='active'> -请选择- </option>");
+                    $.each(data, function (i, m) {
+
+                        city.append("<option value=" + m[0].ID + ">" + m[0].City + "</option>")
+
+                    })
+
+                },
+                error: function (err) {
+                    alert("点击过快或网络错误，请稍后重试！");;
+                    console.log(err);
+                }
+
+            })
+    }
+
+        // 行删除
+        function Delete(id) {
+            if (confirm("确定删除当前数据?")) {
+                $.ajax({
+                url: "@Url.Action("", "BusinessTrip")",
+                type: "get",
+                data: { id: id },
+                dataType: 'json',
+                cache: false,
+                error: function (textStatus, errorThrown) { alert("交互错误" + JSON.stringify(textStatus)); },
+                success: function (data) {
+                    if (data.success) {
+                    $("#grid").jqGrid("delRowData", id);
+                    alert(data.msg);
+
+                } else {
+                        alert("删除失败！");
+                        console.log(data.msg);
+                }
+                }
+            });
+            }
+    };
+
+    //修改时给下拉框添加.selected
+    function common(option, Name) {
+
+        if (Name != "" || Name != null) {
+            var options = option;
+            $(options).each(function (i, m) {
+                if (Name == m.value) {
+
+                    $(m).attr("selected", "selected")
+                }
+            })
+        }
+    }
+    // 跳转详情
+    function goDetail() {
+        window.location.href = '@Url.Action("BusinessTrip_DetailsView", "BusinessTrip")?id=@ViewBag.ID' ;
+    }
+</script>

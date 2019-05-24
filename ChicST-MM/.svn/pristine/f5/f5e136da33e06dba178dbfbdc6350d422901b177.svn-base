@@ -1,0 +1,979 @@
+﻿@model  ChicST_MM.WEB.Models.BusinessTripViewModel
+@if (ViewBag.IsEdit == true)
+{
+    {
+        ViewBag.Title = "出差记录修改";
+
+    }
+    <h3>出差记录修改</h3>
+    @Html.ActionLink("查看汇报", "BusinessTrip_RportListView", new { tripID = Model.ID }, new { style = "margin-left:2.5%;" })
+    <form id="myFormE">
+        <input type="text" name="ID" value="@Model.ID" class="hidden" />
+        <table class="table table-striped table-bordered table-hover">
+            <tr>
+                <td colspan="7" style="position:relative;">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 start-date">
+                        <span class="bold">开始日期</span>&nbsp;&nbsp;
+                        <input name="开始时间" class="search-input  red dateTime " value="@Model.开始时间.ToString("yyyy-MM-dd")" type='text' placeholder="请选择开始日期" oninput="sureRed()" readonly />
+                        <span class="must" style="color:red;">*该项为必填项</span>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <span class="bold">结束日期</span>&nbsp;&nbsp;
+                        <input name="结束时间" class="search-input dateTime red  " value="@Model.结束时间.ToString("yyyy-MM-dd")" type='text' placeholder="请选择结束日期" oninput="sureRed()" readonly />
+                        <span class="must" style="color:red;">*该项为必填项</span>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="bold">关联审核人</td>
+                <td colspan="6">
+                    <select name="关联审核人ID" id="reviewer" class="form-control red " oninput="sureRed()">
+                        <option value="@Model.关联审核人ID">@Model.关联审核人</option>
+                    </select>
+                    <span class="must" style="color:red;">*该项为必填项</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="bold">出差内容</td>
+                <td colspan="6">
+                    <textarea rows="3" class="form-control red" name="出差内容" oninput="sureRed()">@Model.出差内容</textarea>
+                    <span class="must" style="color:red;">*该项为必填项</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="bold">备注</td>
+                <td colspan="6">
+                    <input type="text" class="form-control" name="备注" value="@Model.备注" />
+                </td>
+            </tr>
+            <tr>
+                <td class="bold" rowspan="3">费用预估</td>
+            </tr>
+            <tr>
+                <td>车船费预计</td>
+                <td>
+                    <input type="text" name="车船费预计" value="@Model.车船费预计" class="form-control" id="fare"
+                           onkeyup="value=value.replace(/[^\d.]/g,'')"
+                           onblur="value=value.replace(/[^\d.]/g,'')" oninput="priceTotal()" />
+                </td>
+                <td>住宿费预计</td>
+                <td>
+                    <input type="text" name="住宿费预计" value="@Model.住宿费预计" class="form-control" id="room"
+                           onkeyup="value=value.replace(/[^\d.]/g,'')"
+                           onblur="value=value.replace(/[^\d.]/g,'')" oninput="priceTotal()" />
+                </td>
+                <td>餐补费预计</td>
+                <td>
+                    <input type="text" name="餐补费预计" value="@Model.餐补费预计" class="form-control" id="eat"
+                           onkeyup="value=value.replace(/[^\d.]/g,'')"
+                           onblur="value=value.replace(/[^\d.]/g,'')" oninput="priceTotal()" />
+                </td>
+            </tr>
+            <tr>
+                <td>合计</td>
+                <td colspan="5">
+                    <input type="text" name="合计" class="form-control total" value="@Model.合计" readonly />
+                </td>
+            </tr>
+            <tr>
+                <td class="bold">审核状态</td>
+                <td colspan="10">
+
+                    @if (Model.审核状态 == true)
+                    {
+                        <span>通过</span>
+                    }
+                    else if (Model.审核状态 == false)
+                    {
+                        <span>驳回</span>
+                    }
+                    else
+                    {
+                        <span>未审核</span>
+                    }
+                </td>
+            </tr>
+        </table>
+        <div style="width:95%;margin:0 auto;">
+            <div style="text-align:left; margin-bottom:10px;">
+                <input id="create-user" type="button" value="添加" class="btn " />
+                <sapn style="color: orange;display: block;margin: 5px 0 5px 0;">温馨提示：添加后请点击确定</sapn>
+            </div>
+            <table id="grid"></table>
+            <div id="pager"></div>
+        </div>
+
+        <div class="submit-btns" style="margin-top:10px;">
+            <input type="button" value="保存修改" class="btn btn-success width-7" onclick="myFormE()">
+            &nbsp;&nbsp;
+            <input type="button" value="取消" class="btn btn-danger width-7" onclick="javascript:history.back(-1);">
+        </div>
+    </form>
+    @**添加模态框*@
+    <div id="dialog-form" style="text-align:center;">
+        <table class="table table-striped table-bordered table-hover">
+            <tr class="hidden">
+                <td>
+                    <input type="text" value="@Model.ID" class="setID" />
+                </td>
+            </tr>
+            <tr>
+                <td>城市</td>
+                <td>
+                    <select id="sheng" class="form-control ">
+                        <option value="">-请选择省-</option>
+                    </select>
+                    <select id="shi" class="form-control  " style="margin-top:5PX;">
+                        <option value="">-请选择市-</option>
+                    </select>
+
+                    <div class="city-val">
+                        城市是：<span id="cityText"></span>
+                        <input type="text" id="city" class="hidden red" />
+                        <span class="must" style="color:red;">*该选项为必填项</span>
+                    </div>
+
+                </td>
+                <td>出差时间</td>
+                <td width="35%">
+                    <input type="text" id="Cdate" class="dateTime  form-control  red" placeholder="请选择日期" onclick="sureRed()" readonly />
+                    <span class="must" style="color:red;">*该选项为必填项</span>
+                </td>
+
+            </tr>
+            <tr>
+
+
+                <td>经销商名称</td>
+                <td colspan="2">
+                    <input id="dealerName" class=" form-control" />
+
+                </td>
+                <td rowspan="3">根据实际情况填写相应的经销商/门店/商场</td>
+            </tr>
+            <tr>
+                <td>门店名称</td>
+                <td colspan="2">
+                    <input id="shopName" class=" form-control" />
+
+                </td>
+            </tr>
+            <tr>
+                <td>商场名称</td>
+                <td colspan="2">
+                    <input id="storeName" class=" form-control" />
+
+                </td>
+
+            </tr>
+            <tr>
+                <td>同行人</td>
+                <td colspan="3">
+                    <input type="text" id="person" class="form-control" />
+                </td>
+            </tr>
+
+            <tr>
+                <td style="vertical-align: top">巡店目的</td>
+                <td colspan="3">
+                    <textarea type="text" id="visitAim" class=" form-control" placeholder="最多填写250个字" rows="3"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td style="vertical-align: top">计划方案</td>
+                <td colspan="3">
+                    <textarea type="text" id="workPlan" class=" form-control" placeholder="最多填写250个字" rows="3"></textarea>
+
+                </td>
+            </tr>
+            <tr>
+                <td style="vertical-align: top">计划内容</td>
+                <td colspan="3">
+                    <textarea type="text" id="workContent" class=" form-control" placeholder="最多填写250个字" rows="3"></textarea>
+
+                </td>
+            </tr>
+            <tr>
+                <td>备注</td>
+                <td colspan="3">
+                    <input type="text" id="notes" class=" form-control" />
+                </td>
+            </tr>
+        </table>
+
+    </div>
+    @**修改模态框*@
+    <form id="editForm">
+        <table class="table table-striped table-bordered table-hover">
+            <tr class="hidden">
+                <td>
+                    <input type="text" name="出差记录ID" value="@Model.ID" class="setID" />
+                    <input type="text" name="ID" value="" class="editID" />
+                    <input type="text" name="" value="" id="rowID" />
+                </td>
+            </tr>
+            <tr>
+                <td>城市</td>
+                <td>
+                    <select id="shengE" class="form-control">
+                        <option value="">-请选择省-</option>
+                    </select>
+                    <select id="shiE" class="form-control " style="margin-top:5px;">
+                        <option value="">-请选择市-</option>
+                    </select>
+
+                    <div class="city-val">
+                        城市是：<span id="cityTextE"></span>
+                        <input type="text" name="城市" id="cityE" class="hidden red" />
+                        <span class="must" style="color:red;">*该选项为必填项</span>
+                    </div>
+
+                </td>
+                <td>出差时间</td>
+                <td width="35%">
+                    <input type="text" name="出差时间" id="CdateE" class=" dateTime form-control red" placeholder="请选择日期" onclick="sureRed()" readonly />
+                    <span class="must" style="color:red;">*该选项为必填项</span>
+                </td>
+
+            </tr>
+
+            <tr>
+                <td>经销商名称</td>
+                <td colspan="2">
+                    <input name="经销商" id="dealerNameE" class=" form-control  " />
+                </td>
+                <td rowspan="3">根据实际情况填写相应的经销商/门店/商场</td>
+            </tr>
+            <tr>
+                <td>门店名称</td>
+                <td colspan="2">
+                    <input name="门店" id="shopNameE" class=" form-control  " />
+                </td>
+            </tr>
+            <tr>
+                <td>商场名称</td>
+                <td colspan="2">
+                    <input name="商场" id="storeNameE" class=" form-control  " />
+                </td>
+            </tr>
+            <tr>
+                <td>同行人</td>
+                <td colspan="3">
+                    <input name="同行人员" type="text" id="personE" class="form-control " />
+                </td>
+            </tr>
+
+            <tr>
+                <td style="vertical-align: top">巡店目的</td>
+                <td colspan="3">
+                    <textarea name="巡店目的" type="text" id="visitAimE" class=" form-control  " placeholder="最多填写250个字" rows="3"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td style="vertical-align: top">计划方案</td>
+                <td colspan="3">
+                    <textarea name="计划方案" type="text" id="workPlanE" class=" form-control  " placeholder="最多填写250个字" rows="3"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td style="vertical-align: top">计划内容</td>
+                <td colspan="3">
+                    <textarea name="计划内容" type="text" id="workContentE" class=" form-control  " placeholder="最多填写250个字" rows="3"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>备注</td>
+                <td colspan="3">
+                    <input name="备注" type="text" id="notesE" class=" form-control" />
+                </td>
+            </tr>
+            <tr>
+                <td>提交时间</td>
+                <td colspan="3">
+                    <input name="提交时间" type="text" id="dataE" class=" form-control" value="@Model.提交时间.ToString("yyyy-MM-dd")" readonly />
+                </td>
+            </tr>
+        </table>
+    </form>
+    <script>
+        // 修改主表
+        function myFormE() {
+            // 判断表格中必填项是否为空
+            var status = false;
+            $("#myFormE .red").each(function (i, m) {
+
+                if (m.value == null || m.value == "") {
+                    return status = true;
+                }
+            })
+            if (status) {
+                alert("请先完善信息!");
+                return;
+            } else {
+                $.ajax({
+                    type: "post",
+                    data: $("#myFormE").serialize(),
+                    url: '@Url.Action("BusinessTripEdit", "BusinessTrip")',
+                    dataType: "json",
+                    cache: false,
+                    async: true,
+                    success: function (data) {
+                        if (data.success) {
+                            alert(data.msg + "，跳转至详情！");
+                            window.location.href="@Url.Action("BusinessTrip_DetailsView", "BusinessTrip")?id="+@Model.ID;
+
+                        } else {
+                            alert(data.msg);
+                        }
+                    },
+                    error: function (err) {
+                        alert("点击过快或网络错误，请稍后重试！")
+                    }
+
+
+                })
+            }
+        }
+        // 费用预估合计
+        function priceTotal() {
+            var fare = $("#fare").val();
+            var room = $("#room").val();
+            var eat = $("#eat").val();
+            var total = 0
+            total = parseFloat(fare) + parseFloat(room) + parseFloat(eat);
+            $(".total").val(total)
+
+        }
+    $(function () {
+       //获取省份数据
+        $.ajax({
+            type: "post",
+            data: {},
+            url: '@Url.Action( "GetProvince", "BusinessTrip")',
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                $.each(data, function(i, m) {
+                    $("#shengE").append("<option value=" + m + ">" + m + "</option>")
+                    $("#sheng").append("<option value=" + m + ">" + m + "</option>")
+
+                })
+
+            },
+            error: function (err) {
+                alert("点击过快或网络错误，请稍后重试！");;
+                console.log(err);
+            }
+
+        })
+        //根据选择的省份，获取市数据
+        $("#sheng").change(function () {
+            var province = $("#sheng").val();
+            $("#shi").empty();
+            $("#city").val("");
+            $("#cityText").text("");
+            $.ajax({
+                type: "post",
+                data: { province: province },
+                url: '@Url.Action("GetRgion", "BusinessTrip")',
+                dataType: "json",
+                cache: false,
+                async: true,
+                success: function (data) {
+                    $("#shi").append("<option value=''>-请选择-</option>");
+                    $.each(data, function(i, m) {
+                        $("#shi").append("<option value=" + m[1] + ">" + m[1]  + "</option>")
+
+                    })
+
+                },
+                error: function (err) {
+                    alert("点击过快或网络错误，请稍后重试！");;
+                    console.log(err);
+                }
+
+            })
+        })
+        //根据选择的省份，获取市数据
+        $("#shengE").change(function () {
+            var province = $("#shengE").val();
+            $("#shiE").empty();
+            $("#cityE").val("");
+            $("#cityTextE").text("");
+            $.ajax({
+                type: "post",
+                data: { province: province },
+                url: '@Url.Action("GetRgion", "BusinessTrip")',
+                dataType: "json",
+                cache: false,
+                async: true,
+                success: function (data) {
+                    $("#shiE").append("<option value=''>-请选择-</option>");
+                    $.each(data, function(i, m) {
+                        $("#shiE").append("<option value=" + m[1] + ">" + m[1] + "</option>");
+
+
+                    })
+
+                },
+                error: function (err) {
+                    alert("点击过快或网络错误，请稍后重试！");;
+                    console.log(err);
+                }
+
+            })
+        })
+        $("#shi").change(function () {
+            $("#city").val($("#sheng").val() + $("#shi").val());
+            $("#cityText").text($("#city").val());
+            sureRed();
+
+        })
+        $("#shiE").change(function () {
+            $("#cityE").val($("#shengE").val() + $("#shiE").val());
+            $("#cityTextE").text($("#cityE").val());
+            sureRed();
+        })
+        var mydata = '';
+        // 获取计划详情数据
+        $.ajax({
+                url: '@Url.Action("GetBusinessTrip_Details", "BusinessTrip")',
+                type: "post",
+                data: { id: @Model.ID, details:true },
+
+                dataType: "json",
+                cache: false,
+                async: true,
+                success: function (data) {
+                console.log(data)
+                if (data.length == 0) {
+                    return alert("计划详情没有数据")
+                }
+                     // 转换日期格式
+                    data.forEach(function (m, i )  {
+                        m.出差时间 = new Date(parseInt(m.出差时间.substr(6, 13))).toLocaleDateString();
+                    })
+
+                   // 赋值
+                    mydata = data;
+                    console.log(mydata)
+
+                    //添加到表格
+                    for (var i = 0; i <= mydata.length; i++) {
+                        //console.log(mydata)
+                        jQuery("#grid").jqGrid('addRowData', i + 1, mydata[i]);
+                    }
+
+                    },
+            error: function (err) {
+                alert("点击过快或网络错误，请稍后重试！");;
+                    console.log(err);
+                }
+
+            })
+
+
+        // 副表提交
+        jQuery("#grid").jqGrid({
+            url: "",
+            datatype: "local",
+            styleUI: 'Bootstrap',
+            mtype: "post",
+            colModel: [
+                { label: 'ID', name: 'ID', index: 'ID', key: true, sorttype: "int", width: 50, align: "center" },
+
+                { label: '日期', name: '出差时间', index: '日期', align: "center" },
+                { label: '城市', name: '城市', index: '城市', align: "center"},
+                { label: '经销商', name: '经销商', index: '经销商', sortable: false, align: "center" },
+                { label: '商场', name: '商场', index: '商场', sortable: false, align: "center" },
+                { label: '门店', name: '门店', index: '门店', sortable: false, align: "center" },
+                { label: '同行人', name: '同行人员', index: '同行人', sortable: false, align: "center" },
+                { label: '巡店目的', name: '巡店目的', index: '巡店目的', sortable: false, align: "center"},
+                { label: '计划方案', name: '计划方案', index: '计划方案', sortable: false, align: "center"},
+                { label: '计划内容', name: '计划内容', index: '计划内容', sortable: false, align: "center"},
+                { label: '备注', name: '备注', index: '备注', sortable: false, align: "center"},
+                { label: '修改',name: 'Edit', index: 'id', width: 80, align: "center" },
+                { label: '删除', name: 'Delete', index: 'id', sortable: false, align: "center" },
+                { label: '汇报', name: 'Report', index: 'id', sortable: false, align: "center" },
+
+            ],
+            caption: "出差行程计划展示",
+            loadonce: true,    //排序翻页等操作在服务端完成
+            //rowNum: 5,
+            //rowList: [5, 10, 20],  //设置分页下拉列表
+            pager: "#pager",
+            viewrecords: true,
+            width: 500, height: "auto",
+            jsonReader: { repeatitems: false }, //prmNames: { id: "No" },
+            sortorder: "asc",
+            sortname: "No",//传递给服务端的排序字段名
+            autowidth: true,
+            gridComplete: function () {  //在此事件中循环为每一行添加删除链接
+                var ids = jQuery("#grid").jqGrid('getDataIDs');
+
+                for (var i = 0; i < ids.length; i++) {
+
+                    var rowId = ids[i];
+                    // 通过当前行id获取所需ID
+                    var rowData = $("#grid").jqGrid('getRowData', rowId);
+                    var id = rowData.ID;
+                    //console.log(rowId)
+
+                    edit = "<span  class='Aspan' onclick='Edit(" + id + ","+rowId+ ")' >修改</span>";
+
+                    del = "<span  class='Aspan' onclick='Delete(" + id + "," + rowId + ")' >删除</span>";
+                    report = "<span  class='Aspan' onclick='Report(" + id + "," + rowId + ")' >汇报</span>";
+                    jQuery("#grid").jqGrid('setRowData', ids[i], { Edit: edit, Delete: del, Report: report});
+
+                }
+            }
+        });
+
+    });
+
+        //配置模态框  添加数据
+
+        $("#dialog-form").dialog({
+            autoOpen: false,
+            height: 600,
+            width: 960,
+            modal: true,
+            buttons: {
+
+                "取消": function () { $(this).dialog("close") },
+                "提交": function () {
+                    var setid = $(".setID").val();
+                    var Cdate = $.trim($("#Cdate").val());//日期
+                    var city = $.trim($("#city").val()); //城市
+                    var dealerName = $.trim($("#dealerName").val());//经销商名称
+                    var shopName = $.trim($("#shopName").val());//门店名称
+                    var storeName = $.trim($("#storeName").val());//商场名称
+                    var person = $.trim($("#person").val());//同行人
+                    var visitAim = $.trim($("#visitAim").val());//巡店目的
+                    var workPlan = $.trim($("#workPlan").val());//计划方案
+                    var workContent = $.trim($("#workContent").val());//计划内容
+                    var notes = $.trim($("#notes").val());//备注
+
+
+
+                    var params = {
+
+                        "出差记录ID": setid,
+                        "出差时间": Cdate,
+                        "城市": city,
+                        "经销商": dealerName,
+                        "门店": shopName,
+                        "商场": storeName,
+                        "同行人员": person,
+                        "巡店目的": visitAim,
+                        "计划方案": workPlan,
+                        "计划内容": workContent,
+                        "备注": notes,
+
+                    };
+                    //console.log(params)
+
+                    if ($("#city").val() == "" || $("#city").val() == null) {
+                        return alert("城市不能为空！")
+                    }
+                    if ($("#Cdate").val() == "" || $("#Cdate").val() == null) {
+                        return alert("出差时间不能为空！");
+                    }
+                    else {
+                        //提交模态框的数据
+                        $.ajax({
+                            url: '@Url.Action("BusinessTrip_DetailsAdd", "BusinessTrip")',
+                            type: "post",   //默认为get
+                            data: params,   //传递给服务端的数据
+                            dataType: "json",
+                            cache: false,
+                            success: function (data, textStatus) {
+                                //console.log(data)
+                                // 如果提交成功就显示在页面
+                                if (data.Success) {
+                                    var dataRow = {
+                                        "ID": data.businessid,
+                                        "出差记录ID": setid,
+                                        "出差时间": Cdate,
+                                        "城市": city,
+                                        "经销商": dealerName,
+                                        "门店": shopName,
+                                        "商场": storeName,
+                                        "同行人员": person,
+                                        "巡店目的": visitAim,
+                                        "计划方案": workPlan,
+                                        "计划内容": workContent,
+                                        "备注": notes,
+                                    };
+                                    console.log(dataRow)
+
+                                    $("#grid").jqGrid("addRowData", data.businessid, dataRow, "last");//没有选定行则添加在第一行
+
+                                    // 添加成功模态框关闭
+                                    $("#dialog-form").dialog("close");
+                                    alert("添加操作成功!");
+                                } else {
+                                    alert("添加操作失败!");
+                                    console.log(data.msg);
+                                }
+
+                            },
+                            error: function (err) {
+                                alert("点击过快或网络错误，请稍后重试！");;
+                                console.log(err);
+                            }
+
+                        });
+                    }
+
+                }
+            }
+    });
+
+
+    // 点击添加打开模态框
+    $("#create-user")
+        .button()
+        .click(function () {
+            $("#dialog-form").dialog("option", "title", "出差行程计划详细内容").dialog("open");
+        });
+
+    var rowID = '';
+    // 行编辑
+    function Edit(id, rowId) {
+        //console.log(id)
+        console.log(rowId)
+        $(".editID").val(id);//传给后端需要修改的ID
+        rowID = $("#rowID").val(rowId);//界面需要修改的ID
+
+        var model = $("#grid").jqGrid('getRowData', rowId);
+        //console.log(model)
+
+
+        // 修改模态框的值
+
+        $.trim($("#CdateE").val(model.出差时间));//日期
+        $.trim($("#cityE").val(model.城市)); //城市
+        $("#cityTextE").text(model.城市);
+        $.trim($("#dealerNameE").val(model.经销商))//经销商
+        $.trim($("#shopNameE").val(model.门店));//门店
+        $.trim($("#storeNameE").val(model.商场));//商场
+        $.trim($("#personE").val(model.同行人员));//同行人
+        $.trim($("#visitAimE").val(model.巡店目的));//巡店目的
+        $.trim($("#workPlanE").val(model.计划方案));//计划方案
+        $.trim($("#workContentE").val(model.计划内容));//计划内容
+        $.trim($("#notesE").val(model.备注));//备注
+
+
+        $("#editForm").dialog("option", "title", "修改出差行程计划详细内容").dialog("open");
+
+
+    };
+     // 行编辑模态框配置
+    $("#editForm").dialog({
+        autoOpen: false,
+        height: 600,
+        width: 960,
+        modal: true,
+        buttons: {
+
+            "取消": function () { $(this).dialog("close") },
+            "提交": function () {
+
+                $(".dealerNameVal").val($.trim($("#dealerNameE").find(".active").text()));// 经销商名称
+                $(".shopNameVal").val($.trim($("#shopNameE").find(".active").text()));//门店名称
+                $(".storeNameVal").val($.trim($("#storeNameE").find(".active").text()));//商场名称
+                // 提交编辑
+                $.ajax({
+                url: "@Url.Action("BusinessTrip_DetailsEdit", "BusinessTrip")",
+                type: "post",
+                data: $("#editForm").serialize(),
+                dataType: 'json',
+                cache: false,
+                error: function (textStatus, errorThrown) { alert("交互错误" + JSON.stringify(textStatus)); },
+                success: function (data) {
+                    if (data.success) {
+                        console.log(data)
+                        //页面修改数据
+                        //var selectedId = $("#grid").jqGrid("getGridParam", "selrow");
+                        $(data.data).each(function(i, m) {
+                            // 转换日期格式
+                            m.出差时间 = new Date(parseInt(m.出差时间.substr(6, 13))).toLocaleDateString();
+                        })
+                        var dataRow = data.data;
+                        var selectedId = rowID.val();
+                        // 修改成功模态框关闭
+                        $("#grid").jqGrid('setRowData', selectedId, dataRow, { color: "" });
+                        $("#editForm").dialog("close");
+                        alert("修改成功！");
+                        console.log(data.msg);
+
+
+                    } else {
+                        alert("修改失败！");
+                        console.log(data.msg);
+                    }
+                }
+            });
+                //$("#editForm").submit();
+            }
+        }
+    });
+
+    // 行删除
+    function Delete(id,rowId) {
+        //console.log(id)
+        //console.log(rowId)
+            if (confirm("确定删除当前数据?")) {
+                $.ajax({
+                url: "@Url.Action("BusinessTrip_DetailsDel", "BusinessTrip")",
+                type: "get",
+                data: { id: id },
+                dataType: 'json',
+                cache: false,
+                error: function (textStatus, errorThrown) { alert("交互错误" + JSON.stringify(textStatus)); },
+                success: function (data) {
+
+                    if (data.success) {
+                        $("#grid").jqGrid("delRowData", rowId);
+
+                        alert(data.msg);
+
+                    } else {
+                        alert("删除失败！");
+                        console.log(data.msg);
+                    }
+                }
+            });
+            }
+    };
+
+    //汇报
+
+    function Report(id, rowId) {
+        // console.log(id)
+        //console.log(rowId)
+
+       window.location.href = '@Url.Action("BusinessTrip_ReportAddView", "BusinessTrip")?tripID=' + @Model.ID+'&detailsID=' + id;
+
+
+    }
+
+    </script>
+}
+else
+{
+    {
+        ViewBag.Title = "出差记录详情";
+
+    }
+    <style>
+        .table tbody tr td:nth-child(2n-1) {
+            width: auto !important;
+        }
+    </style>
+    <h3>出差记录详情</h3>
+    @Html.ActionLink("修改出差记录/添加汇报", "BusinessTrip_DetailsView", "BusinessTrip", new { id = Model.ID, isEdit = true }, new { style = "margin-left:2.5%;" })
+    <input type="button" onclick="exl()" value="导出PDF" style = "margin-left:2.5%;"/>
+    <table class="table table-bordered table-hover table-striped Tabwidth-auto pDF-Tab" style="margin-bottom:1px;" id="Table">
+        <tr>
+            <td class="bold">出差人</td>
+            <td colspan="11">@Model.出差人姓名</td>
+        </tr>
+        <tr>
+            <td class="bold">部门</td>
+            <td colspan="11">@Model.部门</td>
+        </tr>
+        <tr>
+            <td colspan="12" style="position:relative;">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 start-date">
+                    <span class="bold">开始日期</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="date">@Model.开始时间.ToString("d")</span>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <span class="bold">结束日期</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>@Model.结束时间.ToString("d")</span>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">关联审核人</td>
+            <td colspan="11">@Model.关联审核人</td>
+        </tr>
+        <tr>
+            <td class="bold">出差内容</td>
+            <td colspan="11">@Model.出差内容</td>
+        </tr>
+        <tr>
+            <td class="bold">备注</td>
+            <td colspan="11">@Model.备注</td>
+        </tr>
+        <tr>
+            <td class="bold" rowspan="3">费用预估</td>
+        </tr>
+        <tr>
+            <td class="bold">车船费预计</td>
+            <td colspan="3">@Model.车船费预计</td>
+            <td class="bold">住宿费预计</td>
+            <td colspan="3">@Model.住宿费预计</td>
+            <td class="bold">餐补费预计</td>
+            <td colspan="3">@Model.餐补费预计</td>
+        </tr>
+        <tr>
+            <td class="bold">合计</td>
+            <td colspan="10">@Model.合计</td>
+        </tr>
+        <tr>
+            <td class="bold">审核状态</td>
+            <td colspan="11">
+                @if (Model.审核状态 == true)
+                {
+                    <span>通过</span>
+                }
+                else if (Model.审核状态 == false)
+                {
+                    <span>驳回</span>
+                }
+                else
+                {
+                    <span>未审核</span>
+                }
+            </td>
+        </tr>
+        @*计划详情表*@
+        <tr>
+            <td colspan="12" class="text-center bold">计划详情</td>
+        </tr>
+        <tr>
+            <td colspan="12" class="text-center bold">
+
+                @Html.Action("AddBusinessTrip_DetailsView", "BusinessTrip", new { id=Model.ID})
+            </td>
+        </tr>
+        <tr class="text-center" id="planDetail-tab">
+            <td>ID</td>
+            <td>日期</td>
+            <td>城市</td>
+            <td>经销商</td>
+            <td>商场</td>
+            <td>门店</td>
+            <td>同行人</td>
+            <td>巡店目的</td>
+            <td>计划方案</td>
+            <td>计划内容</td>
+            <td>备注</td>
+            <td>提交时间</td>
+        </tr>
+        <tr><td colspan="12" class="text-center bold">汇报详情</td></tr>
+        <tr class="text-center" id="rport-tab">
+            <td>出差计划关联ID</td>
+            <td>巡店开始时间</td>
+            <td>巡店结束时间</td>
+            <td>工作成果</td>
+            <td>实际遇到的问题</td>
+            <td>解决的方案</td>
+            <td>需要的协助</td>
+            <td>预计完成时间</td>
+            <td>备注</td>
+            <td>提交时间</td>
+            <td>更新时间</td>
+            <td>是否为新增项</td>
+        </tr>
+
+    </table>
+   
+    
+
+
+    if (Model.审核状态 == true) { 
+    <div style="text-align:center;">
+        @Html.ActionLink("报销", "ApplyTravelReimbursementView", "Reimbursement", new { id = Model.ID, reimbursementType = "出差" }, new { @class = "btn btn-success" })
+
+    </div>
+    }
+    else {
+            <div class="text-center " style="margin-top:10px;">
+                <input type = "button" name="" value="报销" class = "btn" disabled/><span class="orange">未审核不能报销</span>
+            </div>
+        }
+    <script>
+    //获取计划详情数据
+     $.ajax({
+        url: '@Url.Action("GetBusinessTrip_Details", "BusinessTrip")',
+        type: "post",
+        data: {id:@Model.ID},
+        dataType: "json",
+        cache: false,
+        async: true,
+         success: function (data) {
+            //console.log(data)
+            var detailTab = '';
+            $.each(data, function(i, m) {
+                // 转换日期格式
+                m.提交时间 = new Date(parseInt(m.提交时间.substr(6, 19))).toLocaleDateString();
+                m.出差时间 = new Date(parseInt(m.出差时间.substr(6, 19))).toLocaleDateString();
+                detailTab += "<tr ><td>" + m.ID + "</td><td>" + m.出差时间 + "</td><td>" + m.城市 + "</td><td>"
+                    + m.经销商 + "</td><td>" + m.商场 + "</td><td>" + m.门店 + "</td><td>" + m.同行人员+ "</td><td>"
+                    + m.巡店目的 + "</td><td>" + m.计划方案 + "</td><td>" + m.计划内容 + "</td><td>" + m.备注 + "</td><td>" + m.提交时间 + "</td></tr>";
+            })
+             $("#planDetail-tab").after(detailTab);
+             clearNull($("#Table td"));
+        },
+        error: function (err) {
+            alert("点击过快或网络异常！");
+            console.log(err);
+        }
+
+    })
+    //获取汇报详情数据
+     $.ajax({
+        url: '@Url.Action("BusinessTrip_RportList", "BusinessTrip")',
+        type: "post",
+         data: { tripID:@Model.ID},
+        dataType: "json",
+        cache: false,
+        async: true,
+         success: function (data) {
+            // console.log(data)
+            var detailTab = '';
+            $.each(data, function(i, m) {
+                // 转换日期格式  	   	 提交时间
+                if (m.巡店开始时间!=null) {
+                    m.巡店开始时间 = new Date(parseInt(m.巡店开始时间.substr(6, 19))).toLocaleString();
+                }
+                if (m.巡店结束时间 != null) {
+                    m.巡店结束时间 = new Date(parseInt(m.巡店结束时间.substr(6, 19))).toLocaleString();
+                }
+                if (m.提交时间 != null) {
+                    m.提交时间 = new Date(parseInt(m.提交时间.substr(6, 19))).toLocaleDateString();
+                }
+                if (m.更新时间 != null) {
+                    m.更新时间 = new Date(parseInt(m.更新时间.substr(6, 19))).toLocaleDateString();
+                }
+                if (m.预计完成时间 != null) {
+                    m.预计完成时间 = new Date(parseInt(m.预计完成时间.substr(6, 19))).toLocaleDateString();
+                }
+              
+               
+                detailTab += "<tr><td>" + m.出差关联计划项ID + "</td><td>" + m.巡店开始时间 + "</td><td>"
+                    + m.巡店结束时间 + "</td><td>" + m.工作成果 + "</td><td>" + m.实际遇到的问题 + "</td><td>" + m.解决的方案+ "</td><td>"
+                    + m.需要的协助 + "</td><td>" + m.预计完成时间 + "</td><td>" + m.备注 + "</td><td>" + m.提交时间 + "</td><td>" + m.更新时间 + "</td><td class='text-center'>" + m.是否为新增项 + "</td></tr>";
+            })
+             $("#rport-tab").after(detailTab);
+             clearNull($("#Table td"));
+        },
+        error: function (err) {
+            alert("点击过快或网络异常！");
+            console.log(err);
+        }
+
+        })
+       
+        function exl() {
+            str = "@Model.部门-@Model.出差人姓名-出差详情表";
+            makeMpdf(str);
+        }
+    </script>
+}
+
+

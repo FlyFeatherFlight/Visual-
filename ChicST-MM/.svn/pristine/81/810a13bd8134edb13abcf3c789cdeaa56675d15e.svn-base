@@ -1,0 +1,434 @@
+﻿@model ChicST_MM.WEB.Models.Development_FranchiserViewModel
+
+@{
+    ViewBag.Title = "添加经销商";
+}
+<style>
+    .table tbody tr td:nth-child(2n-1) {
+        text-align: center;
+        width: auto;
+    }
+</style>
+<h3>添加经销商</h3>
+<form id="add-diolog" style="position:relative;margin-top:10px;">
+    <div class="mask hidden"></div>
+    <table class="table table-bordered table-hover table-striped">
+
+        <tr>
+            <td>城市</td>
+            <td style="width:37%;">
+                <select class="search-input" id="shengA">
+                    <option>-请选择省-</option>
+                </select>
+                <select class="search-input red" id="shiA" name="城市ID">
+                    <option>-请选择市-</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>城市等级</td>
+            <td style="width:37%;">
+                <input id="level" type="text" class="form-control red" name="城市等级" autocomplete="off" readonly />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>企业名称</td>
+            <td colspan="3">
+                <input type="text" class="form-control red" name="企业名称" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td>地址</td>
+            <td>
+                <input type="text" class="form-control" name="地址" />
+            </td>
+            <td>匹配度</td>
+            <td>
+                <select class="form-control red" name="匹配度">
+                    <option value="高">高</option>
+                    <option value="中">中</option>
+                    <option value="低">低</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>社会资源描述</td>
+            <td colspan="3">
+                <textarea class="form-control" name="社会资源描述"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>代理品牌</td>
+            <td>
+                <input type="text" class="form-control red" name="代理品牌" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>是否有现代品牌</td>
+            <td>
+                <select class="form-control red" name="是否现代品牌">
+                    <option value=true>是</option>
+                    <option value=false>否</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>经营年限</td>
+            <td>
+                <input type="text" class="form-control" name="经营年限" />
+            </td>
+            <td>年销售额(万元) </td>
+            <td>
+                <input id="YmoneyVal" type="text" class="form-control red" name="" onkeyup="value=value.replace(/[^\d.]/g,'')"
+                       oninput="moneyVal()" placeholder="请输入数字" />
+                <input type="text" name="年销售额" value="" id="Ymoney" class="hidden"/>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>团队人数</td>
+            <td>
+                <input type="text" class="form-control" name="团队人数" onkeyup="value=value.replace(/[^\d]/g,'')"
+                       onblur="value=value.replace(/[^\d]/g,'')" placeholder="请输入数字"/>
+               
+            </td>
+            <td>入驻商场</td>
+            <td>
+                <input type="text" class="form-control " name="入驻商场" />
+            </td>
+        </tr>
+        <tr>
+            <td>门店数量</td>
+            <td>
+                <input type="text" class="form-control red" name="门店数量" onkeyup="value=value.replace(/[^\d]/g,'')"
+                       onblur="value=value.replace(/[^\d]/g,'')" placeholder="请输入数字"/>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>投资预算(元/平方)</td>
+            <td>
+                <input type="text" class="form-control" name="投资预算" onkeyup="value=value.replace(/[^\d.]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字"/>
+               
+            </td>
+        </tr>
+        <tr>
+            <td>意向商场</td>
+            <td>
+                <select class="form-control" name="意向商场ID" id="delearMarket"></select>
+               
+            </td>
+            <td>商场等级</td>
+            <td>
+                <input type="text" name="商场等级" class="form-control" id="market-level" readonly />
+               
+            </td>
+        </tr>
+        <tr>
+            <td>预算面积</td>
+            <td>
+                <input type="text" class="form-control" name="预算面积" />
+            </td>
+            <td>意向位置分级</td>
+            <td>
+                <select class="form-control" name="意向位置分级">
+                    <option value="">-请选择等级-</option>
+                    <option value="A+">A+</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                </select>
+            </td>
+        </tr>
+        @*<tr>
+            <td>理念描述</td>
+            <td colspan="3">
+                <textarea rows="3" class="form-control" name="理念描述"></textarea>
+            </td>
+        </tr>*@
+        <tr>
+            <td>盈利情况</td>
+            <td colspan="3">
+                <textarea rows="3" class="form-control" name="盈利情况"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>备注</td>
+            <td colspan="3">
+                <input type="text" class="form-control" name="备注" />
+            </td>
+        </tr>
+    </table>
+    <div class="submit-btns" style="margin-top:10px;">
+        <input type="button" value="下一步" onclick="submitForm()">
+    </div>
+</form>
+<hr />
+<form id="yearForm" class="hidden">
+    <input type="text" name="经销商档案ID" value="" id="YearID" class="hidden" />
+    <table class="table table-bordered text-center" id="Table">
+        <thead>
+            <tr>
+                <th>姓名</th>
+                <th>性别</th>
+                <th>年龄</th>
+                <th>职务</th>
+                <th>联系方式</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <div style="margin-left:2.5%;">
+        <input type="button" name="" class="btn btn-primary width-7" value="添加" onclick="addYear()" />
+        &nbsp;&nbsp;
+        <input type="button" value="提交" class="btn btn-danger width-7" onclick="YearForm()">
+    </div>
+</form>
+<script>
+    function moneyVal() {
+        var money = $("#YmoneyVal").val() * 10000;
+        $("#Ymoney").val(money);
+    }
+    //经销商详细内容提交
+     function submitForm() {
+         var reds = $("#add-diolog .red"),
+             status = false;
+         $(reds).each(function (i, m) {
+             //console.log(m.value);
+             if (m.value == "" || m.value == null) {
+                 return status = true;
+             }
+         })
+         if (status) {
+             alert("必填项不能为空！");
+         } else {
+            
+              $.ajax({
+                 type: "post",
+                 data: $("#add-diolog").serialize(),
+                 url: '@Url.Action("FranchiserAdd", "DevelopmentDoc")',
+                 dataType: "json",
+                 cache: false,
+                 async: true,
+                 success: function (data) {
+                     //console.log(data)
+                     if (data.success) {
+                         $("#YearID").val(data.data.ID);
+                         $("#add-diolog .mask").removeClass("hidden");
+                         if (confirm(data.msg + "，是否继续添加联系人？")) {
+                             $("#yearForm").removeClass("hidden");
+                         } else {
+                              alert(data.msg + "跳转至查询列表");
+                              window.location.href = "@Url.Action("FranchiserView", "DevelopmentDoc")";
+                         }
+                       
+                        
+                     } else {
+                         alert(data.msg);
+                     }
+
+                 },
+                 error: function (err) {
+                     alert("点击过快或网络错误，请稍后重试！");
+                     console.log(err);
+                 }
+
+             })
+         }
+    }
+    function addYear() {
+        var tr = `
+            <tr>
+            <td>
+                <input type="text" name="" class="form-control"  value=""  />
+            </td>
+            <td>
+               <select class="form-control">
+                    <option value="男">男</option>
+                    <option value="女">女</option>
+                </select>
+            </td>
+            <td>
+                <input type="text" name="" class="form-control"  value=""  />
+            </td>
+            <td>
+                <input type="text" name="" class="form-control"  value="" />
+            </td>
+            <td>
+                <input type="text" name="" class="form-control"  value="" onkeyup="numCheck(this)"
+                       onblur="numCheck(this)" placeholder="请输入数字"/>
+            </td>
+            <td><span class="Aspan" onclick="Del(this)">删除</span></td>
+        </tr>`;
+        $("#yearForm .table tbody").append(tr);
+
+    }
+    function Del(_this) {
+        $(_this).parent().parent().remove();
+    }
+    function YearForm() {
+        var trs = document.getElementById("Table"),
+            datas = [];
+
+        for (var i = 1; i < trs.rows.length; i++) {
+
+            var objDate = {
+                "经销商档案ID": $("#YearID").val(),
+                "姓名": trs.rows[i].cells[0].getElementsByTagName("input")[0].value,
+                "性别": trs.rows[i].cells[1].getElementsByTagName("select")[0].value,
+                "年龄": trs.rows[i].cells[2].getElementsByTagName("input")[0].value,
+                "职务": trs.rows[i].cells[3].getElementsByTagName("input")[0].value,
+                "联系方式": trs.rows[i].cells[4].getElementsByTagName("input")[0].value,
+            }
+            datas.push(objDate);
+
+        }
+        //console.log(datas)
+
+        $.ajax({
+            type: "post",
+            data: { lis: JSON.stringify(datas) },
+            url: '@Url.Action("FranchiserContactsAdd", "DevelopmentDoc")',
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                if (data.success) {
+                    alert(data.msg + "跳转至查询列表");
+                    window.location.href = "@Url.Action("FranchiserView", "DevelopmentDoc")";
+                } else {
+                    alert(data.msg);
+                }
+                //console.log(data);
+            },
+            error: function (err) {
+                alert("点击过快或网络错误，请稍后重试！");
+                console.log(err);
+            }
+
+        })
+    }
+
+      //获取省份数据
+    $.ajax({
+        type: "post",
+        data: {},
+        url: '@Url.Action("GetProvince", "DevelopmentDoc")',
+        dataType: "json",
+        cache: false,
+        async: true,
+        success: function (data) {
+            $.each(data, function(i, m) {
+                $("#shengA").append("<option value=" + m + ">" + m + "</option>");
+            })
+
+        },
+        error: function (err) {
+            alert("点击过快或网络错误，请稍后重试！");
+            console.log(err);
+        }
+    })
+    /***添加***/
+    $("#shengA").change(function () {
+        $("#market-level").val("");
+        $("#shiA").empty();
+        getShi($("#shengA").val(), $("#shiA"));
+    })
+    //根据当前选择的城市加载商场下拉框 并给城市等级赋值
+    $("#shiA").change(function () {
+        $("#delearMarket").empty();
+        getMarket($("#delearMarket"), $("#shiA").val());
+        //为城市分级赋值
+        //调用选中文本
+        activeText($("#shiA"));
+        var level = $("#shiA").find("option.active").data("level");
+        $("#level").val(level);
+
+    })
+    //添加 商场改变修改商场等级
+    $("#delearMarket").change(function () {
+        //调用选中文本
+        activeText($("#delearMarket"));
+        //为商场等级赋值
+        var level = $("#delearMarket").find("option.active").data("level");
+        $("#market-level").val(level);
+    })
+     //获取市
+    function getShi(province, shi ) {
+         $.ajax({
+                type: "post",
+                data: { province: province },
+                url: '@Url.Action("GetRgion", "DevelopmentDoc")',
+                dataType: "json",
+                cache: false,
+                async: true,
+             success: function (data) {
+                    //console.log(data)
+                 shi.append("<option value='' class='active'> -请选择- </option>");
+                    $.each(data, function(i, m) {
+                        $.each(m, function (n, d) {
+                            shi.append("<option data-level='" + d.Level+"' value='" + d.ID + "'>" + d.City + "</option>")
+                        })
+                    })
+                },
+                error: function (err) {
+                    alert("点击过快或网络错误，请稍后重试！");
+                    console.log(err);
+                }
+
+            })
+    }
+    //获取商场
+    function getMarket(market,id){
+         $.ajax({
+                type: "post",
+                data: { cid: id },
+                url: '@Url.Action("GetMarket", "DevelopmentDoc")',
+                dataType: "json",
+                cache: false,
+                async: true,
+             success: function (data) {
+                 //console.log(data)
+                 market.append("<option value='' class='active' data-level=''>-请选择商场-</option>")
+                    $.each(data, function(i, m) {
+                        $.each(m, function (n, d) {
+                            market.append("<option value='" + d.ID + "' data-level='" + d.Level + "'>" + d.Name + "</option>")
+                        })
+                    })
+                },
+                error: function (err) {
+                    alert("点击过快或网络错误，请稍后重试！");
+                    console.log(err);
+                }
+
+            })
+    }
+
+    // 获取选中时的文本 添加.active
+    function activeText(Jopts) {
+
+            var value = Jopts.val();//这个值就是你获取的值;
+            if (value != "") {
+                for (var i = 0; i < Jopts.find("option").length; i++) {
+                    if (value == Jopts.find("option")[i].value) {
+
+                        if ($(Jopts.find("option")[i]).hasClass("active")) {
+                            return;
+                        } else {
+                            $(Jopts.find("option")[i]).siblings().removeClass("active")
+                            $(Jopts.find("option")[i]).addClass("active");
+
+                        }
+                        break;
+                    }
+                }
+            }
+
+    }
+</script>

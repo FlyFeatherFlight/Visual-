@@ -1,0 +1,352 @@
+﻿@model ChicST_MM.WEB.Models.Development_CompetesViewModel
+
+@{
+    ViewBag.Title = "竞品添加";
+}
+
+<h3>竞品添加</h3>
+
+<form id="add-diolog" style="position:relative;">
+    <div class="mask hidden"></div>
+    <table class="table table-bordered table-hover table-striped" style="width:95%;margin:0px auto;">
+        <tr>
+            <td>城市</td>
+            <td style="width: 40%;">
+                <select class=" search-input" id="shengA">
+                    <option value="">-请选择省-</option>
+                </select>
+                <select class="search-input red" id="shiA" name="城市ID"></select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>商场</td>
+            <td>
+                <select id="market" class="form-control red" name="商场ID"></select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>楼层</td>
+            <td>
+                <select class="form-control red" name="楼层">
+                    <option value="">-请选择-</option>
+                    <option value="B2F">B2F</option>
+                    <option value="B1F">B1F</option>
+                    <option value="1F">1F</option>
+                    <option value="2F">2F</option>
+                    <option value="3F">3F</option>
+                    <option value="4F">4F</option>
+                    <option value="5F">5F</option>
+                    <option value="6F">6F</option>
+                    <option value="其他">其他</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>经营形态</td>
+            <td>
+                <select class="form-control red" name="经营形态">
+                    <option value="">-请选择-</option>
+                    <option value="自营">自营</option>
+                    <option value="经销">经销</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>位置</td>
+            <td>
+                <input type="text" class="form-control red" name="位置" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>面积</td>
+            <td>
+                <input type="text" class="form-control red" name="面积" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+
+        <tr>
+            <td>入驻日期</td>
+            <td>
+                <input type="text" class="form-control dateTime red" name="入住日期" placeholder="请选择日期" readonly/>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>经销商</td>
+            <td>
+                <select id="dealer" class="form-control red" name="经销商ID"></select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>月店面客流</td>
+            <td>
+                <input type="text" name="月店面客流" value="" class="form-control" />
+            </td>
+            <td>形象</td>
+            <td>
+                <input type="text" name="形象" value="" class="form-control" />
+            </td>
+        </tr>
+        <tr>
+
+            <td>折扣</td>
+            <td colspan="3">
+                <input type="text" name="折扣" value="" class="form-control" />
+            </td>
+        </tr>
+        <tr>
+            <td>备注</td>
+            <td colspan="3">
+                <input type="text" name="备注" value="" class="form-control" />
+            </td>
+        </tr>
+    </table>
+    <div class="submit-btns" style="margin-top:10px;">
+        <input type="button" value="下一步"  onclick="submitForm()">
+    </div>
+</form>
+<form id="yearForm" class="hidden">
+    <input type="text" name="竞品档案ID" value="" id="YearID" class="hidden" />
+    <table class="table table-bordered text-center" id="Table">
+        <thead>
+            <tr>
+                <th style="width: 30%;" >销售年</th>
+                <th style="width: 30%;">销售月</th>
+                <th style="width: 30%;">销售额(元)</th>
+                <th class="text-center" style="width: 10%;" >操作</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div style="margin-left:2.5%;">
+        <input type="button" name="" class="btn btn-primary width-7" value="添加" onclick="addYear()" />
+        &nbsp;&nbsp;
+        <input type="button" value="提交" class="btn btn-danger width-7" onclick="YearForm()">
+    </div>
+</form>
+<script>
+    function submitForm() {
+        var reds = $("#add-diolog .red"),
+            status = false;
+        $(reds).each(function (i, m) {
+            //console.log(m.value);
+            if (m.value == "" || m.value == null) {
+                return status = true;
+            }
+        })
+        if (status) {
+            alert("必填项不能为空！");
+        } else {
+            $.ajax({
+                type: "post",
+                data: $("#add-diolog").serialize(),
+                url: '@Url.Action("CompetesAdd", "DevelopmentDoc")',
+                dataType: "json",
+                cache: false,
+                async: true,
+                success: function (data) {
+                    //console.log(data)
+                    if (data.success) {
+                        $("#YearID").val(data.data.ID);
+                        $("#add-diolog .mask").removeClass("hidden");
+                        if (confirm(data.msg + "，是否继续填写月销售额？")) {
+                            $("#yearForm").removeClass("hidden");
+                        } else {
+                            window.location.href = "@Url.Action("CompetesView", "DevelopmentDoc")";
+                        }
+                    } else {
+                        alert(data.msg);
+                    }
+                },
+                error: function (err) {
+                    alert("点击过快或网络错误，请稍后重试！");;
+                    console.log(err);
+                }
+
+            })
+        }
+    }
+    function addYear() {
+        var tr = `
+            <tr>
+            <td>
+                <input type="text" name="" class="form-control year"  value="" placeholder="请选择年份" readonly />
+            </td>
+            <td>
+                 <select value="" class="form-control">
+                    <option value="1">1月</option>
+                    <option value="2">2月</option>
+                    <option value="3">3月</option>
+                    <option value="4">4月</option>
+                    <option value="5">5月</option>
+                    <option value="6">6月</option>
+                    <option value="7">7月</option>
+                    <option value="8">8月</option>
+                    <option value="9">9月</option>
+                    <option value="10">10月</option>
+                    <option value="11">11月</option>
+                    <option value="12">12月</option>
+                </select>
+            </td>
+            <td>
+                <input type="text" name="" class="form-control"  value="" onkeyup="numCheck(this)"
+                       onblur="numCheck(this)" placeholder="请输入数字"/>
+            </td>
+            <td><span class="Aspan" onclick="Del(this)">删除</span></td>
+        </tr>`;
+        $("#yearForm .table tbody").append(tr);
+        Year();
+    
+    }
+   
+    function Del(_this) {
+        $(_this).parent().parent().remove();
+    }
+    function YearForm(){
+        var trs = document.getElementById("Table"),
+            datas = [];
+       
+        for (var i = 1; i < trs.rows.length;i++) {
+
+            var objDate = {
+                "竞品档案ID": $("#YearID").val(),
+                "销售年": trs.rows[i].cells[0].getElementsByTagName("input")[0].value,
+                "销售月": trs.rows[i].cells[1].getElementsByTagName("select")[0].value,
+                "销售额": trs.rows[i].cells[2].getElementsByTagName("input")[0].value,
+            }
+            datas.push(objDate);
+            
+        }
+        //console.log(datas)
+         //获取省份数据
+    $.ajax({
+        type: "post",
+        data: { lis:JSON.stringify(datas)},
+        url: '@Url.Action("CometesAnnualSalesAdd", "DevelopmentDoc")',
+        dataType: "json",
+        cache: false,
+        async: true,
+        success: function (data) {
+            if (data.success) {
+                alert(data.msg+"跳转至查询列表");
+                window.location.href = "@Url.Action("CompetesView", "DevelopmentDoc")";
+            } else {
+                alert(data.msg);
+            }
+            //console.log(data);
+        },
+        error: function (err) {
+            alert("点击过快或网络错误，请稍后重试！");;
+            console.log(err);
+        }
+
+    })
+        }
+     //获取省份数据
+    $.ajax({
+        type: "post",
+        data: {},
+        url: '@Url.Action("GetProvince", "DevelopmentDoc")',
+        dataType: "json",
+        cache: false,
+        async: true,
+        success: function (data) {
+            $.each(data, function(i, m) {
+                $("#shengA").append("<option value=" + m + ">" + m + "</option>");
+            })
+
+        },
+        error: function (err) {
+            alert("点击过快或网络错误，请稍后重试！");;
+            console.log(err);
+        }
+
+    })
+    /***添加***/
+    $("#shengA").change(function () {
+        $("#shiA").empty();
+        getShi($("#shengA").val(), $("#shiA"));
+    })
+    //根据当前选择的城市加载商场下拉框 并给城市等级赋值
+    $("#shiA").change(function () {
+        $("#market").empty();
+        $("#dealer").empty();
+        getMarket($("#market"), $("#shiA").val());
+        getDealer($("#dealer"), $("#shiA").val());
+    })
+     //获取市
+    function getShi(province, shi ) {
+         $.ajax({
+                type: "post",
+                data: { province: province },
+                url: '@Url.Action("GetRgion", "DevelopmentDoc")',
+                dataType: "json",
+                cache: false,
+                async: true,
+                success: function (data) {
+                    //console.log(data)
+                 shi.append("<option value='' class='active'> -请选择- </option>");
+                    $.each(data, function(i, m) {
+                        $.each(m, function (n, d) {
+                            shi.append("<option data-level='" + d.Level+"' value='" + d.ID + "'>" + d.City + "</option>")
+                        })
+                    })
+                },
+                error: function (err) {
+                    alert("点击过快或网络错误，请稍后重试！");;
+                    console.log(err);
+                }
+
+            })
+    }
+
+ //获取商场
+    function getMarket(market,id){
+         $.ajax({
+                type: "post",
+                data: { cid: id },
+                url: '@Url.Action("GetMarket", "DevelopmentDoc")',
+                dataType: "json",
+                cache: false,
+                async: true,
+             success: function (data) {
+                 //console.log(data)
+                 market.append("<option value='' class='active'>-请选择商场-</option>")
+                    $.each(data, function(i, m) {
+                        $.each(m, function (n, d) {
+                            market.append("<option value='" + d.ID + "' data-level='" + d.Level + "'>" + d.Name + "</option>")
+                        })
+                    })
+                },
+                error: function (err) {
+                    alert("点击过快或网络错误，请稍后重试！");;
+                    console.log(err);
+                }
+
+            })
+    }
+    //获取经销商
+    function getDealer(dealer,id){
+         $.ajax({
+            type: "post",
+            data: { cid: id },
+            url: '@Url.Action("GetFranchiser", "DevelopmentDoc")',
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                //console.log(data)
+                dealer.append("<option value='' class='active'>-请选择经销商-</option>")
+                $.each(data, function(i, m) {
+                    $.each(m, function (n, d) {
+                        dealer.append("<option value='" + d.ID + "' >" + d.Name + "</option>")
+                    })
+                })
+            },
+            error: function (err) {
+                alert("点击过快或网络错误，请稍后重试！");;
+                console.log(err);
+            }
+
+        })
+    }
+</script>

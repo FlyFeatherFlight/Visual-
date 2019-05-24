@@ -1,0 +1,62 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.Development_MarketContactViewModel>
+@{ 
+    Layout = null;
+}
+<style>
+    .table tbody tr td:nth-child(2n-1) {
+        text-align: center;
+        width: auto;
+    }
+</style>
+<table class="table table-bordered " style="font-size:12px;">
+    <tr>
+        <td>
+            @Html.DisplayNameFor(model => model.联系人)
+        </td>
+        <td>
+            @Html.DisplayNameFor(model => model.职务)
+        </td>
+        <td>
+            @Html.DisplayNameFor(model => model.联系方式)
+        </td>
+        <td>
+            @Html.DisplayNameFor(model => model.性别)
+        </td>
+        <td>操作</td>
+    </tr>
+
+@if (Model.Count() > 0)
+{
+    foreach (var item in Model)
+    {
+        <tr>
+            <td class="shopId hidden">
+                @Html.DisplayFor(modelItem => item.商场ID)
+            </td>
+            <td class="Id hidden">
+                @Html.DisplayFor(modelItem => item.ID)
+            </td>
+            <td class="linkMan">
+                @Html.DisplayFor(modelItem => item.联系人)
+            </td>
+            <td class="duty">
+                @Html.DisplayFor(modelItem => item.职务)
+            </td>
+            <td class="phone">
+                @Html.DisplayFor(modelItem => item.联系方式)
+            </td>
+            <td class="gender">
+                @Html.DisplayFor(modelItem => item.性别)
+            </td>
+            <td>
+                <span class="Aspan" onclick="EditLinkMan(this)">修改</span>
+                <span class="Aspan" onclick="DelLinkMan(this)">删除</span>
+            </td>
+        </tr>
+    }
+}
+else {
+    <tr>
+        <td colspan="5">暂无数据！</td>
+    </tr>
+}</table>

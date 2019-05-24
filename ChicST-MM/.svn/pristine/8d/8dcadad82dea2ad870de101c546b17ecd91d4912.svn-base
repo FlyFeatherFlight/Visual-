@@ -1,0 +1,263 @@
+﻿@model ChicST_MM.WEB.Models.BusinessTrip_ReportViewModel
+@{
+    ViewBag.Title = "邮件发送";
+}
+<link href="~/Content/StyleSheet2.css" rel="stylesheet" />
+<h3>邮件发送</h3>
+<span class="orange" style="margin-left:2.5%;">温馨提示：红色字体为没有录入邮箱的员工</span>
+<table class="table table-bordered">
+
+    <tr>
+        <td rowspan="2">收件人地址</td>
+        <td colspan="4" id="receiver">
+            <span>公司员工邮箱信息：</span>
+            <span class="loading loadingR">正在加载</span>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="4">
+            <textarea class="form-control" id="recipients" readonly autocomplete="off" rows="2" style='color:#0094ff !important;'></textarea>
+        </td>
+    </tr>
+    <tr>
+        <td rowspan="2">抄送人</td>
+        <td colspan="4" id="copy">
+            <span>公司员工邮箱信息：</span>
+            <span class="loading loadingC">正在加载</span>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="4">
+            <textarea name="" value="" class="form-control" id="copyText" readonly autocomplete="off" rows="2" style='color:#0094ff !important;'></textarea>
+        </td>
+    </tr>
+    <tr>
+        <td>标题</td>
+        <td colspan="4">
+            <input type="text" name="" value="" class="form-control" id="title" />
+        </td>
+    </tr>
+    <tr>
+        <td>正文</td>
+        <td colspan="4" >
+            <div class="form-control" id="content" style="height:500px;">
+                <table border="1" class="tab" style="width:100%;">
+                  <tr>
+                      <td colspan="16" class="Tab-title"></td>
+                  </tr>
+                </table>
+            </div>
+        </td>
+    </tr>
+    @*<tr>
+            <td>正文</td>
+            <td colspan="4">
+                <textarea name="" rows="10" class="form-control" id="content" ></textarea>
+            </td>
+        </tr>*@
+    @*<tr>
+            <td>附件</td>
+            <td></td>
+        </tr>*@
+
+</table>
+<div class="submit-btns" style="margin-top:10px;">
+    <input type="button"  value="发送邮件" class="btn btn-success width-7" onclick="sendMail()">
+    &nbsp;&nbsp;
+    <input type="button" value="取消" class="btn btn-danger width-7" onclick="javascript:history.back(-1);">
+</div>
+<script>
+  
+    
+    //获取公司员工邮箱
+    $.ajax({
+        url: "@Url.Action("GetAssociatedAuditor", "BusinessTrip")",
+        type: "post",   //默认为get
+        data: {},   //传递给服务端的数据
+        dataType: "json",
+        cache: false,
+        success: function (data) {
+            //console.log(data);
+            $(".loadingR").remove();
+            $(".loadingC").remove();
+            $(data).each(function (i, m) {
+                if (m[2] == null || m[2] == '') {
+
+                    $("#receiver").append(" <input type='checkbox' onclick='checkboxAdd(this)'disabled value='" + m[2] + " ' /><span class='red'>" + m[1] + "</span>")
+                    $("#copy").append(" <input type='checkbox'  onclick='checkboxAdd(this)' disabled value='" + m[2] + " ' /><span class='red'>" + m[1] + "</span>")
+                } else {
+                $("#receiver").append(" <input type='checkbox' onclick='checkboxAdd(this)'value='" + m[2] + "'/><span>" + m[1] + "</span>")
+                $("#copy").append(" <input type='checkbox'onclick='checkboxAdd(this)' value='" + m[2] + "'/><span>" + m[1] + "</span>")
+                }
+            })
+
+        },
+        error: function (err) {
+            alert("点击过快或网络错误，请稍后重试！");
+            console.log(err)
+        }
+    });
+
+    //填充正文信息(主表信息)
+     $.ajax({
+            url: "@Url.Action("BusinessTripModel", "BusinessTrip")",
+            type: "post",   //默认为get
+            data: {id:@Model.出差记录ID},   //传递给服务端的数据
+            dataType: "json",
+            cache: false,
+         success: function (data) {
+
+                //console.log(data)
+                data.data.提交时间 = new Date(parseInt(data.data.提交时间.substr(6, 19))).toLocaleDateString();
+                data.data.开始时间 = new Date(parseInt(data.data.开始时间.substr(6, 19))).toLocaleDateString();
+                data.data.结束时间 = new Date(parseInt(data.data.结束时间.substr(6, 19))).toLocaleDateString();
+                if (data.data.备注 == null) {
+                    data.data.备注 = "无";
+             };
+             var title = `${data.data.部门}-${data.data.出差人姓名}-（${data.data.开始时间}至${data.data.结束时间}）出差拜访计划及情况汇报`;
+             $("#title").val(title);
+             $(".Tab-title").text(title);
+           
+             var html = `<tr>
+                            <td colspan="2">部门<td colspan="3">${data.data.部门}</td>
+                            <td colspan="3">出差人</td><td colspan="3">${data.data.出差人姓名}</td>
+                            <td>填表日期</td><td colspan="6">${data.data.提交时间}</td>
+                        <tr>
+                            <td colspan="16">出差预计时间${data.data.开始时间}至${data.data.结束时间}</td>
+                        </tr>
+                        <tr>
+                            <td>备注</td><td colspan="15">${data.data.备注}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="9">出差计划</td><td colspan="7">出差汇报</td>
+                        </tr>`;
+             //console.log(html)
+             $("#content .tab").append(html);
+             detail();
+            },
+            error: function (textStatus, errorThrown) {
+                alert("点击过快或网络错误，请稍后重试！");
+                console.log("系统ajax交互错误: " + JSON.stringify(textStatus));
+            }
+
+    })
+    //填充正文信息(汇报详情以及计划详情信息)
+    function detail() {
+     $.ajax({
+            url: "@Url.Action("BusinessDetailsJson", "BusinessTrip")",
+            type: "post",   //默认为get
+            data: {id:@Model.出差关联计划项ID},   //传递给服务端的数据
+            dataType: "json",
+            cache: false,
+            success: function (data) {
+                //console.log(data)
+                data.出差时间 = new Date(parseInt(data.出差时间.substr(6, 19))).toLocaleDateString();
+                var html = `
+                            <tr>
+                            <td width="20px">出差日期</td><td width="74px" >城市</td><td width="50px">经销商</td><td width="50px">门店</td><td width="50px">同行人</td><td width="75px">巡店目的</td><td width="75px">计划方案</td><td width="75px"> 计划内容</td><td width="50px">备注</td><td width="86">预计完成时间</td><td width="100px">巡店时间</td><td width="172px">实际遇到的问题</td><td width="172px">工作成果</td><td width="172px">解决的方案</td><td width="172px">需要的协助</td><td width="50px">备注</td>
+                            </tr>
+                            <tr class="nullBlank">
+                            <td>${data.出差时间}</td><td>${data.城市}</td><td>${data.经销商}</td><td>${data.门店}</td><td>${data.同行人员}</td><td>${data.巡店目的}</td><td>${data.计划方案}</td><td>${data.计划内容}</td><td>${data.备注}</td>
+                            <td>@Model.预计完成时间</td><td>@Model.巡店开始时间 至 @Model.巡店结束时间</td><td>@Model.实际遇到的问题</td><td>@Model.工作成果 </td><td>@Model.解决的方案 </td><td>@Model.需要的协助</td><td>@Model.备注</td>
+                            </tr>`
+                $("#content .tab").append(html);
+                var tds = $(".nullBlank").find("td");
+                $(tds).each(function (i,m) {
+                    if ($(m).text() == "null") {
+                        $(m).text("");
+                    }
+                })
+                
+            },
+         error: function (textStatus, errorThrown) {
+             alert("点击过快或网络错误，请稍后重试！");
+                console.log("系统ajax交互错误: " + JSON.stringify(textStatus));
+            }
+
+        })
+    }
+
+    function checkboxAdd(m) {
+        var Id = "#" + $(m).parent().attr("id") ,//获取当前点击元素的父元素 用于多选框值的获取
+            Str = "#" + $(m).parent().parent().next().find("textarea").attr("id");//用于文本域显示在页面
+
+        //console.log(Str)
+        if ($(m).hasClass("active")) {
+            $(m).removeClass("active");
+            checkboxText($("" + Id + ""), $("" + Str + ""));
+        } else {
+            $(m).addClass("active");
+            checkboxText($("" + Id + ""), $("" + Str + ""));
+        }
+
+    }
+    function checkboxText(Id, Str) {
+        //多选框值
+        var checkboxS = Id.find("input.active");
+        var htmlStr = '';
+        $(checkboxS).each(function (i, m) {
+            htmlStr += m.value +";";
+
+        })
+
+        Str.val(htmlStr);
+    }
+
+    function sendMail() {
+        //发送的内容
+        var recipients = $.trim($("#recipients").val()),//收件人
+            copyText = $.trim($("#copyText").val()),//抄送人
+            title = $.trim($("#title").val()),//标题
+            //content = $.trim($("#content").val());//邮件内容
+            content = $.trim($("#content").html());
+
+        //将收件/抄送字符串截取为数组
+            recipients = recipients.split(";");
+            copyText = copyText.split(";");
+        //console.log(recipients)
+        clearNull(recipients);
+        clearNull(copyText);
+        function clearNull(array) {
+            for (var i = 0; i < array.length; i++) {
+                if (array[i] == "" || typeof (array[i]) == "undefined") {
+                    array.splice(i, 1);
+                    i = i - 1;
+
+                }
+
+                }
+        }
+        var mailInfoModel = {
+
+            "MailToArray": recipients,//收件人(多个)
+            "MailCcArray": copyText,//抄送人（多个）
+            "MailSubject": title,//标题
+            "MailBody": content,//正文
+
+        }
+        console.log(mailInfoModel)
+        $.ajax({
+            url: "@Url.Action("SendMail", "BusinessTrip")",
+            type: "post",   //默认为get
+            data: { mailInfoModel: mailInfoModel, tripID: @Model.出差记录ID., planID: @Model.出差关联计划项ID},   //传递给服务端的数据
+            dataType: "json",
+            cache: false,
+            success: function (data) {
+                console.log(data)
+                if (data.success) {
+                    alert(data.msg);
+                } else {
+                    console.log(data.msg)
+                    alert("发送失败！");
+                }
+            },
+            error: function (textStatus, errorThrown) {
+                alert("点击过快或网络错误，请稍后重试！");
+                console.log("系统ajax交互错误: " + JSON.stringify(textStatus));
+            }
+
+        })
+    }
+</script>
+
+

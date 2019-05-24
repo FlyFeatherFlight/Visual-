@@ -18,6 +18,6 @@ public partial class HR_出差汇报凭证
     public Nullable<System.DateTime> 时间 { get; set; }
     public int 出差计划项ID { get; set; }
 
-    public virtual HR_出差计划详细 HR_出差计划详细 { get; set; }
     public virtual HR_出差计划 HR_出差计划 { get; set; }
+    public virtual HR_出差计划详细 HR_出差计划详细 { get; set; }
 }

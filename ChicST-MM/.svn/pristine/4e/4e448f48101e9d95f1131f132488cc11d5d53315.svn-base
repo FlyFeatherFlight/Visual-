@@ -1,0 +1,312 @@
+﻿@model ChicST_MM.WEB.Models.Development_MarketViewModel
+
+@{
+    ViewBag.Title = "添加商场";
+}
+
+<h3>添加商场</h3>
+
+<form id="add-diolog" style="position:relative;">
+    <div class="mask hidden"></div>
+    <table class="table table-bordered table-hover table-striped" style="width:95%;margin:0px auto;">
+        <tr>
+            <td>城市</td>
+            <td>
+                <select class="search-input" id="shengA">
+                    <option>-请选择省-</option>
+                </select>
+                <select class="search-input" id="shiA" name="所属城市ID"></select>
+
+            </td>
+            <td>城市等级</td>
+            <td>
+                <input type="text" class="form-control red" name="城市等级" id="level" autocomplete="off" readonly />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>商场名称</td>
+            <td>
+                <input type="text" name="商场名称" value="" class="form-control red" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>商场等级</td>
+            <td>
+                <select class="form-control red" name="商场等级">
+                    <option value="">-请选择等级-</option>
+                    <option value="A+">A+</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>地址</td>
+            <td>
+                <input type="text" class="form-control" name="地址" />
+            </td>
+            <td>品牌调整时间</td>
+            <td>
+                <input type="text" class="form-control dateTime" name="品牌调整时间" />
+            </td>
+        </tr>
+        <tr>
+            <td>负责人</td>
+            <td>
+                <input type="text" class="form-control red" name="负责人" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>联系方式</td>
+            <td>
+                <input type="text" class="form-control red" name="联系方式" onkeyup="value=value.replace(/[^\d.]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>职务</td>
+            <td>
+                <input type="text" class="form-control red" name="职务" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>物业名称</td>
+            <td>
+                <select class="form-control red" name="物业名称">
+                    <option value="红星美凯龙">红星美凯龙</option>
+                    <option value="第六空间">第六空间</option>
+                    <option value="喜盈门">喜盈门</option>
+                    <option value="居然之家">居然之家</option>
+                    <option value="罗浮宫">罗浮宫</option>
+                    <option value="其他">其他</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>续约开始日期1</td>
+            <td>
+                <input type="text" class="form-control dateTime red" name="续约开始日期1" placeholder="请选择日期" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>续约开始日期2</td>
+            <td>
+                <input type="text" class="form-control dateTime" name="续约开始日期2" placeholder="请选择日期" />
+            </td>
+        </tr>
+        <tr>
+            <td>经营总面积</td>
+            <td>
+                <input type="text" class="form-control" name="经营总面积" onkeyup="value=value.replace(/[^\d.]/g,'')"
+                       onblur="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字" />
+            </td>
+           
+        </tr>
+       
+    </table>
+    <div class="submit-btns" style="margin-top:10px;">
+        <input type="button" value="下一步" onclick="submitForm()">
+    </div>
+</form>
+<form id="yearForm" class="hidden">
+    <input type="text" name="竞品档案ID" value="" id="YearID" class="hidden"/>
+    <table class="table table-bordered text-center" id="Table">
+        <tr>
+            <th>租金年</th>
+            <th>租金月</th>
+            <th>租金金额</th>
+            <th>操作</th>
+        </tr>
+    </table>
+
+    <div style="margin-left:2.5%;">
+        <input type="button" name="" class="btn btn-primary width-7" value="添加" onclick="addYear()" />
+        &nbsp;&nbsp;
+        <input type="button" value="提交" class="btn btn-danger width-7" onclick="YearForm()">
+    </div>
+</form>
+<script>
+     function submitForm() {
+         var reds = $("#add-diolog .red"),
+             status = false;
+         $(reds).each(function (i, m) {
+             console.log(m.value);
+             if (m.value == "" || m.value == null) {
+                 return status = true;
+             }
+         })
+         if (status) {
+             alert("必填项不能为空！");
+         } else {
+             $.ajax({
+                 type: "post",
+                 data: $("#add-diolog").serialize(),
+                 url: '@Url.Action("MarketAdd", "DevelopmentDoc")',
+                 dataType: "json",
+                 cache: false,
+                 async: true,
+                 success: function (data) {
+                     //console.log(data)
+                     if (data.success) {
+                         $("#YearID").val(data.data.ID)
+                         alert(data.msg);
+                         $("#add-diolog .mask").removeClass("hidden");
+                         $("#yearForm").removeClass("hidden");
+                     } else {
+                         alert(data.msg);
+                     }
+
+                 },
+                 error: function (err) {
+                     alert("点击过快或网络错误，请稍后重试！");;
+                     console.log(err);
+                 }
+
+             })
+         }
+    }
+    function addYear() {
+        var tr = `
+            <tr>
+            <td>
+                <input type="text" name="" class="form-control"  value=""  />
+            </td>
+            <td>
+                <input type="text" name="" class="form-control"  value="" />
+            </td>
+            <td>
+                <input type="text" name="" class="form-control"  value="" />
+            </td>
+            <td><span class="Aspan" onclick="Del(this)">删除</span></td>
+        </tr>`;
+        $("#yearForm .table").append(tr);
+    
+    }
+    function Del(_this) {
+        $(_this).parent().parent().remove();
+    }
+    function YearForm() {
+        var trs = document.getElementById("Table"),
+            datas = [];
+
+        for (var i = 1; i < trs.rows.length; i++) {
+
+            var objDate = {
+                "商场ID": $("#YearID").val(),
+                "租金年": trs.rows[i].cells[0].getElementsByTagName("input")[0].value,
+                "租金月": trs.rows[i].cells[1].getElementsByTagName("input")[0].value,
+                "租金金额": trs.rows[i].cells[2].getElementsByTagName("input")[0].value,
+            }
+            datas.push(objDate);
+
+        }
+        //console.log(datas)
+
+        $.ajax({
+            type: "post",
+            data: { lis: JSON.stringify(datas) },
+            url: '@Url.Action("MarketRentalAdd", "DevelopmentDoc")',
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                if (data.success) {
+                    alert(data.msg + "跳转至查询列表");
+                    window.location.href = "@Url.Action("MarketView", "DevelopmentDoc")";
+                } else {
+                    alert(data.msg);
+                }
+                //console.log(data);
+            },
+            error: function (err) {
+                alert("点击过快或网络错误，请稍后重试！");;
+                console.log(err);
+            }
+
+        })
+    }
+
+      //获取省份数据
+    $.ajax({
+        type: "post",
+        data: {},
+        url: '@Url.Action("GetProvince", "DevelopmentDoc")',
+        dataType: "json",
+        cache: false,
+        async: true,
+        success: function (data) {
+            $.each(data, function(i, m) {
+                $("#shengA").append("<option value=" + m + ">" + m + "</option>"); 
+            })
+
+        },
+        error: function (err) {
+            alert("点击过快或网络错误，请稍后重试！");;
+            console.log(err);
+        }
+    })
+         /***添加***/
+    $("#shengA").change(function() {
+            $("#shiA").empty();
+            getShi($("#shengA").val(), $("#shiA"));
+    })
+    $("#shiA").change(function () {
+
+        //为城市分级赋值
+        //调用选中文本
+        activeText($("#shiA"));
+        var level = $("#shiA").find("option.active").data("level");
+        $("#level").val(level);
+
+    })
+   
+     //获取市
+    function getShi(province, shi ) {
+         $.ajax({
+                type: "post",
+                data: { province: province },
+                url: '@Url.Action("GetRgion", "DevelopmentDoc")',
+                dataType: "json",
+                cache: false,
+                async: true,
+             success: function (data) {
+                    console.log(data)
+                 shi.append("<option value='' class='active'> -请选择- </option>");
+                    $.each(data, function(i, m) {
+                        $.each(m, function (n, d) {
+                            shi.append("<option data-level='" + d.Level+"' value='" + d.ID + "'>" + d.City + "</option>")
+                        })
+                    })
+                },
+                error: function (err) {
+                    alert("点击过快或网络错误，请稍后重试！");;
+                    console.log(err);
+                }
+
+            })
+    }
+
+
+    // 获取选中时的文本 添加.active
+    function activeText(Jopts) {
+
+            var value = Jopts.val();//这个值就是你获取的值;
+            if (value != "") {
+                for (var i = 0; i < Jopts.find("option").length; i++) {
+                    if (value == Jopts.find("option")[i].value) {
+
+                        if ($(Jopts.find("option")[i]).hasClass("active")) {
+                            return;
+                        } else {
+                            $(Jopts.find("option")[i]).siblings().removeClass("active")
+                            $(Jopts.find("option")[i]).addClass("active");
+
+                        }
+                        break;
+                    }
+                }
+            }
+
+    }
+</script>

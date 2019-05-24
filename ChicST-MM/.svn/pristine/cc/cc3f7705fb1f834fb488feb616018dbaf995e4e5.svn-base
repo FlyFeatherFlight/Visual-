@@ -1,0 +1,54 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.BusinessTrip_VisitSubjectViewModel>
+
+@{
+    Layout = null;
+}
+<style>
+    .table tbody tr td:nth-child(2n-1) {
+        width: auto;
+    }
+</style>
+<table class="table table-bordered" style="font-size:12px;">
+    <tr>
+        <td>
+            @Html.DisplayNameFor(model => model.拜访对象类型)
+        </td>
+        <td>
+            @Html.DisplayNameFor(model => model.拜访对象名称)
+        </td>
+        <td>操作</td>
+    </tr>
+
+    @if (Model.Count() > 0)
+    {
+        foreach (var item in Model)
+        {
+    <tr>
+        <td class="visitTypeIdF hidden">
+            @Html.DisplayFor(modelItem => item.ID)
+        </td>
+        <td class="visitTypeF">
+            @Html.DisplayFor(modelItem => item.拜访对象类型)
+        </td>
+        <td class="visitObjIDF hidden">
+            @Html.DisplayFor(modelItem => item.拜访对象ID)
+        </td>
+        <td class="visitTypeNameF">
+            @Html.DisplayFor(modelItem => item.拜访对象名称)
+        </td>
+        <td class="planIdF hidden">
+            @Html.DisplayFor(modelItem => item.出差计划详细ID)
+        </td>
+        <td>
+            <span class="Aspan" onclick="EditType(this)">修改</span>
+            <span class="Aspan" onclick="DelType(this)">删除</span>
+        </td>
+    </tr>
+        }
+    }
+    else {
+
+        <tr>
+            <td colspan="3">暂无数据！</td>
+        </tr>
+    }</table>

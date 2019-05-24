@@ -30,8 +30,8 @@ public partial class HR_出差汇报
     public Nullable<int> 更新人ID { get; set; }
     public Nullable<System.DateTime> 巡店结束时间 { get; set; }
 
-    public virtual HR_出差计划详细 HR_出差计划详细 { get; set; }
     public virtual HR_出差计划 HR_出差计划 { get; set; }
     public virtual 系统用户 系统用户 { get; set; }
     public virtual 系统用户 系统用户1 { get; set; }
+    public virtual HR_出差计划详细 HR_出差计划详细 { get; set; }
 }

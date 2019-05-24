@@ -1,0 +1,135 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.Development_FranchiserTrackLogViewModel>
+
+@{
+    ViewBag.Title = "FranchiserTrackLogView";
+}
+
+<h2>FranchiserTrackLogView</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.日期)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.地点)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.时间)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.类型)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.拜访人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.拜访内容)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.是否了解希可)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.半年内看过希可门店)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.关注希可超过一年)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.了解程度说明)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.意向等级)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.意向描述)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.结果)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.录入人ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.录入人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.更新日期)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.经销商ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.经销商)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.日期)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.地点)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.时间)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.类型)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.拜访人)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.拜访内容)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.是否了解希可)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.半年内看过希可门店)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.关注希可超过一年)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.了解程度说明)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.意向等级)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.意向描述)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.结果)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.录入人ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.录入人)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.更新日期)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.经销商ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.经销商)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

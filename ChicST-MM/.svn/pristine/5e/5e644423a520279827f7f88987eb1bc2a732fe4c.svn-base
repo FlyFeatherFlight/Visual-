@@ -1,0 +1,45 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.BusinessTrip_VisitSubjectViewModel>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.拜访对象类型)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.拜访对象ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.拜访对象名称)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.出差ID)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.拜访对象类型)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.拜访对象ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.拜访对象名称)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.出差ID)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

@@ -1,0 +1,335 @@
+﻿@model ChicST_MM.WEB.Models.BusinessTrip_ReportViewModel
+
+@{
+    ViewBag.Title = "修改出差汇报";
+}
+<style>
+    /*附件上传*/
+    .file-list {
+        height: 125px;
+        display: none;
+        list-style-type: none;
+    }
+
+        .file-list img {
+            max-width: 70px;
+            vertical-align: middle;
+        }
+
+        .file-list .file-item {
+            margin-bottom: 10px;
+            float: left;
+            margin-left: 20px;
+        }
+
+
+            .file-list .file-item .file-del {
+                display: block;
+                margin-left: 20px;
+                margin-top: 5px;
+                cursor: pointer;
+            }
+
+
+    .file {
+        position: relative;
+        display: inline-block;
+        background: #D0EEFF;
+        border: 1px solid #99D3F5;
+        border-radius: 4px;
+        padding: 6px 12px;
+        overflow: hidden;
+        color: #1E88C7;
+        text-decoration: none;
+        text-indent: 0;
+        line-height: 20px;
+    }
+
+        .file input {
+            position: absolute;
+            font-size: 100px;
+            right: 0;
+            top: 0;
+            opacity: 0;
+        }
+
+        .file:hover {
+            background: #AADFFD;
+            border-color: #78C3F3;
+            color: #004974;
+            text-decoration: none;
+        }
+</style>
+<h3>出差汇报修改</h3>
+
+<form id="editReportForm">
+    <table class="table table-hover table-striped table-bordered" style="margin-bottom:0;">
+        <tr class="hidden">
+            <td>
+                <input type="text" name="ID" value="@Model.ID" />
+            </td>
+
+        </tr>
+        <tr>
+            <td colspan="4" style="position:relative;">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 start-date">
+                    <span class="bold">拜访/巡店开始日期</span>&nbsp;&nbsp;
+                    <input name="巡店开始时间" class="search-input timeLay  start" type='text' placeholder="请选择开始日期"  value="" readonly />
+
+                </div>
+
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <span class="bold">拜访/巡店结束日期</span>&nbsp;&nbsp;
+                    <input name="巡店结束时间" class="search-input timeLay end" type='text' placeholder="请选择结束日期"  value="" readonly />
+                   
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">工作成果</td>
+            <td colspan="3">
+                <textarea cols="3" name="工作成果" class="form-control ">@Model.工作成果</textarea>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">实际遇到的问题</td>
+            <td colspan="3">
+                <textarea cols="3" name="实际遇到的问题" class="form-control">@Model.实际遇到的问题</textarea>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">解决的方案</td>
+            <td colspan="3">
+                <textarea cols="3" name="解决的方案" class="form-control " >@Model.解决的方案</textarea>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">需要的协助</td>
+            <td colspan="3">
+                <textarea cols="3" name="需要的协助" class="form-control " >@Model.需要的协助</textarea>
+                
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">预计完成日期</td>
+            <td colspan="3">
+                <input type="text" name="预计完成时间" class="form-control dateTime " placeholder="请选择日期" oninput="sureRed()" value="@Model.预计完成时间" readonly>
+               
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">是否为新增项</td>
+            <td colspan="3">
+                <label>是</label>
+                <input type="radio" name="是否为新增项" value=true checked />
+                <label>否</label>
+                <input type="radio" name="是否为新增项" value=false />
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">同步发送邮件</td>
+            <td colspan="3" id="isEmail">
+                <label>是</label>
+                <input type="radio" name="email" value=true onclick="sureVal(this)" autocomplete="off" />
+                <label>否</label>
+                <input type="radio" name="email" value=false onclick="sureVal(this)" autocomplete="off" checked />
+
+            </td>
+        </tr>
+        <tr>
+            <td class="bold">备注</td>
+            <td colspan="3">
+                <input type="text" name="备注" value="@Model.备注" class="form-control" />
+
+            </td>
+        </tr>
+
+    </table>
+</form>
+<table class="table table-hover table-striped table-bordered">
+    <tr>
+        <td class="bold">照片附件</td>
+        <td>
+            <div class="file">
+                选择文件
+                <input type="file" name="" id="choose-file" multiple="multiple" />
+            </div>
+            <ul class="file-list "></ul>
+            <hr style="margin:5px 0;" />
+            <button style="cursor: pointer;" href="javascript:;" id="upload" class="btn btn-success">上传</button>
+            <span class="green hidden">上传成功</span>
+       
+        </td>
+    </tr>
+</table>
+<div class="submit-btns" style="margin-top:10px;">
+    <input type="button" value="确认修改" class="btn btn-success width-7" onclick="editMyformF()">
+    &nbsp;&nbsp;
+    <input type="button" value="取消" class="btn btn-danger width-7" onclick="javascript:history.back(-1);">
+</div>
+<script>
+    @*日期*@
+    $("#editReportForm .dateTime").each(function(i,m) {
+        var datetime = m.value;
+        m.value = (datetime.split("/周"))[0];
+        
+    })
+    @* 时间 *@
+        var timeS = "@Model.巡店开始时间",
+           timeE = "@Model.巡店结束时间";
+            timeS = (timeS.split(" "))[1];
+    timeE = (timeE.split(" "))[1];
+    $(".start").val(timeS);
+    $(".end").val(timeE);
+       
+
+    function sureVal(Val) {
+        $(Val).attr("checked", "checked");
+        $(Val).siblings().removeAttr("checked");
+
+    }
+    // 提交表单信息
+    function editMyformF(){
+       
+            $.ajax({
+                url: '@Url.Action("EditBusinessTrip_Report", "BusinessTrip")',
+                type: 'post',
+                dataType: 'json',
+                data: $("#editReportForm").serialize(),
+                async: true,
+                success: function(data) {
+                    //console.log(data)
+                    if (data.success) {
+                         var isEmail = $("#isEmail").find("input[checked]").val();
+                        //console.log(isEmail)
+                      
+                        if (isEmail == "true") {
+                            alert(data.msg + "，跳转至邮箱发送");
+                            // 跳转到详情
+                            window.location.href = '@Url.Action("SendMailView", "BusinessTrip")' + "?id=" + @Model.ID;
+                        } else {
+
+                            alert(data.msg + "，跳转详情页")
+                            // 跳转到详情
+                            window.location.href = '@Url.Action("BusinessTrip_RportListView", "BusinessTrip")' + "?tripID=" + @Model.出差记录ID;
+                        }
+                    } else {
+                        alert("提交失败！");
+                        console.log(data.msg);
+                    }
+                    
+                },
+                error: function(err) {
+                    alert("点击过快或网络错误，请稍后重试！");;
+                    console.log(err);
+                }
+
+            })
+       
+    }
+    $(function () {
+       
+
+        // 重新加载文件上传
+        var nullfile = $("div.file");
+        nullfile.each(function(i, m) {
+            m.outerHTML = m.outerHTML;
+
+        })
+        //声明变量
+        var $button = $('#upload'),
+            //选择文件按钮
+            $file = $("#choose-file"),
+            //回显的列表
+            $list = $('.file-list'),
+            //选择要上传的所有文件
+            fileList = [];
+        //当前选择上传的文件
+        var curFile;
+        // 选择按钮change事件，实例化fileReader,调它的readAsDataURL并把原生File对象传给它，
+        // 监听它的onload事件，load完读取的结果就在它的result属性里了。它是一个base64格式的，可直接赋值给一个img的src.
+        $file.on('change', function (e) {
+            $('.file-list').empty();
+            //原生的文件对象，相当于$file.get(0).files;//files[0]为第一张图片的信息;
+            curFile = this.files;
+            //curFile = $file.get(0).files;
+            //console.log(curFile);
+            //将FileList对象变成数组
+            fileList = fileList.concat(Array.from(curFile));
+            //console.log(fileList);
+            for (var i = 0, len = curFile.length; i < len; i++) {
+                reviewFile(curFile[i])
+            }
+            $('.file-list').fadeIn(200);
+        })
+
+        //文件预览
+        function reviewFile(file) {
+            //实例化fileReader,
+            var fd = new FileReader();
+            //获取当前选择文件的类型
+            var fileType = file.type;
+            //调它的readAsDataURL并把原生File对象传给它，
+            fd.readAsDataURL(file);//base64
+            //监听它的onload事件，load完读取的结果就在它的result属性里了
+            fd.onload = function () {
+                if (/^image\/[jpeg|png|jpg|gif]/.test(fileType)) {
+                    $list.append('<li style="border:solid red px; margin:5px 5px;" class="file-item"><img src="' + this.result + '" alt="" height="70"><span class="file-del">删除</span></li>').children(':last').hide().fadeIn(200);
+                } else {
+                    $list.append('<li class="file-item"><span class="file-name">' + file.name + '</span><span class="file-del">删除</span></li>')
+                }
+
+            }
+        }
+
+        //点击删除按钮事件：
+        $(".file-list").on('click', '.file-del', function () {
+            let $parent = $(this).parent();
+
+            let index = $parent.index();
+            fileList.splice(index, 1);
+            $parent.fadeOut(850, function () {
+                $parent.remove()
+            });
+
+        });
+        //点击上传按钮事件：
+
+            $button.off('click').on('click', function () {
+
+                for (var i = 0, len = fileList.length; i < len; i++) {
+                    //console.log(fileList[i]);
+                    var formData = new FormData();
+                    formData.append('UploadStream', fileList[i]);
+                    formData.append('tripID',@Model.出差记录ID);
+                    formData.append('tripreporid', @Model.出差关联计划项ID );
+
+                    $.ajax({
+                        url: '@Url.Action("UpFiles", "BusinessTrip")',
+                        type: 'post',
+                        data: formData,
+                        dataType: 'json',
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            console.log(data);
+                            if (data.Success) {
+                                $("#upload").siblings(".green").removeClass("hidden");
+                                console.log(data.Message);
+                            } else {
+                                $("#upload").siblings(".green").removeClass("hidden green").addClass("red").text("上传失败");
+                                alert(data.Message);
+                            }
+
+
+                        },
+                        error: function (err) {
+                            alert("点击过快或网络错误，请稍后重试！");;
+                            console.log(err);
+                        }
+                    })
+                }
+
+            })
+    })
+</script>

@@ -1,0 +1,70 @@
+﻿.table tbody tr td:nth-child(2n-1) {
+    text-align: center;
+    width: auto;
+}
+.main-wrap {
+
+margin-left:2.5%;
+}
+
+.Top {
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+.Botoom {
+    height: 600px;
+    overflow-x: auto;
+    overflow-y: scroll;
+}
+#Table {
+    color: #848282;
+}
+
+#Table tr td,
+#Table tr th,
+#Tab tr th {
+    padding: 6px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.width-30 {
+    width: 30px;
+}
+
+.width-42 {
+    width: 42px;
+}
+
+.width-56 {
+    width: 56px;
+}
+.width-50 {
+    width: 50px;
+}
+.width-60 {
+    width: 60px;
+}
+
+
+
+.width-75 {
+    width: 75px;
+}
+.width-102 {
+    width: 102px;
+}
+.width-140 {
+    width: 140px;
+}
+.width-200 {
+    width: 200px;
+}
+
+.width-250 {
+    width: 250px;
+}
+.width-410 {
+    width: 410px;
+}
+
