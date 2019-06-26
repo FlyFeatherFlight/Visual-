@@ -1,0 +1,30 @@
+﻿@model List<门店月报数据_Result>
+@{
+    ViewBag.Title = "TestView";
+}
+
+<table>
+
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td>@item.店铺ID</td>
+        <td>@item.店铺名称</td>
+        <td>@item.面积</td>
+        <td>@item.客流量</td>
+        <td>@item.确认数</td>
+        <td>@item.确认率</td>
+        <td>@item.成交数</td>
+        <td>@item.成交率</td>
+        <td>@item.业务业绩</td>
+        <td>@item.自营业绩</td>
+        <td>@item.实际订单金额</td>
+      
+        <td>@item.实际成交金额</td>
+
+      
+    </tr>
+    }
+
+</table>
+

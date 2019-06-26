@@ -1,0 +1,7 @@
+﻿
+@{
+    ViewBag.Title = "GetFranchiserView";
+}
+
+<h2>GetFranchiserView</h2>
+

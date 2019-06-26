@@ -1,0 +1,607 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.Development_FranchiserTrackLogViewModel>
+
+@{
+    ViewBag.Title = "经销商跟进列表";
+}
+<style>
+    .table tbody tr td:nth-child(2n-1) {
+        text-align: center;
+        width: auto;
+    }
+</style>
+<h3>经销商跟进列表</h3>
+<input type="button" name="" value="添加跟进" id="add-New" class="btn btn-primary width-7" style="margin-left:2.5%;margin-bottom:5px;" />
+<form action="@Url.Action("FranchiserTrackLogView","DevelopmentDoc")" method="post" style="margin-left:2.5%;;margin-bottom:5px;">
+    按日期查询：
+    <input type="text" name="id" value="@ViewBag.ID" class="hidden"/>
+    <input type="text" name="startDate" value="" class="search-input dateTime" placeholder="请选择开始日期" readonly/>至
+    <input type="text" name="endDate" value="" class="search-input endDate" placeholder="请选择结束日期" readonly/>
+    <input type="submit" name="name" value="查询" />
+</form>
+@*添加*@
+<form id="add-diolog">
+    <input type="text" name="经销商ID" value="@ViewBag.ID" class="hidden"/>
+    <table class="table table-bordered">
+
+        <tr>
+            <td>日期</td>
+            <td colspan="3">
+                <input type="text" name="日期" value="" class="form-control dateTime red" placeholder="请选择日期" oninput="sureRed()" readonly />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>地点</td>
+            <td>
+                <input type="text" name="地点" value="" class="form-control red" oninput="sureRed()" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>时间</td>
+            <td>
+                <input type="text" name="时间" value="" class="form-control timeLay red" oninput="sureRed()" placeholder="请选择时间" readonly />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>类型</td>
+            <td>
+                <select class="form-control red" name="类型" onchange="sureRed()">
+                    <option value="">-请选择-</option>
+                    <option value="去访">去访</option>
+                    <option value="接待">接待</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>拜访人</td>
+            <td id="visitMan">
+                <input type="text" name="拜访人" value="" class="red hidden" id="Man" oninput="sureRed()" autocomplete="off" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>拜访内容</td>
+            <td colspan="3">
+                <textarea rows="3" class="form-control red" name="拜访内容" oninput="sureRed()"></textarea>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>推进卡点</td>
+            <td colspan="3">
+                <textarea rows="3" class="form-control" name="推进卡点"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>是否了解希可</td>
+            <td colspan="3">
+                <input type="checkbox" name="name" value="认可希可的商业规划" onclick="checkboxAdd(this)" autocomplete="off" /><span>认可希可的商业规划</span>
+                <input type="checkbox" name="name" value="了解希可的产品" onclick="checkboxAdd(this)" autocomplete="off" /><span>了解希可的产品</span>
+                <input type="checkbox" name="name" value="认可希可的运营方式" onclick="checkboxAdd(this)" autocomplete="off" /><span>认可希可的运营方式</span>
+                <input type="checkbox" name="name" value="不了解希可" onclick="checkboxAdd(this)" autocomplete="off" /><span>不了解希可</span>
+                <input type="text" name="是否了解希可" value="" class="hidden" />
+            </td>
+        </tr>
+        <tr>
+            <td>半年内看过希可门店</td>
+            <td>
+                <select class="form-control red" name="半年内看过希可门店" onchange="sureRed()">
+                    <option value="">-请选择-</option>
+                    <option value=true>是</option>
+                    <option value=false>否</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>关注希可超过1年</td>
+            <td>
+                <select class="form-control red" name="关注希可超过一年" onchange="sureRed()">
+                    <option value="">-请选择-</option>
+                    <option value=true>是</option>
+                    <option value=false>否</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>了解程度说明</td>
+            <td colspan="3">
+                <textarea rows="3" class="form-control" name="了解程度说明"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>意向等级</td>
+            <td>
+                <select class="form-control red" name="意向等级" onchange="sureRed()">
+                    <option value="">-请选择-</option>
+                    <option value="有意向签约">有意向签约</option>
+                    <option value="有意向，但尚无法签约">有意向，但尚无法签约</option>
+                    <option value="意向不明确">意向不明确</option>
+                    <option value="无">无意向</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>结果</td>
+            <td>
+                <select class="form-control red" name="结果" onchange="sureRed()">
+                    <option value="">-请选择-</option>
+                    <option value="签订意向合约">签订意向合约</option>
+                    <option value="持续跟进">持续跟进</option>
+                    <option value="放弃跟进">放弃跟进</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+
+        </tr>
+        <tr>
+            <td>意向描述</td>
+            <td colspan="3"><textarea rows="3" class="form-control" name="意向描述"></textarea></td>
+        </tr>
+    </table>
+</form>
+@*修改*@
+<form id="edit-diolog">
+    <input type="text" name="经销商ID" value="@ViewBag.ID" class="hidden"/>
+    <input type="text" name="ID" value="" id="editId" class="hidden"/>
+    <table class="table table-bordered">
+        <tr>
+            <td>日期</td>
+            <td colspan="3">
+                <input type="text" name="日期" id="dateE" value="" class="form-control dateTime red" placeholder="请选择日期" oninput="sureRed()" readonly />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>地点</td>
+            <td>
+
+                <input type="text" name="地点" id="siteE" value="" class="form-control red" oninput="sureRed()" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>时间</td>
+            <td>
+                <input type="text" name="时间" id="timeE" value="" class="form-control timeLay red" oninput="sureRed()" placeholder="请选择时间" readonly />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+
+            <td>类型</td>
+            <td>
+                <select class="form-control red" id="TypeE" name="类型" onchange="sureRed()">
+                    <option value="去访">去访</option>
+                    <option value="接待">接待</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>拜访人</td>
+            <td id="visitManE">
+                <input type="text" name="拜访人" value="" class="red hidden" id="ManE" oninput="sureRed()" autocomplete="off" />
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>拜访内容</td>
+            <td colspan="3">
+                <textarea rows="3" id="visitContE" class="form-control red" name="拜访内容" oninput="sureRed()"></textarea>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>推进卡点</td>
+            <td colspan="3">
+                <textarea rows="3" id="boostE" class="form-control" name="推进卡点"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>是否了解希可</td>
+            <td colspan="3" id="isKnowC">
+                <input type="checkbox" name="name" value="认可希可的商业规划" onclick="checkboxAdd(this)" autocomplete="off" /><span>认可希可的商业规划</span>
+                <input type="checkbox" name="name" value="了解希可的产品" onclick="checkboxAdd(this)" autocomplete="off" /><span>了解希可的产品</span>
+                <input type="checkbox" name="name" value="认可希可的运营方式" onclick="checkboxAdd(this)" autocomplete="off" /><span>认可希可的运营方式</span>
+                <input type="checkbox" name="name" value="不了解希可" onclick="checkboxAdd(this)" autocomplete="off" /><span>不了解希可</span>
+                <input type="text" name="是否了解希可" id="isKnowE" value="" class="hidden" />
+            </td>
+        </tr>
+        <tr>
+            <td>半年内看过希可门店</td>
+            <td>
+                <select class="form-control red" id="halfYE" name="半年内看过希可门店" onchange="sureRed()">
+                    <option value=true>是</option>
+                    <option value=false>否</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>关注希可超过1年</td>
+            <td>
+                <select class="form-control red" id="oneYE" name="关注希可超过一年" onchange="sureRed()">
+                    <option value=true>是</option>
+                    <option value=false>否</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+        </tr>
+        <tr>
+            <td>了解程度说明</td>
+            <td colspan="3">
+                <textarea rows="3" class="form-control" id="depthE" name="了解程度说明"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>意向等级</td>
+            <td>
+                <select class="form-control red" id="intentionE" name="意向等级" onchange="sureRed()">
+                    <option value="高">高</option>
+                    <option value="中">中</option>
+                    <option value="低">低</option>
+                    <option value="无">无</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+            <td>结果</td>
+            <td>
+                <select class="form-control red" id="resultE" name="结果" onchange="sureRed()">
+                    <option value="签订意向合约">签订意向合约</option>
+                    <option value="持续跟进">持续跟进</option>
+                    <option value="放弃跟进">放弃跟进</option>
+                </select>
+                <span class="must" style="color:red;">*该项为必填项</span>
+            </td>
+
+        </tr>
+        <tr>
+            <td>意向描述</td>
+            <td colspan="3"><textarea rows="3" id="intentionDesE" class="form-control" name="意向描述"></textarea></td>
+        </tr>
+    </table>
+</form>
+<table class="table table-bordered table-hover text-center">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.日期)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.地点)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.时间)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.类型)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.拜访人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.拜访内容)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.推进卡点)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.是否了解希可)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.半年内看过希可门店)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.关注希可超过一年)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.了解程度说明)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.意向等级)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.意向描述)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.结果)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.录入人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.更新日期)
+        </th>
+
+        <th>操作</th>
+    </tr>
+
+    @if (Model.Count() > 0)
+    {
+        foreach (var item in Model)
+        {
+    <tr>
+        <td class="Id hidden">
+            @Html.DisplayFor(modelItem => item.ID)
+        </td>
+        <td class="date">
+            @Html.DisplayFor(modelItem => item.日期)
+        </td>
+        <td class="site">
+            @Html.DisplayFor(modelItem => item.地点)
+        </td>
+        <td class="time">
+            @Html.DisplayFor(modelItem => item.时间)
+        </td>
+        <td class="Type">
+            @Html.DisplayFor(modelItem => item.类型)
+        </td>
+        <td class="Man">
+            @Html.DisplayFor(modelItem => item.拜访人)
+        </td>
+        <td class="visitCont">
+            @Html.DisplayFor(modelItem => item.拜访内容)
+        </td>
+        <td class="boost">
+            @Html.DisplayFor(modelItem => item.推进卡点)
+        </td>
+        <td class="isKnow">
+            @Html.DisplayFor(modelItem => item.是否了解希可)
+        </td>
+        <td class="halfY">
+
+            @if (item.半年内看过希可门店 == true)
+            {
+                <span>是</span>
+            }
+            else
+            {
+                <span>否</span>
+            }
+        </td>
+        <td class="oneY">
+            @if (item.关注希可超过一年 == true)
+            {
+                <span>是</span>
+            }
+            else
+            {
+                <span>否</span>
+            }
+        </td>
+        <td class="depth">
+            @Html.DisplayFor(modelItem => item.了解程度说明)
+        </td>
+        <td class="intention">
+            @Html.DisplayFor(modelItem => item.意向等级)
+        </td>
+        <td class="intentionDes">
+            @Html.DisplayFor(modelItem => item.意向描述)
+        </td>
+        <td class="result">
+            @Html.DisplayFor(modelItem => item.结果)
+        </td>
+
+        <td>
+            @Html.DisplayFor(modelItem => item.录入人)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.更新日期)
+        </td>
+        <td>
+            <span class="Aspan" onclick="edit(this)">修改</span>
+        </td>
+    </tr>
+        }
+    }
+    else
+    {
+
+        <tr>
+            <td colspan="17" style="height:120px;">暂无数据！</td>
+        </tr>
+
+    }
+</table>
+<script>
+    //转换日期格式
+    dateTab($(".date"));
+   
+    //转换时间格式
+    var dates = $(".table .time");
+    $(dates).each(function (i, m) {
+        if (m != null || m != "") {
+            var strTime = $.trim($(m).text());
+            strTime = strTime.split(" ");
+            strTime = strTime[1];
+            $(m).text(strTime);
+
+        }
+    })
+    $.ajax({
+        url: "@Url.Action("FranchicserContactList", "DevelopmentDoc")",
+        data: {id:@ViewBag.ID},
+        type: "post",
+        dataType: "json",
+        success: function (data) {
+            console.log(data.data)
+            if (data.success) {
+                $(data.data).each(function (i,m) {
+                    $("#visitMan").append("<input type='checkbox'onclick='checkboxAdd(this)' value='" + m.姓名 + "'/><span>" + m.姓名 + "<span>");
+                    $("#visitManE").append("<input type='checkbox'onclick='checkboxAdd(this)' value='" + m.姓名 + "'/><span>" + m.姓名 + "<span>");
+                })
+
+            } else {
+                alert(data.msg);
+            }
+        },
+        error: function (err) {
+            alert("点击过快或网络错误，请稍后重试！")
+            console.log(err);
+        }
+    })
+    $("#add-New").click(function () {
+        $("#add-diolog").dialog("option", "title", "添加跟进").dialog("open");
+    })
+      //添加经销商跟进
+    $("#add-diolog").dialog({
+        autoOpen: false,
+        height: 600,
+        width: 960,
+        modal: true,
+        buttons: {
+
+            "取消": function () { $(this).dialog("close") },
+            "提交": function () {
+                var reds = $("#add-diolog .red"),
+                    status = false;
+                $(reds).each(function (i, m) {
+
+                    if (m.value == "" || m.value == null) {
+                        return status = true;
+                    }
+                })
+                if (status) {
+                    alert("必填项不能为空！");
+                } else {
+                    $.ajax({
+                        url: "@Url.Action("FranchiserTrackLogAdd", "DevelopmentDoc")",
+                        data: $("#add-diolog").serialize(),
+                        type: "post",
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.success) {
+                                $("#add-diolog").dialog("close");
+                                alert(data.msg);
+                                window.location.reload();
+                            } else {
+                                alert(data.msg);
+                            }
+                        },
+                        error: function (err) {
+                            alert("点击过快或网络错误，请稍后重试！")
+                            console.log(err);
+                        }
+                    })
+
+
+                }
+            }
+        }
+    })
+      //修改
+    function edit(_this) {
+        var Id = $.trim($(_this).parent().siblings(".Id").text()),
+            date = $.trim($(_this).parent().siblings(".date").text()),
+            site = $.trim($(_this).parent().siblings(".site").text()),
+            time = $.trim($(_this).parent().siblings(".time").text()),
+            Type = $.trim($(_this).parent().siblings(".Type").text()),
+            Man = $.trim($(_this).parent().siblings(".Man").text()),
+            visitCont = $.trim($(_this).parent().siblings(".visitCont").text()),
+            boost = $.trim($(_this).parent().siblings(".boost").text()),
+            isKnow = $.trim($(_this).parent().siblings(".isKnow").text()),
+            halfY = $.trim($(_this).parent().siblings(".halfY").text()),
+            oneY = $.trim($(_this).parent().siblings(".oneY").text()),
+            depth = $.trim($(_this).parent().siblings(".depth").text()),
+            intention = $.trim($(_this).parent().siblings(".intention").text()),
+            result = $.trim($(_this).parent().siblings(".result").text()),
+            intentionDes = $.trim($(_this).parent().siblings(".intentionDes").text());
+       //转换格式
+        if (halfY == "是") {
+            halfY = "true";
+        } else {
+            halfY = "false";
+        }
+        if (oneY == "是") {
+            oneY = "true";
+        } else {
+            oneY = "false";
+        }
+        
+        common($("#TypeE option"), Type);   
+        //common($("#isKnowE option"), isKnow);   
+        common($("#intentionE option"), intention);   
+        common($("#resultE option"), result);   
+        common($("#halfYE option"), halfY);   
+        common($("#oneYE option"), oneY);   
+        $("#editId").val(Id);
+        $("#dateE").val(date);
+        $("#siteE").val(site);
+        $("#timeE").val(time);
+        $("#ManE").val(Man);
+        $("#isKnowE").val(isKnow);
+        $("#visitContE").val(visitCont);
+        $("#boostE").val(boost);
+        $("#depthE").val(depth);
+        $("#intentionDesE").val(intentionDes);
+        //复选框选中
+        //拜访人
+        Man = Man.split("&");
+        //拜访人
+        $(Man).each(function (i, m) {
+            modelCheck($("#visitManE input[type='checkbox']"), m);
+        })
+        //拜访人
+        isKnow = isKnow.split("&");
+        //拜访人
+        $(isKnow).each(function (i, m) {
+            modelCheck($("#isKnowC input[type='checkbox']"), m);
+        })
+        
+
+        $("#edit-diolog").dialog("option", "title", "修改跟进").dialog("open");
+       
+    }
+      //修改经销商跟进
+    $("#edit-diolog").dialog({
+        autoOpen: false,
+        height: 600,
+        width: 960,
+        modal: true,
+        buttons: {
+
+            "取消": function () { $(this).dialog("close") },
+            "提交": function () {
+                var reds = $("#edit-diolog .red"),
+                    status = false;
+                $(reds).each(function (i, m) {
+
+                    if (m.value == "" || m.value == null) {
+                        return status = true;
+                    }
+                })
+                if (status) {
+                    alert("必填项不能为空！");
+                } else {
+                    $.ajax({
+                        url: "@Url.Action("FranchiserTrackLogEdit", "DevelopmentDoc")",
+                        data: $("#edit-diolog").serialize(),
+                        type: "post",
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.success) {
+                                $("#edit-diolog").dialog("close");
+                                alert(data.msg);
+                                window.location.reload();
+                            } else {
+                                alert(data.msg);
+                            }
+                        },
+                        error: function (err) {
+                            alert("点击过快或网络错误，请稍后重试！")
+                            console.log(err);
+                        }
+                    })
+
+
+                }
+            }
+        }
+    })
+    
+    //修改时给下拉框添加.selected
+    function common(option, Name) {
+
+        if (Name != "" || Name != null) {
+            var options = option;
+            $(options).each(function (i, m) {
+                if (Name == m.value) {
+
+                    $(m).attr("selected", "selected")
+                }
+            })
+        }
+    }
+  
+</script>

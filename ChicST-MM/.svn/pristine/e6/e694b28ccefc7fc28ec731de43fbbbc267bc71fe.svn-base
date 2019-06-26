@@ -1,0 +1,169 @@
+﻿
+@{
+    ViewBag.Title = "门店月数据报表";
+}
+<link href="~/Content/scroolWidth.css" rel="stylesheet" />
+
+<h3>门店月数据报表</h3>
+<div class="main-wrap">
+    <div>
+        <input type="text" id="startDate" value="" class="search-input dateTime" placeholder="请选择开始日期" readonly />至
+        <input type="text" id="endDate" value="" class="search-input dateTime" placeholder="请选择结束日期" readonly />
+        <input type="button" name="name" value="查询" id="subSearch" />
+        <input type="button" name="name" value="导出本页" onclick="excl()" />
+        <p class="red">Tips:默认显示上月今日到当前时间的数据，其他数据请根据条件自行查询</p>
+        
+    </div>
+    
+    <div class="Top hidden">
+        <table id="Tab">
+            <tr>
+                <th><div class="width-50">序号</div></th>
+                <th>  <div class="width-60">店面</div></th>
+                <th> <div class="width-60">面积</div></th>
+                <th> <div class="width-102">进店客流</div></th>
+                <th><div class="width-75">确认数</div></th>
+                <th> <div class="width-75">确认率</div></th>
+                <th>  <div class="width-75">成交数</div></th>
+                <th> <div class="width-75">成交率</div></th>
+                <th> <div class="width-50">本月销售目标@*（空）*@</div></th>
+                <th> <div class="width-140">实际成交金额</div></th>
+                <th>   <div class="width-50">达成率@*（空）*@</div></th>
+
+                <th>  <div class="width-102">坪效</div></th>
+                <th>  <div class="width-140">本月CHIC业务</div></th>
+                <th>  <div class="width-140">本月CHIC自营</div></th>
+                <th><div class="width-140">平均单值</div></th>
+                <th>   <div class="width-140">最大单值</div></th>
+                <th> <div class="width-140">实际订单金额</div></th>
+                <th>  <div class="width-50">6月总销售@*（空）*@</div></th>
+                <th> <div class="width-50">6月意向客@*（空）*@</div></th>
+                <th><div class="width-50">合计56月@*（空）*@</div></th>
+                <th>  <div class="width-140">预付款金额</div></th>
+                <th> <div class="width-140">尾款</div></th>
+                <th> <div class="width-140">总收款</div></th>
+                <th>  <div class="width-50">收款目标@*（空）*@</div></th>
+                <th> <div class="width-50">达成率@*（空）*@</div></th>
+                <th> <div class="width-140">应下单金额</div></th>
+                <th><div class="width-140">下单率</div></th>
+
+</table>
+    </div>
+    <div class="Botoom">
+        <table id="Table">
+            <thead>
+                <tr>
+                    <th><div class="width-50">序号</div></th>
+                    <th>  <div class="width-60">店面</div></th>
+                    <th> <div class="width-60">面积</div></th>
+                    <th> <div class="width-102">进店客流</div></th>
+                    <th><div class="width-75">确认数</div></th>
+                    <th> <div class="width-75">确认率</div></th>
+                    <th>  <div class="width-75">成交数</div></th>
+                    <th> <div class="width-75">成交率</div></th>
+                    <th> <div class="width-50">本月销售目标@*（空）*@</div></th>
+                    <th> <div class="width-140">实际成交金额</div></th>
+                    <th>   <div class="width-50">达成率@*（空）*@</div></th>
+
+                    <th>  <div class="width-102">坪效</div></th>
+                    <th>  <div class="width-140">本月CHIC业务</div></th>
+                    <th>  <div class="width-140">本月CHIC自营</div></th>
+                    <th><div class="width-140">平均单值</div></th>
+                    <th>   <div class="width-140">最大单值</div></th>
+                    <th> <div class="width-140">实际订单金额</div></th>
+                    <th>  <div class="width-50">6月总销售@*（空）*@</div></th>
+                    <th> <div class="width-50">6月意向客@*（空）*@</div></th>
+                    <th><div class="width-50">合计56月@*（空）*@</div></th>
+                    <th>  <div class="width-140">预付款金额</div></th>
+                    <th> <div class="width-140">尾款</div></th>
+                    <th> <div class="width-140">总收款</div></th>
+                    <th>  <div class="width-50">收款目标@*（空）*@</div></th>
+                    <th> <div class="width-50">达成率@*（空）*@</div></th>
+                    <th> <div class="width-140">应下单金额</div></th>
+                    <th><div class="width-140">下单率</div></th>
+
+
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    var start = getLastMonth().last,
+        end = getLastMonth().now;
+    getData(start, end);
+    
+    scroollHeadTab();
+    $("#subSearch").click(function () {
+        let startDateS = $("#startDate").val(),
+            endDateS = $("#endDate").val();
+        if (startDateS == "" && endDateS == "") {
+            alert("请选择查询时间！");
+        } else {
+            getData(startDateS, endDateS);
+        }
+       
+    })
+    function excl() {
+        let startDate = $("#startDate").val(),
+            endDate = $("#endDate").val();
+
+       if (startDate != "" && endDate != "") {
+            str = startDate + "至" + startDate + "门店月数据报表";
+           btn_export(str);
+       } else if (startDate != "") {
+           str = startDate + "起的门店月数据报表";
+           btn_export(str);
+       } else if (endDate != "") {
+           str = endDate + "止的门店月数据报表";
+           btn_export(str);
+       } else {
+           str = start + "至" + end + "门店月数据报表";
+          
+           btn_export(str);
+        }
+    }
+    function getData(startDate, endDate) {
+        $("#Table tbody").html("  <tr><td class='loading' style='text-align: start; height: 120px;' colspan='23'>正在加载</td></tr>");
+        $.ajax({
+            url: '@Url.Action("GetStoreMonth_ReportJson", "StoreAnalyze")',
+            type: 'post',
+            data: { startDate: startDate, endDate: endDate},
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                if (data.success) {
+                    if (data.date.length > 0) {
+                        let HtmlStr = "";
+                        $(data.date).each(function (i, m) {
+                            let No = i + 1;
+                                m.确认率 = (m.确认率 * 100).toFixed(2) + "%";
+                                m.成交率 = (m.成交率 * 100).toFixed(2) + "%";
+                              
+
+                            HtmlStr += "  <tr><td>" + No + "</td><td>" + m.店铺名称 + "</td><td>" + m.面积 + "</td><td>" + m.客流量 +
+                                "</td><td>" + m.确认数 + "</td><td>" + m.确认率+ "</td><td>" + m.成交数 + "</td><td>" + m.成交率 +
+                                "</td><td></td><td>" + m.实际成交金额 + "</td><td></td><td>"
+                                + m.坪效 + "</td><td>" + m.业务业绩 +
+                                "</td><td>" + m.自营业绩 + "</td><td>" + m.平均单值 + "</td><td>" + m.最大单值 +
+                                "</td><td>" + m.实际订单金额 + "</td><td></td><td></td><td></td><td>" + m.预付款金额 + "</td><td>" + m.尾款 + "</td><td>" + m.总收款 + "</td><td></td><td></td><td>" + m.应下单金额 + "</td><td>" + m.下单率 + "</td></tr>"
+                        })
+                        $("#Table tbody").html(HtmlStr);
+                        clearNull($("#Table td"))
+                    }
+
+                } else {
+                    $("#Table tbody").html("  <tr><td style='text-align: start; height: 120px;' colspan='23' class='red'>暂无数据！</td></tr>")
+                }
+            },
+            error: function (err) {
+                alert("点击过快或网络错误，请稍后重试！");
+                console.log(err);
+            }
+        })
+    }
+   
+</script>

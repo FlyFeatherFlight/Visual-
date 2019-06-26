@@ -1,0 +1,275 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.SalesOrderViewModel>
+
+@{
+    ViewBag.Title = "销售订单列表";
+}
+<link href="~/Content/scroolWidth.css" rel="stylesheet" />
+
+<h3>销售订单列表</h3>
+<div>
+    查询条件：
+    <select id="store" class="search-input"></select>
+    <input type="text" name="name" value="" class="dateTime search-input" placeholder="请选择开始日期" />至
+    <input type="text" name="name" value="" class="dateTime search-input" placeholder="请选择结束日期" />
+    <input type="button" name="name" value="查询" />
+</div>
+<div>
+    电话查询: <input type="text" name="name" value="" placeholder="请输入客户联系方式" class="search-input" />
+    <input type="button" name="name" value="查询" />
+</div>
+<p class="red">Tips:默认显示本月数据，其他数据请根据条件自行查询</p>
+<div>
+    <div class="Top hidden">
+        <table id="Tab">
+            <tr>
+                <th>
+                    <div class="width-140"> 合同编号</div>
+                </th>
+                <th>
+                    <div class="width-102"> 单据编号</div>
+                </th>
+                <th>
+                    <div class="width-102">  订单编号</div>
+                </th>
+                <th>
+                    <div class="width-102">  单据日期</div>
+                </th>
+                <th>
+                    <div class="width-140"> 店铺</div>
+                </th>
+                <th>
+                    <div class="width-102"> 员工</div>
+                </th>
+                <th>
+                    <div class="width-102"> 客户姓名</div>
+                </th>
+                <th>
+                    <div class="width-102">  客户联系方式</div>
+                </th>
+                <th>
+                    <div class="width-250"> 客户地址</div>
+                </th>
+                <th>
+                    <div class="width-140">  零售合计</div>
+                </th>
+                <th>
+                    <div class="width-200">  预付金额_bak</div>
+                </th>
+                <th>
+                    <div class="width-200">  单据备注</div>
+                </th>
+                <th>
+                    <div class="width-102">  制单日期</div>
+                </th>
+                <th>
+                    <div class="width-30"> 确认标志</div>
+                </th>
+                <th>
+                    <div class="width-102">  确认人姓名</div>
+                </th>
+                <th>
+                    <div class="width-102"> 确认日期</div>
+                </th>
+                <th>
+                    <div class="width-30">  审核标志</div>
+                </th>
+                <th>
+                    <div class="width-60"> 审核人姓名</div>
+                </th>
+                <th>
+                    <div class="width-102">  审核日期</div>
+                </th>
+                <th>
+                    <div class="width-30"> 复核标志</div>
+                </th>
+                <th>
+                    <div class="width-60"> 复核人姓名</div>
+                </th>
+                <th>
+                    <div class="width-102"> 复核日期</div>
+                </th>
+                <th>
+                    <div class="width-30"> 批准标志1</div>
+                </th>
+                <th>
+                    <div class="width-60"> 批准人1姓名</div>
+                </th>
+                <th>
+                    <div class="width-102"> 批准日期1</div>
+                </th>
+                <th>
+                    <div class="width-60"> 收货人</div>
+                </th>
+                <th>
+                    <div class="width-140"> 收货地址</div>
+                </th>
+                <th>
+                    <div class="width-140"> 收货人联系方式</div>
+                </th>
+                <th>
+                    <div class="width-60"> 制单销售人</div>
+                </th>
+                <th>
+                    <div class="width-30"> 是否自营业绩</div>
+                </th>
+                <th>
+                    <div class="width-30"> 是否业务业绩</div>
+                </th>
+                <th>
+                    <div class="width-56"> 折扣</div>
+                </th>
+            </tr>
+        </table>
+    </div>
+    <div class="Botoom">
+        <table class="text-center" id="Table">
+            <thead>
+                <tr>
+                    <th>
+                        <div class="width-140"> 合同编号</div>
+                    </th>
+                    <th>
+                        <div class="width-102"> 单据编号</div>
+                    </th>
+                    <th  >
+                        <div class="width-102">  订单编号</div>
+                    </th>
+                    <th  >
+                        <div class="width-102">  单据日期</div>
+                    </th>
+                    <th  >
+                        <div class="width-140"> 店铺</div> 
+                    </th>
+                    <th  >
+                        <div class="width-102"> 员工</div> 
+                    </th>
+                    <th  >
+                        <div class="width-102"> 客户姓名</div> 
+                    </th>
+                    <th  >
+                        <div class="width-102">  客户联系方式</div>
+                    </th>
+                    <th  >
+                        <div class="width-250"> 客户地址</div> 
+                    </th>
+                    <th  >
+                        <div class="width-140">  零售合计</div>
+                    </th>
+                    <th  >
+                        <div class="width-200">  预付金额_bak</div>
+                    </th>
+                    <th  >
+                        <div class="width-200">  单据备注</div>
+                    </th>
+                    <th  >
+                        <div class="width-102">  制单日期</div>
+                    </th>
+                    <th  >
+                        <div class="width-30"> 确认标志</div> 
+                    </th>
+                    <th  >
+                        <div class="width-102">  确认人姓名</div>
+                    </th>
+                    <th  >
+                        <div class="width-102"> 确认日期</div> 
+                    </th>
+                    <th  >
+                        <div class="width-30">  审核标志</div>
+                    </th>
+                    <th  >
+                        <div class="width-60"> 审核人姓名</div> 
+                    </th>
+                    <th  >
+                        <div class="width-102">  审核日期</div>
+                    </th>
+                    <th  >
+                        <div class="width-30"> 复核标志</div> 
+                    </th>
+                    <th  >
+                        <div class="width-60"> 复核人姓名</div> 
+                    </th>
+                    <th  >
+                        <div class="width-102"> 复核日期</div> 
+                    </th>
+                    <th  >
+                        <div class="width-30"> 批准标志1</div> 
+                    </th>
+                    <th  >
+                        <div class="width-60"> 批准人1姓名</div> 
+                    </th>
+                    <th  >
+                        <div class="width-102"> 批准日期1</div> 
+                    </th>
+                    <th  >
+                        <div class="width-60"> 收货人</div> 
+                    </th>
+                    <th  >
+                        <div class="width-140"> 收货地址</div> 
+                    </th>
+                    <th  >
+                        <div class="width-140"> 收货人联系方式</div> 
+                    </th>
+                    <th  >
+                        <div class="width-60"> 制单销售人</div> 
+                    </th>
+                    <th  >
+                        <div class="width-30"> 是否自营业绩</div> 
+                    </th>
+                    <th  >
+                        <div class="width-30"> 是否业务业绩</div> 
+                    </th>
+                    <th  >
+                        <div class="width-56"> 折扣</div> 
+                    </th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+<script>
+    var nowMonth = getCurrentMonthFirst();
+        getstore($("#store"));
+    getData(null, null, nowMonth, null);
+
+    scroollHeadTab();
+    //查询数据
+    function getData(storeId,phone, startDate, endDate) {
+        $("#Table tbody").html("<tr><td class='loading' colspan='36' style='height:120px;text-align:start;'>正在加载</td></tr>");
+        $.ajax({
+            url: '@Url.Action("GetSalesOrdersJson", "SalesOrder")',
+            type: 'post',
+            data: { storeID: storeId,strPhone:phone,startDate: startDate, endDate: endDate},
+            dataType: 'json',
+            success: function (data) {
+                console.log(data)
+                if (data.success) {
+                    let htmlStr = null;
+
+                    $(data.data).each(function (i, m) {
+                        htmlStr += "<tr><td><a href='/SalesOrder/SalesOrderInfoView?id="+m.ID+"' target='_blank'>" + m.合同编号 + "</a></td><td>" + m.单据编号 + "</td><td>" + m.订单编号 + "</td><td>" + dateFtt('yyyy-MM-dd', m.单据日期)+ "</td><td>"
+                                + m.店铺 + "</td><td>" + m.员工 + "</td><td>" + m.客户姓名 + "</td><td>" + m.客户联系方式 + "</td><td>"
+                                + m.客户地址 + "</td><td>" + m.零售合计 + "</td><td>" + m.预付金额_bak + "</td><td>" + m.单据备注 + "</td><td >"
+                                + dateFtt('yyyy-MM-dd', m.制单日期) + "</td><td>" + m.确认标志 + "</td><td>" + m.确认人姓名 + "</td><td>"
+                                + dateFtt('yyyy-MM-dd', m.确认日期) + "</td><td>" + m.审核标志 + "</td><td>" + m.审核人姓名 + "</td><td>"
+                                + dateFtt('yyyy-MM-dd', m.审核日期) + "</td><td>" + m.复核标志 + "</td><td>" + m.复核人姓名 + "</td><td>"
+                                + dateFtt('yyyy-MM-dd', m.复核日期) + "</td><td>" + m.批准标志1 + "</td><td>" + m.批准人1姓名 + "</td><td>"
+                                + dateFtt('yyyy-MM-dd', m.批准日期1) + "</td><td>" + m.收货人 + "</td><td>" + m.收货地址 + "</td><td>"
+                                + m.收货人联系方式 + "</td><td>" + m.制单销售人 + "</td><td>" + m.是否自营业绩 + "</td><td>"
+                                + m.是否业务业绩 + "</td><td>" + m.折扣 + "</td></tr>";
+
+                    })
+                    $("#Table tbody").html(htmlStr);
+                    clearNull($("#Table td"));
+                } else {
+                    alert(dat.msg);
+                }
+            },
+            error: function (err) {
+
+            }
+        })
+    }
+   
+
+</script>

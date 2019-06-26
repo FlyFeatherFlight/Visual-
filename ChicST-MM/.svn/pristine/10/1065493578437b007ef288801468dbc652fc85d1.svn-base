@@ -1,0 +1,231 @@
+﻿
+@{
+    ViewBag.Title = "商场数据";
+}
+<link href="~/Content/scroolWidth.css" rel="stylesheet" />
+<h3>商场数据</h3>
+<form action="@Url.Action("MarketView","DevelopmentDoc")" method="post" style="margin-left:2.5%;padding:5px 0;">
+    查询条件：
+    <select class=" search-input" id="sheng">
+        <option value="">-请选择省-</option>
+    </select>
+    <select class="search-input" id="shi" name="cid">
+        <option value="">-请选择市-</option>
+    </select>
+    <select class="search-input" id="_Man" name="emid">
+        <option value="">-请选择录入人-</option>
+    </select>
+    <input type="text" name="startDate" value="" class="search-input dateTime" placeholder="请选择开始日期" readonly />至
+    <input type="text" name="endDate" value="" class="search-input dateTime" placeholder="请选择结束日期" readonly />
+
+    <input type="submit" name="" value="查询" />
+    <input type="button" onclick="  toExcel($('#Table'))" value="导出数据" />
+    <p class="red">Tips:默认显示本月数据，其他数据请根据条件自行查询</p>
+</form>
+
+<div class="main-wrap">
+    <div class="Top hidden">
+        <table id="Tab">
+            <tr>
+
+                <th>
+                    <div class="width-75">所属城市</div>
+                </th>
+                <th>
+                    <div class="width-30">城市等级</div>
+                </th>
+                <th>
+                    <div class="width-102">物业名称</div>
+                </th>
+                <th>
+                    <div class="width-102">商场名称</div>
+                </th>
+                <th>
+                    <div class="width-30">商场等级</div>
+                </th>
+                <th>
+                    <div class="width-102">地址</div>
+                </th>
+                <th>
+                    <div class="width-102">品牌调整时间</div>
+                </th>
+                <th>
+                    <div class="width-410">联系人</div>
+                </th>
+                <th>
+                    <div class="width-102">续约开始日期1</div>
+                </th>
+                <th>
+                    <div class="width-102">续约开始日期2</div>
+                </th>
+                <th>
+                    <div class="width-102">经营总面积</div>
+                </th>
+                <th>
+                    <div class="width-410">租金月</div>
+                </th>
+                <th>
+                    <div class="width-75">录入人</div>
+                </th>
+                <th>
+                    <div class="width-102">更新日期</div>
+                </th>
+
+            </tr>
+        </table>
+    </div>
+    <div class="Botoom">
+        <table class="text-center" id="Table">
+            <thead>
+                <tr>
+
+                    <th>
+                        <div class="width-75">所属城市</div>
+                    </th>
+                    <th>
+                        <div class="width-30">城市等级</div>
+                    </th>
+                    <th>
+                        <div class="width-102">物业名称</div>
+                    </th>
+                    <th>
+                        <div class="width-102">商场名称</div>
+                    </th>
+                    <th>
+                        <div class="width-30">商场等级</div>
+                    </th>
+                    <th>
+                        <div class="width-102">地址</div>
+                    </th>
+                    <th>
+                        <div class="width-102">品牌调整时间</div>
+                    </th>
+                    <th>
+                        <div class="width-410">联系人</div>
+                    </th>
+                    <th>
+                        <div class="width-102">续约开始日期1</div>
+                    </th>
+                    <th>
+                        <div class="width-102">续约开始日期2</div>
+                    </th>
+                    <th>
+                        <div class="width-102">经营总面积</div>
+                    </th>
+                    <th>
+                        <div class="width-410">租金月</div>
+                    </th>
+                    <th>
+                        <div class="width-75">录入人</div>
+                    </th>
+                    <th>
+                        <div class="width-102">更新日期</div>
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+<script>
+    var nowMonth = getCurrentMonthFirst();
+    GetMarketJson(null, null, nowMonth, null);
+    function GetMarketJson(cid, emid, startDate, endDate) {
+        $("#Table tbody").html("  <tr><td class='loading' style='text - align: start; height: 120px;' colspan='23'>正在加载</td></tr>");
+
+        $.ajax({
+            url: '@Url.Action("GetMarketJson", "DevelopmentDoc")',
+            type: 'get',
+            data: { cid: cid, emid: emid, startDate: startDate, endDate: endDate},
+            dataType: 'json',
+            success: function (data) {
+                ///console.log(data)
+                if (data.success) {
+                    if (data.date.length > 0) {
+                        let HtmlStr = "";
+                        $(data.date).each(function (i, m) {
+                            HtmlStr += "  <tr><td>" + m.所属城市 + "</td><td>" + m.城市等级 + "</td><td>" + m.物业名称 + "</td><td>" + m.商场名称 +
+                                "</td><td>" + m.商场等级 + "</td><td>" + m.地址 + "</td><td>" + dateFtt("yyyy-MM-dd", m.品牌调整时间) + "</td><td><table style='margin:0 auto'>" + MarketContactJson(m.ID) +
+                                "</table></td><td>" + dateFtt("yyyy-MM-dd", m.续约开始日期1) + "</td><td>" + dateFtt("yyyy-MM-dd", m.续约开始日期2) + "</td><td>" + m.经营总面积 +
+                                "</td><td><table   style='margin:0 auto'>" + GetMarketRentalJson(m.ID) + "</table></td><td>" + m.录入人 + "</td><td>" + dateFtt("yyyy-MM-dd", m.更新日期) + "</td></tr>"
+                        })
+                        $("#Table tbody").html(HtmlStr);
+                    } else {
+                        $("#Table tbody").html("  <tr><td style='text - align: start; height: 120px;' colspan='23'>暂无数据！</td></tr>")
+                    }
+
+                }
+            },
+            error: function (err) {
+                console.log(err)
+            }
+         })
+    }
+
+    //获取商场联系人
+    function MarketContactJson(id) {
+        var HtmlStr = "";
+        $.ajax({
+            url: '@Url.Action("MarketContactJson", "DevelopmentDoc")',
+            type: 'get',
+            data: { id: id},
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                if (data.success) {
+                    HtmlStr = "<tr><td>联系人</td><td>性别</td><td>职务</td><td>联系方式</td></tr>"
+                    if (data.date.length > 0) {
+                        
+                        $(data.date).each(function (i, m) {
+                            HtmlStr += "<tr><td>"+m.联系人+"</td><td>"+m.性别+"</td><td>"+m.职务+"</td><td>"+m.联系方式+"</td></tr>"
+                        })
+                      
+                    } else {
+                        HtmlStr += "<tr><td colspan='4'>暂无数据</td></tr>"
+                    } 
+
+                }
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
+       
+        return HtmlStr;
+    }
+    //获取租金年
+    function GetMarketRentalJson(id) {
+        var HtmlStr = "";
+        $.ajax({
+            url: '@Url.Action("GetMarketRentalJson", "DevelopmentDoc")',
+            type: 'get',
+            data: { id: id},
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                //console.log(data)
+               
+                if (data.success) {
+                    HtmlStr = "<tr><td>租金年</td><td>租金月</td><td>租金金额(万元)</td></tr>"
+                    if (data.date.length > 0) {
+                       
+                        $(data.date).each(function (i, m) {
+                            HtmlStr += "<tr><td>" + m.租金年 + "年</td><td>" + m.租金月 + "月</td><td>" + m.租金金额+"(万元)</td></tr>"
+                        })
+                      
+                    } else {
+                        HtmlStr += "<tr><td colspan='3'>暂无数据</td></tr>"
+                    } 
+
+                }
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
+       
+        return HtmlStr;
+    }
+</script>
+<script src="~/Scripts/exportTables.js"></script>

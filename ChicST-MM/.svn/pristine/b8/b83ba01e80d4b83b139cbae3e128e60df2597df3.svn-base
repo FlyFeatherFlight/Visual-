@@ -1,0 +1,597 @@
+﻿@model ChicST_MM.WEB.Models.SalesOrderViewModel
+
+@{
+    ViewBag.Title = "详细信息";
+}
+<link href="~/Content/scroolWidth.css" rel="stylesheet" />
+<h3>@Model.客户姓名 详细信息</h3>
+
+<div>
+    <table class="table table-bordered">
+        <tr>
+            <td>
+                合同编号
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.合同编号)
+            </td>
+            <td>
+                单据编号
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.单据编号)
+            </td>
+            <td>
+                订单编号
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.订单编号)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                单据日期
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.单据日期)
+            </td>
+            <td>
+                店铺
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.店铺)
+            </td>
+            <td>
+                员工
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.员工)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                客户姓名
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.客户姓名)
+            </td>
+
+            <td>
+                客户联系方式
+            </td>
+
+            <td>
+                @Html.DisplayFor(model => model.客户联系方式)
+            </td>
+            <td>
+                客户地址
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.客户地址)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                零售合计
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.零售合计)
+            </td>
+            <td>
+                预付金额_bak
+            </td>
+            <td colspan="3">
+                @Html.DisplayFor(model => model.预付金额_bak)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                单据备注
+            </td>
+            <td colspan="5">
+                @Html.DisplayFor(model => model.单据备注)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                制单人姓名
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.制单人姓名)
+            </td>
+            <td>
+                制单日期
+            </td>
+            <td colspan="3">
+                @Html.DisplayFor(model => model.制单日期)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                确认标志
+            </td>
+            <td>
+                @if (Model.确认标志 == true)
+                {
+                    <span>是</span>
+                }
+                else
+                {
+                    <span>否</span>
+                }
+            </td>
+            <td>
+                确认人姓名
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.确认人姓名)
+            </td>
+            <td>
+                确认日期
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.确认日期)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                审核标志
+            </td>
+            <td>
+
+                @if (Model.审核标志 == true)
+                {
+                    <span>是</span>
+                }
+                else
+                {
+                    <span>否</span>
+                }
+            </td>
+            <td>
+                审核人姓名
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.审核人姓名)
+            </td>
+            <td>
+                审核日期
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.审核日期)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                复核标志
+            </td>
+            <td>
+
+                @if (Model.复核标志 == true)
+                {
+                    <span>是</span>
+                }
+                else
+                {
+                    <span>否</span>
+                }
+            </td>
+            <td>
+                复核人姓名
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.复核人姓名)
+            </td>
+            <td>
+                复核日期
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.复核日期)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                批准标志1
+            </td>
+            <td>
+
+                @if (Model.批准标志1 == true)
+                {
+                    <span>是</span>
+                }
+                else
+                {
+                    <span>否</span>
+                }
+            </td>
+            <td>
+                批准人1姓名
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.批准人1姓名)
+            </td>
+            <td>
+                批准日期1
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.批准日期1)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                收货人
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.收货人)
+            </td>
+
+            <td>
+                收货地址
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.收货地址)
+            </td>
+            <td>
+                收货人联系方式
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.收货人联系方式)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                制单销售人
+            </td>
+            <td colspan="5">
+                @Html.DisplayFor(model => model.制单销售人)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                是否自营业绩
+            </td>
+            <td>
+
+                @if (Model.是否自营业绩 == true)
+                {
+                    <span>是</span>
+                }
+                else if (Model.是否业务业绩 == false)
+                {
+                    <span>否</span>
+                }
+                else
+                {
+
+                }
+            </td>
+            <td>
+                是否业务业绩
+            </td>
+            <td>
+
+                @if (Model.是否业务业绩 == true)
+                {
+                    <span>是</span>
+                }
+                else if (Model.是否业务业绩 == false)
+                {
+                    <span>否</span>
+                }
+                else
+                {
+
+                }
+            </td>
+            <td>
+                折扣
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.折扣)
+            </td>
+
+        </tr>
+    </table>
+    <div style="width:95%;margin:0 2.5%;">
+        <div class="Top hidden"></div>
+        <div class="Botoom">
+            <table class="text-center" id="Table">
+                <thead>
+                    <tr>
+                        <td class="width-50">
+                            序号
+                        </td>
+                        <td class="width-102">
+                            商品编号
+                        </td>
+                        <td class="width-102">型号</td>
+                        <td class="width-102">
+                            系列
+                        </td>
+                        <td class="width-102">
+                            名称
+                        </td>
+                        <td class="width-102">
+                            规格
+                        </td>
+                        <td class="width-140">
+                            描述
+                        </td>
+                        <td class="width-50">
+                            计量单位
+                        </td>
+                        <td class="width-102">
+                            标准零售价
+                        </td>
+                        <td class="width-60">
+                            数量
+                        </td>
+                        <td class="width-102">
+                            零售单价
+                        </td>
+                        <td class="width-102">
+                            零售小计
+                        </td>
+                        <td class="width-102">
+                            需求日期
+                        </td>
+
+                        <td class="width-102">
+                            明细备注
+                        </td>
+                        <td class="width-50">
+                            是否进口
+                        </td>
+                        <td class="width-50">
+                            交货周期
+                        </td>
+                        <td class="width-102">
+                            预计交期
+                        </td>
+                        <td class="width-102">
+                            默认交期
+                        </td>
+                        <td class="width-102">
+                            标准经销价
+                        </td>
+                        <td class="width-102">
+                            经销价折扣
+                        </td>
+                        <td class="width-102">
+                            单价
+                        </td>
+                        <td class="width-102">
+                            经销价小计
+                        </td>
+                        <td class="width-102">操作</td>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@*修改模态框*@
+<form class="edit-diolog">
+    <input type="text" name="id" value="" class="IdE hidden"/>
+    <table class="table table-bordered">
+
+        <tr>
+            <td>序号</td>
+            <td style="width:22%;" class="NumberE"></td>
+
+            <td>商品编号</td>
+            <td class="productNoE" style="width:22%;" ></td>
+            <td>型号</td>
+            <td class="productModelE"></td>
+        </tr>
+        <tr>
+            <td>规则</td>
+            <td class="goodsSpeE" ></td>
+            <td>名称</td>
+            <td class="goodsNameE"></td>
+            <td>计量单位</td>
+            <td class="goodsUnitE"></td>
+        </tr>
+        <tr>
+            <td>商品描述</td>
+            <td colspan="5" class="goodsDesE"></td>
+        </tr>
+        <tr>
+            <td>标准零售价</td>
+            <td class="goodsNormPriceE"></td>
+            <td>系列</td>
+            <td class="seriesE"></td>
+            <td>是否进口</td>
+            <td class="Is_ImportE"></td>
+        </tr>
+        <tr>
+            <td>数量</td>
+            <td class="numE"></td>
+            <td>零售单价</td>
+            <td class="priceE"></td>
+            <td>零售小计</td>
+            <td class="priceTotalE"></td>
+        </tr>
+        <tr>
+            <td>需求日期</td>
+            <td class="needDateE"></td>
+            <td>交货周期</td>
+            <td class="cycleE"></td>
+            <td>预计交期</td>
+            <td class="predictDateE"></td>
+        </tr>
+        <tr>
+            <td>默认交期</td>
+            <td class="fixDateE"></td>
+            <td>明细备注</td>
+            <td class="notesE" colspan="5"></td>
+        </tr>
+        <tr>
+            <td>标准经销价</td>
+            <td class="standardSellE"></td>
+            <td>经销价折扣</td>
+            <td>
+                <input type="text" name="discount" value="" class="form-control sellDiscountE width-140" onkeyup="value=value.replace(/[^\d]/g,'')"
+                       onblur="value = value.replace(/[^\d]/g, '');" oninput="changePrice(this)" placeholder="请输入数字" maxlength="3" style="display:inline;" /><span>折</span>
+            </td>
+            <td>单价</td>
+            <td>
+                <input type="text" name="price" value="" class="form-control price_sellE" readonly />
+            </td>
+        </tr>
+        <tr>
+            <td>经销价小计</td>
+            <td class="selltotalE" colspan="5"></td>
+        </tr>
+
+        
+    </table>
+</form>
+<script>
+    $(".edit-diolog").dialog({
+        autoOpen: false,
+        height: 600,
+        width: 960,
+        modal: true,
+        buttons: {
+
+            "取消": function () { $(this).dialog("close") },
+            "提交": function () {
+                $.ajax({
+                    url: '@Url.Action("SalesOrder_DetailsEdit", "SalesOrder")',
+                    type: 'post',
+                    data: $(".edit-diolog").serialize(),
+                    datatype: 'json',
+                    success: function (data) {
+                        if (data.success) {
+                            $(".edit-diolog").dialog("close");
+                            alert(data.msg);
+                            window.location.reload();
+
+                        } else {
+                            alert(data.msg );
+                        }
+                    },
+                    error: function (err) {
+                        alert("点击过快或网络错误，请稍后重试！");
+                        console.log(err)
+                    }
+
+                })
+            }
+        }
+    })
+    //获取明细数据
+    getDetail();
+    function getDetail() {
+        $("#Table tbody").html("<tr><td class='loading' colspan='36' style='height:120px;text-align:start;'>正在加载</td></tr>");
+        $.ajax({
+            url: '@Url.Action("GetSalesOrdersDeatilsJson", "SalesOrder")',
+            type: "post",
+            data: {id:@Model.ID},
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                console.log(data)
+                if (data.success) {
+                    let htmlStr = null;
+                   
+                    $(data.data).each(function (i, m) {
+                        htmlStr += "<tr><td class='Id hidden'>" + m.ID + "</td><td  class='Number'>" + m.序号 + "</td><td class='productNo'>" + m.商品编号 +
+                            "</td><td class='productModel'>" + m.商品型号 + "</td><td  class='series'>" + m.系列 + "</td><td  class='goodsName'>" + m.名称 +
+                            "</td><td  class='goodsSpe'>"
+                            + m.规格 + "</td><td  class='goodsDes'>" + m.描述 + "</td><td  class='goodsUnit'>" + m.计量单位 + "</td><td  class='goodsNormPrice'>" + m.标准零售价 +
+                            "</td><td  class='num'>" + m.数量 + "</td><td  class='price'>"
+                            + m.零售单价 + "</td><td  class='priceTotal'>" + m.零售小计 + "</td><td class='needDate'>" + dateFtt('yyyy-MM-dd', m.需求日期) +
+                            "</td><td class='notes'>" + m.明细备注 + "</td><td class='Is_Import'>" + m.是否进口 + "</td><td class='cycle'>"
+                            + m.交货周期 + "</td><td class='predictDate'>" + dateFtt('yyyy-MM-dd', m.预计交期) + "</td><td class='fixDate'>" + dateFtt('yyyy-MM-dd', m.默认交期) +
+                            "</td><td class='standardSell'>" + m.标准经销价 + "</td><td class='sellDiscount'>" + m.经销价折扣 + "</td><td class='price_sell'>" + m.单价 +
+                            "</td><td class='selltotal'>" + m.小计 + "</td><td><span class='Aspan' onclick='edit(this)'>修改</span></td></tr>"
+                    })
+                    $("#Table tbody").html(htmlStr);
+                    clearNull($("#Table td"));
+                }
+            },
+            error: function (err) {
+                alert("点击过快或网络错误，请稍后重试！");
+                console.log(err)
+            }
+
+        })
+    }
+    //点击修改并赋值
+    function edit(_this) {
+       
+        Number = $.trim($(_this).parent().siblings(".Number").text()),//序号
+            productNo = $.trim($(_this).parent().siblings(".productNo").text()),//商品编号
+            productModel = $.trim($(_this).parent().siblings(".productModel").text()),//商品型号
+            series = $.trim($(_this).parent().siblings(".series").text()),//系列
+            goodsName = $.trim($(_this).parent().siblings(".goodsName").text()),//名称
+            goodsSpe = $.trim($(_this).parent().siblings(".goodsSpe").text()),//规格
+            goodsDes = $.trim($(_this).parent().siblings(".goodsDes").text()),//描述
+            goodsUnit = $.trim($(_this).parent().siblings(".goodsUnit").text()),//计量单位
+            goodsNormPrice = $.trim($(_this).parent().siblings(".goodsNormPrice").text()),//标准零售价
+            num = $.trim($(_this).parent().siblings(".num").text()),//数量
+            price = $.trim($(_this).parent().siblings(".price").text()),//零售单价
+            priceTotal = $.trim($(_this).parent().siblings(".priceTotal").text()),//零售小计
+            needDate = $.trim($(_this).parent().siblings(".needDate").text()),//需求日期
+            notes = $.trim($(_this).parent().siblings(".notes").text()),//明细备注
+            cycle = $.trim($(_this).parent().siblings(".cycle").text()),//交货周期
+            Is_Import = $.trim($(_this).parent().siblings(".Is_Import").text()),//是否进口
+            predictDate = $.trim($(_this).parent().siblings(".predictDate").text()),//预计交期
+            fixDate = $.trim($(_this).parent().siblings(".fixDate").text()),//默认日期
+            Id = $.trim($(_this).parent().siblings(".Id").text()),//明细ID
+            price_sell = $.trim($(_this).parent().siblings(".price_sell").text()),//单价
+            standardSell = $.trim($(_this).parent().siblings(".standardSell").text()),//标准经销价
+        sellDiscount = $.trim($(_this).parent().siblings(".sellDiscount").text()),//经销价折扣
+            selltotal = $.trim($(_this).parent().siblings(".selltotal").text());//小计 
+        if (standardSell == "" || sellDiscount == "") {
+        alert("标准经销价或经销价折扣为空，不能修改！")
+        } else {
+            $(".NumberE").text(Number);
+            $(".productNoE").text(productNo);
+            $(".productModelE").text(productModel);
+            $(".seriesE").text(series);
+            $(".goodsNameE").text(goodsName);
+            $(".goodsSpeE").text(goodsSpe);
+            $(".goodsDesE").text(goodsDes);
+            $(".goodsUnitE").text(goodsUnit);
+            $(".goodsNormPriceE").text(goodsNormPrice);
+            $(".numE").text(num);
+            $(".priceE").text(price);
+            $(".priceTotalE").text(priceTotal);
+            $(".needDateE").text(needDate);
+            $(".notesE").text(notes);
+            $(".cycleE").text(cycle);
+            $(".Is_ImportE").text(Is_Import);
+            $(".predictDateE").text(predictDate);
+            $(".fixDateE").text(fixDate);
+            $(".IdE").val(Id);
+            $(".price_sellE").val(price_sell);
+            $(".standardSellE").text(standardSell);
+            $(".sellDiscountE").val(sellDiscount);
+            $(".selltotalE").text(selltotal);
+       
+            $(".edit-diolog").dialog("option", "title", "修改经销价折扣").dialog("open");
+        }
+       
+    }
+    
+    function changePrice(_this) {
+        let standardSell = parseFloat($.trim($(".standardSellE").text())).toFixed(2),
+            selltotal = 0;
+        if ($(_this).val() > 100) {
+            $(_this).val(100);
+            $(".price_sellE").val($(".standardSellE").text());
+        } else if ($(_this).val().length >= 2) {
+            selltotal = ($(_this).val() / 100 * standardSell).toFixed(2);
+            $(".price_sellE").val(selltotal);
+        } else {
+            selltotal = ($(_this).val() / 10 * standardSell).toFixed(2);
+            $(".price_sellE").val(selltotal);
+        }
+       
+    }
+</script>

@@ -1,0 +1,7 @@
+﻿@model List<门店月报数据_Result>
+@{
+    ViewBag.Title = "StoreMonth_ReportView";
+}
+
+<h2>StoreMonth_ReportView</h2>
+

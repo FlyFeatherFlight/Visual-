@@ -1,0 +1,216 @@
+﻿
+@{
+    ViewBag.Title = "竞品数据";
+}
+<link href="~/Content/scroolWidth.css" rel="stylesheet" />
+<h3>竞品数据</h3>
+<div style="margin-left:2.5%;padding:5px 0;">
+    <select class=" search-input" id="sheng"></select>
+    <select class="search-input" id="shi"></select>
+    <select class="search-input" id="_Man">
+        <option value="">-请选择录入人-</option>
+    </select>
+    <input type="text" id="startDate" value="" class="search-input dateTime" placeholder="请选择开始日期" readonly />至
+    <input type="text" id="endDate" value="" class="search-input dateTime" placeholder="请选择结束日期" readonly />
+    <input type="submit" name="" value="查询" id="subSearch" />
+    <input type="button" onclick="  toExcel($('#Table'))" value="导出数据" />
+    <p class="red">Tips:默认显示本月的数据，其他数据请根据条件自行查询</p>
+</div>
+<div class="main-wrap">
+    <div class="Top hidden">
+        <table id="Tab" class="text-center text-center">
+            <tr>
+                <th>
+                    <div class="width-75">城市</div>
+                </th>
+                <th>
+                    <div class="width-102">商场</div>
+                </th>
+                <th>
+                    <div class="width-30">楼层</div>
+                </th>
+                <th>
+                    <div class="width-102">位置</div>
+                </th>
+                <th>
+                    <div class="width-102">面积</div>
+                </th>
+                <th>
+                    <div class="width-30">经营形态</div>
+                </th>
+                <th>
+                    <div class="width-102"> 入驻日期</div>
+                </th>
+                <th>
+                    <div class="width-102">经销商</div>
+                </th>
+                <th><div class="width-410">月销售额</div></th>
+                <th>
+                    <div class="width-75">月店面客流</div>
+                </th>
+                <th>
+                    <div class="width-102">折扣</div>
+                </th>
+                <th>
+                    <div class="width-102">形象</div>
+                </th>
+                <th>
+                    <div class="width-102">备注</div>
+                </th>
+                <th>
+                    <div class="width-75">录入人</div>
+                </th>
+                <th>
+                    <div class="width-102">更新日期</div>
+                </th>
+            </tr>
+        </table>
+    </div>
+    <div class="Botoom">
+        <table class="text-center" id="Table">
+            <thead>
+                <tr>
+                    <th>
+                        <div class="width-75">城市</div>
+                    </th>
+                    <th>
+                        <div class="width-102">商场</div>
+                    </th>
+                    <th>
+                        <div class="width-30">楼层</div>
+                    </th>
+                    <th>
+                        <div class="width-102">位置</div>
+                    </th>
+                    <th>
+                        <div class="width-102">面积</div>
+                    </th>
+                    <th>
+                        <div class="width-30">经营形态</div>
+                    </th>
+                    <th>
+                        <div class="width-102"> 入驻日期</div>
+                    </th>
+                    <th>
+                        <div class="width-102">经销商</div>
+                    </th>
+                    <th><div class="width-410">月销售额</div></th>
+                    <th>
+                        <div class="width-75">月店面客流</div>
+                    </th>
+                    <th>
+                        <div class="width-102">折扣</div>
+                    </th>
+                    <th>
+                        <div class="width-102">形象</div>
+                    </th>
+                    <th>
+                        <div class="width-102">备注</div>
+                    </th>
+                    <th>
+                        <div class="width-75">录入人</div>
+                    </th>
+                    <th>
+                        <div class="width-102">更新日期</div>
+                    </th>
+                </tr>
+            </thead>
+           <tbody></tbody>
+
+        </table>
+    </div>
+</div>
+<script>
+    var nowMonth = getCurrentMonthFirst();
+    GetCompetesJson(null, null, nowMonth, null);
+    scroollHeadTab();
+    //根据选择的省份，获取市数据
+    /****查询***/
+    //获取省  =>  改变省获取市数据
+    getProvince($("#sheng"));
+    getMan($("#_Man"));
+    $("#sheng").change(function () {
+        $("#shi").empty();
+        getShi($("#sheng").val(), $("#shi"));
+    })
+    $("#subSearch").click(function () {
+        let cid = $("#shi").val(),
+            emid = $("#_Man").val(),
+            startDate = $("#startDate").val(),
+            endDate = $("#endDate").val();
+
+        GetCompetesJson(cid, emid, startDate, endDate);
+    })
+    function GetCompetesJson(cid, emid, startDate, endDate) {
+        $("#Table tbody").html("  <tr><td class='loading' style='text-align:left; height: 120px;' colspan='26'>正在加载</td></tr>");
+
+        $.ajax({
+            url: '@Url.Action("GetCompetesJson", "DevelopmentDoc")',
+            type: 'post',
+            data: { cid: cid, emid: emid, startDate: startDate, endDate: endDate},
+            dataType: 'json',
+            success: function (data) {
+               //console.log(data)
+                if (data.success) {
+                    if (data.date.length > 0) {
+                        let HtmlStr = "";
+                        $(data.date).each(function (i, m) {
+                            HtmlStr += "  <tr><td>" + m.城市 + "</td><td>" + m.商场 + "</td><td>" + m.楼层 + "</td><td>" + m.位置 +
+                                "</td><td>" + m.面积 + "</td><td>" + m.经营形态 + "</td><td>" + dateFtt("yyyy-MM-dd", m.入住日期) +
+                                "</td><td>" + m.经销商 + "</td><td><table style='margin:0 auto'>" + GetCometesAnnualSalesJson(m.ID) +
+                                "</table></td><td>" + m.月店面客流 + "</td><td>" + m.折扣 + "</td><td>" + m.形象 + "</td><td>"
+                                + m.备注 + "</td><td>" + m.录入人 + "</td><td>" + dateFtt("yyyy-MM-dd", m.更新日期) + "</td></tr>"
+                        })
+                        $("#Table tbody").html(HtmlStr);
+                        clearNull($("#Table td"));
+                        //console.log(HtmlStr)
+                    } 
+                } else {
+                    $("#Table tbody").html("  <tr><td style='text-align:left; height: 120px;' colspan='26' class='red'>暂无数据！</td></tr>")
+                }
+
+            },
+            error: function (err) {
+                console.log(err)
+            }
+         })
+    }
+
+    //获取竞品联系人
+    function GetCometesAnnualSalesJson(id) {
+       
+        var HtmlStr = "";
+        $.ajax({
+            url: '@Url.Action("GetCometesAnnualSalesJson", "DevelopmentDoc")',
+            type: 'post',
+            data: { id: id},
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                //console.log(data)
+                if (data.success) {
+                    HtmlStr = "<tr><td>销售年</td><td>销售月</td><td>销售额(万元)</td></tr>";
+                    if (data.date.length > 0) {
+                      
+                        $(data.date).each(function (i, m) {
+                        m.销售额 = m.销售额 / 10000;
+                            HtmlStr += "<tr><td>" + m.销售年 + "</td><td>" + m.销售月 + "</td><td>" + m.销售额 + "</td></tr>"
+                        })
+
+                    } else {
+                        HtmlStr += "<tr><td colspan='4' class='red'>暂无数据!</td></tr>"
+                    }
+
+                }
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
+
+        return HtmlStr;
+    }
+
+</script>
+<script src="~/Scripts/exportTables.js"></script>
+

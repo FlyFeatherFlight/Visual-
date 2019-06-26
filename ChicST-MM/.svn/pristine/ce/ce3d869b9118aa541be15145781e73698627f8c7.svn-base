@@ -1,0 +1,7 @@
+﻿
+@{
+    ViewBag.Title = "GetCompetesView";
+}
+
+<h2>GetCompetesView</h2>
+

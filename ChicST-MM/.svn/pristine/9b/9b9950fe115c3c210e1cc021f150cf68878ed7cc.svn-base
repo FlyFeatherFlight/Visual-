@@ -1,0 +1,197 @@
+﻿
+@{
+    ViewBag.Title = "竞品数据";
+}
+<link href="~/Content/scroolWidth.css" rel="stylesheet" />
+<h3>竞品数据</h3>
+<form action="@Url.Action("CompetesView","DevelopmentDoc")" method="post" style="margin-left:2.5%;padding:5px 0;">
+    <select class=" search-input" id="sheng">
+        <option value="">-请选择省-</option>
+    </select>
+    <select class="search-input" id="shi" name="cid">
+        <option value="">-请选择市-</option>
+    </select>
+    <select class="search-input" id="_Man" name="emid">
+        <option value="">-请选择录入人-</option>
+    </select>
+    <input type="text" name="startDate" value="" class="search-input dateTime" placeholder="请选择开始日期" readonly />至
+    <input type="text" name="endDate" value="" class="search-input dateTime" placeholder="请选择结束日期" readonly />
+    <input type="submit" name="" value="查询" />
+</form>
+<div class="main-wrap">
+    <div class="Top hidden">
+        <table id="Tab" class="text-center text-center">
+            <tr>
+                <th>
+                    <div class="width-75">城市</div>
+                </th>
+                <th>
+                    <div class="width-102">商场</div>
+                </th>
+                <th>
+                    <div class="width-30">楼层</div>
+                </th>
+                <th>
+                    <div class="width-102">位置</div>
+                </th>
+                <th>
+                    <div class="width-102">面积</div>
+                </th>
+                <th>
+                    <div class="width-30">经营形态</div>
+                </th>
+                <th>
+                    <div class="width-102"> 入驻日期</div>
+                </th>
+                <th>
+                    <div class="width-102">经销商</div>
+                </th>
+                <th><div class="width-410">月销售额</div></th>
+                <th>
+                    <div class="width-75">月店面客流</div>
+                </th>
+                <th>
+                    <div class="width-102">折扣</div>
+                </th>
+                <th>
+                    <div class="width-102">形象</div>
+                </th>
+                <th>
+                    <div class="width-102">备注</div>
+                </th>
+                <th>
+                    <div class="width-75">录入人</div>
+                </th>
+                <th>
+                    <div class="width-102">更新日期</div>
+                </th>
+                <th><div class="width-75">操作</div></th>
+            </tr>
+        </table>
+    </div>
+    <div class="Botoom">
+        <table class="text-center" id="Table">
+            <tr>
+                <th>
+                    <div class="width-75">城市</div>
+                </th>
+                <th>
+                    <div class="width-102">商场</div>
+                </th>
+                <th>
+                    <div class="width-30">楼层</div>
+                </th>
+                <th>
+                    <div class="width-102">位置</div>
+                </th>
+                <th>
+                    <div class="width-102">面积</div>
+                </th>
+                <th>
+                    <div class="width-30">经营形态</div>
+                </th>
+                <th>
+                    <div class="width-102"> 入驻日期</div>
+                </th>
+                <th>
+                    <div class="width-102">经销商</div>
+                </th>
+                <th><div class="width-410">月销售额</div></th>
+                <th>
+                    <div class="width-75">月店面客流</div>
+                </th>
+                <th>
+                    <div class="width-102">折扣</div>
+                </th>
+                <th>
+                    <div class="width-102">形象</div>
+                </th>
+                <th>
+                    <div class="width-102">备注</div>
+                </th>
+                <th>
+                    <div class="width-75">录入人</div>
+                </th>
+                <th>
+                    <div class="width-102">更新日期</div>
+                </th>
+                <th><div class="width-75">操作</div></th>
+            </tr>
+
+
+        </table>
+    </div>
+</div>
+<script>
+    var nowMonth = getCurrentMonthFirst();
+    GetCompetesJson(null, null, nowMonth, null);
+    function GetCompetesJson(cid, emid, startDate, endDate) {
+        $("#Table tbody").html("  <tr><td class='loading' style='text-align: start; height: 120px;' colspan='26'>正在加载</td></tr>");
+
+        $.ajax({
+            url: '@Url.Action("GetFranchiserJson", "DevelopmentDoc")',
+            type: 'get',
+            data: { cid: cid, emid: emid, startDate: startDate, endDate: endDate},
+            dataType: 'json',
+            success: function (data) {
+               console.log(data)
+                if (data.success) {
+                    if (data.date.length > 0) {
+                        let HtmlStr = "";
+                        $(data.date).each(function (i, m) {
+                            HtmlStr += "  <tr><td>" + m.城市 + "</td><td>" + m.城市等级 + "</td><td>" + m.企业名称 + "</td><td>" + m.经销商等级 +
+                                "</td><td>" + m.经销商来源 + "</td><td>" + m.经销商特征 + "</td><td><table style='margin:0 auto'>" + FranchicserContactList(m.ID) +
+                                "</table></td><td>" + m.地址 + "</td><td>" + m.社会资源描述 + "</td><td>" + m.代理品牌 + "</td><td>" + m.经营年限 + "</td><td>" + m.年销售额 +
+                                "</td><td>" + m.团队人数 + "</td><td>" + m.入驻商场 + "</td><td>" + m.门店数量 + "</td><td>" + m.投资预算 + "</td><td>" + m.意向商场 + "</td><td>" + m.商场等级 +
+                                "</td><td>" + m.预算面积 + "</td><td>" + m.意向位置分级 + "</td><td>" + m.盈利情况 + "</td><td>" + m.匹配度 + "</td><td>" + m.备注 +
+                                "</td><td>" + m.录入人 + "</td><td>" + dateFtt("yyyy-MM-dd", m.更新日期) + "</td></tr>"
+                        })
+                        $("#Table tbody").html(HtmlStr);
+                    } else {
+                        $("#Table tbody").html("  <tr><td style='text - align: start; height: 120px;' colspan='26'>暂无数据！</td></tr>")
+                    }
+
+                }
+            },
+            error: function (err) {
+                console.log(err)
+            }
+         })
+    }
+
+    //获取商场联系人
+    function GetCometesAnnualSalesJson(id) {
+        var HtmlStr = "";
+        $.ajax({
+            url: '@Url.Action("GetCometesAnnualSalesJson", "DevelopmentDoc")',
+            type: 'post',
+            data: { id: id},
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                console.log(data)
+                if (data.success) {
+                    HtmlStr = "<tr><td>联系人</td><td>性别</td><td>职务</td><td>联系方式</td></tr>";
+                    if (data.date.length > 0) {
+                      
+                        $(data.date).each(function (i, m) {
+                            HtmlStr += "<tr><td>" + m.联系人 + "</td><td>" + m.性别 + "</td><td>" + m.职务 + "</td><td>" + m.联系方式 + "</span></tr>"
+                        })
+
+                    } else {
+                        HtmlStr += "<tr><td colspan='4'>暂无数据</td></tr>"
+                    }
+
+                }
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
+
+        return HtmlStr;
+    }
+
+</script>
+<script src="~/Scripts/exportTables.js"></script>
+

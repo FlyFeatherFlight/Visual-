@@ -1,0 +1,175 @@
+﻿
+using ChicST_MM.WEB.Models;
+using System;
+using System.Web.Mvc;
+
+namespace ChicST_MM.WEB.CustomAttributes
+{
+    ///　<summary>
+    ///　权限拦截
+    ///　</summary>
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
+    public class AuthorizationFilterAttribute: ActionFilterAttribute
+    {
+
+        FilterContextInfo fcinfo;
+        // OnActionExecuted 在执行操作方法后由 ASP.NET MVC 框架调用。
+        // OnActionExecuting 在执行操作方法之前由 ASP.NET MVC 框架调用。
+        // OnResultExecuted 在执行操作结果后由 ASP.NET MVC 框架调用。
+        // OnResultExecuting 在执行操作结果之前由 ASP.NET MVC 框架调用。
+        /// <summary>
+        /// 在执行操作方法之前由 ASP.NET MVC 框架调用。
+        /// </summary>
+        /// <param name="filterContext"></param>
+        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            string userName;
+         
+           
+            if (filterContext == null)
+            {
+                throw new ArgumentNullException("filterContext");
+            }
+
+            //检查是否免检页面
+            bool skipAuthorization = filterContext.ActionDescriptor.IsDefined(typeof(AllowAnonymousAttribute), inherit: true)
+                                     || filterContext.ActionDescriptor.ControllerDescriptor.IsDefined(typeof(AllowAnonymousAttribute), inherit: true);
+
+            if (skipAuthorization)
+            {
+                return;
+            }
+
+
+            #region 是否已经登陆
+            var user = filterContext.HttpContext.User;
+           
+            
+            if (filterContext.HttpContext.Session["Account"] == null || user == null || !user.Identity.IsAuthenticated)
+
+            {
+                filterContext.HttpContext.Session.RemoveAll();
+
+           
+                filterContext.Result = new ContentResult { Content = @"<script>window.location.href = '/LogIn/SignIn';</script>" };
+                //filterContext.Result = new HttpUnauthorizedResult();
+                return;
+            }
+            
+            #endregion
+           userName = filterContext.HttpContext.User.Identity.Name;//取得当前用户名
+
+
+            fcinfo = new FilterContextInfo(filterContext);
+            var ac = GetAccountInfo(userName, filterContext);
+            string actionName = filterContext.ActionDescriptor.ActionName;             //获取触发当前方法的的Action名字          
+            string controllerName = filterContext.ActionDescriptor.ControllerDescriptor.ControllerName;//获取触发当前方法的的Action所在的控制器名字    
+            var check = CheckAuth(ac, fcinfo);
+            if (!check)
+            {
+                filterContext.Result = new ContentResult { Content = @"<script>alert('您不具有此模块的访问权限，详情请咨询管理中心信息部。');window.history.go(-1);</script>" };
+            }
+
+
+               return;
+
+        }
+
+        /// <summary>
+        /// 检查权限
+        /// </summary>
+        /// <param name="employees">登陆的账户信息</param>
+        /// <param name="fac"></param>
+        /// <returns></returns>
+        private bool CheckAuth(AcountInformation employees, FilterContextInfo fac)
+        {
+
+            if (employees.停用标志 == true)
+            {
+                //停用之后，不可登陆
+                return false;
+
+            }
+
+
+            //if (fac.ControllerName== "Receipt")
+            //{
+            //if (employees.部门 != 3)
+            //{
+                
+            //        return false;//财务操作
+            //    }
+            //}
+            if (fac.ControllerName == "DevelopmentDoc")
+            {
+                if (employees.部门 != 8&&employees.部门!= 1&&employees.部门 != 2 && employees.部门 != 14&&employees.ID!=57&&employees.ID!=43)
+                {
+                    //可访问部门信息部，总经办，拓展部，营销中心-营销中心，可访问的个人-总监
+                    return false;//拓展操作
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 得到当前登录账户信息
+        /// </summary>
+        /// <param name="filterContext"></param>
+        private AcountInformation GetAccountInfo(string userName,ActionExecutingContext filterContext)
+        {
+            if (userName != null)
+            {
+                var account = filterContext.HttpContext.Session["Account"] as AcountInformation;
+                return account;
+                //HttpCookie httpCookie = new HttpCookie("user")
+                //{
+                //    Value = userName
+                //};
+                //Response.Cookie.Add(httpCookie);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public class FilterContextInfo
+        {
+            public FilterContextInfo(ActionExecutingContext filterContext)
+            {
+                #region 获取链接中的字符
+                // 获取域名
+                DomainName = filterContext.HttpContext.Request.Url.Authority;
+
+                //获取模块名称
+                //  module = filterContext.HttpContext.Request.Url.Segments[1].Replace('/', ' ').Trim();
+
+                //获取 controllerName 名称
+                ControllerName = filterContext.RouteData.Values["controller"].ToString();
+
+                //获取ACTION 名称
+                ActionName = filterContext.RouteData.Values["action"].ToString();
+
+                #endregion
+            }
+            /// <summary>
+            /// 获取域名
+            /// </summary>
+            public string DomainName { get; set; }
+            /// <summary>
+            /// 获取模块名称
+            /// </summary>
+            public string Module { get; set; }
+            /// <summary>
+            /// 获取 controllerName 名称
+            /// </summary>
+            public string ControllerName { get; set; }
+            /// <summary>
+            /// 获取ACTION 名称
+            /// </summary>
+            public string ActionName { get; set; }
+
+        }
+
+    }
+}

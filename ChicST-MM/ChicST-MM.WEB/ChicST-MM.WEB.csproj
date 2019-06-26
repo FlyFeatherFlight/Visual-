@@ -211,6 +211,7 @@
     <Compile Include="Controllers\BusinessReceivingController.cs" />
     <Compile Include="Controllers\ReimbursementController.cs" />
     <Compile Include="Controllers\Review_5SController.cs" />
+    <Compile Include="Controllers\SalesOrderController.cs" />
     <Compile Include="Controllers\StoreAnalyzeController.cs" />
     <Compile Include="CustomAttributes\AuthorizationFilterAttribute.cs" />
     <Compile Include="CustomAttributes\FilterContextInfo.cs" />
@@ -250,6 +251,8 @@
     <Compile Include="Models\HotelReimSharingViewModel.cs" />
     <Compile Include="Models\HotelReimViewModel.cs" />
     <Compile Include="Models\MailInfoModel.cs" />
+    <Compile Include="Models\SalesOrdersDetailsViewModel.cs" />
+    <Compile Include="Models\SalesOrderViewModel.cs" />
     <Compile Include="Models\SalesRecordViewModel.cs" />
     <Compile Include="Models\StoreAnalyzeModel.cs" />
     <Compile Include="Models\StoreCustomer_TrackViewModel.cs" />
@@ -351,9 +354,13 @@
     <Content Include="DLL\ChicStoreManagement.IBLL.dll" />
     <Content Include="DLL\ChicStoreManagement.IDAL.dll" />
     <Content Include="DLL\ChicStoreManagement.Model.dll" />
-    <Content Include="DLL\EncryptionHelper.dll" />
+    <Content Include="DLL\EncryptionHelper.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="DLL\EntityFramework.dll" />
-    <Content Include="DLL\UploadManager.dll" />
+    <Content Include="DLL\UploadManager.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -390,6 +397,7 @@
     <Content Include="Scripts\Echarts\echarts.min%284.2.1%29.js" />
     <Content Include="Scripts\Echarts\theme\macarons.js" />
     <Content Include="Scripts\export.js" />
+    <Content Include="Scripts\exportTables.js" />
     <Content Include="Scripts\i18n\grid.locale-ar.js" />
     <Content Include="Scripts\i18n\grid.locale-bg.js" />
     <Content Include="Scripts\i18n\grid.locale-bg1251.js" />
@@ -548,6 +556,12 @@
     <Content Include="Views\BusinessTrip\BusinessTrip_VisitSubjectView.cshtml" />
     <Content Include="Views\DevelopmentDoc\FranchiserTrackLogView.cshtml" />
     <Content Include="Views\BusinessTrip\AddBusinessTrip_DetailsView.cshtml" />
+    <Content Include="Views\SalesOrder\Index.cshtml" />
+    <Content Include="Views\SalesOrder\SalesOrderInfoView.cshtml" />
+    <Content Include="Views\DevelopmentDoc\GetMarketView.cshtml" />
+    <Content Include="Views\DevelopmentDoc\GetCompetesView.cshtml" />
+    <Content Include="Views\DevelopmentDoc\GetFranchiserView.cshtml" />
+    <Content Include="Views\StoreAnalyze\StoreMonth_ReportView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

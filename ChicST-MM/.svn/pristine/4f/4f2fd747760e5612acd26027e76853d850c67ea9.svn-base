@@ -1,0 +1,701 @@
+﻿@model IEnumerable<ChicST_MM.WEB.Models.StoreRecRecordsViewModel>
+
+@{
+    ViewBag.Title = "门店数据分析";
+}
+
+<h3>门店数据分析</h3>
+
+<style>
+    #Table {
+        width: 100%;
+        color: #848282;
+    }
+    #Table tr td,
+    #Table tr th,
+    #Tab tr th {
+     
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+    #Table tr td div,
+    #Table tr th div,
+    #Tab tr th div {
+        margin: 8px;
+    }
+    .width-50 {
+    width:50px;
+    }
+    .width-102 {
+        width: 102px;
+    }
+    .width-60 {
+        width: 60px;
+    }
+   
+    .width-30 {
+        width: 30px;
+    }
+    .width-42 {
+        width: 42px;
+    }
+    .width-56 {
+        width: 56px;
+    }
+    .width-75 {
+        width: 75px;
+    }
+    .width-200 {
+        width: 200px;
+    }
+    .width-250 {
+        width: 250px;
+    }
+   
+</style>
+<div style="margin-left:2.5%;margin-bottom:10px;">
+    查询条件：
+    @**根据时间查询**@
+    <div id="dateSeach-wrap" style="margin-bottom:5px;">
+
+        <input type="text" value="" class="dateTime search-input" id="startTime" placeholder="开始时间" />
+        <label>至</label>
+        <input type="text" value="" class="dateTime search-input" id="endTime" placeholder="结束时间" />
+
+    </div>
+    <select class="search-input" id="store">
+        <option value="0" class="active">全国</option>
+    </select>
+   
+    <select class="search-input" id="storeMan" disabled="disabled">
+        <option value="" class="active">-选择员工-</option>
+    </select>
+    <label>操作:</label>
+    <button id="searchBtn">查询</button>
+    
+    @*<input type="button" class="showAllData" value="显示全部数据" name="storeMan" />*@
+    
+    <input type="button" onclick="Excel_export()" value="导出数据" />
+    @*<input type="button"  @*onclick="btn_exportAll()"value="导出所有" />*@
+
+
+</div>
+<div style="margin-left:2.5%;"><span style="color:red">Tips:默认显示当月数据，其它时间数据，请根据上面查询方案选择查询,店铺数据加载完成即可查看跟进数。</span></div>
+<div class="personNum hidden" style="margin-left:2.5%;">
+    <label>当前接待人数：<span class="RecNum">0</span></label>
+    <label>当前跟进人数：<span class="TrackNum">0</span></label>
+    <label>当前意向确认人数：<span class="ExcNum">0</span></label>
+    <span class="TrackInfo" style="color:cadetblue;text-decoration:underline;cursor:pointer;">查看跟进信息</span>
+</div>
+<div style="margin-left:2.5%;">
+    <div class="table-responsive hidden Top" style="overflow-x:hidden; overflow-y:scroll;">
+        <table id="Tab">
+            <tr>
+                <th>
+                    <div class="width-75">店铺</div>
+                </th>
+                <th>
+                    <div class="width-102"> 接待日期</div>
+                </th>
+                <th>
+                    <div class="width-60"> 客户姓名</div>
+                </th>
+                <th>
+                    <div class="width-30">性别</div>
+                </th>
+                <th>
+                    <div class="width-50">年龄段</div>
+                </th>
+                <th>
+                    <div class="width-56">客户类型</div>
+                </th>
+                <th>
+                    <div class="width-30">客户类别</div>
+                </th>
+                <th>
+                    <div class="width-56">客户来源</div>
+                </th>
+                <th>
+                    <div class="width-200">客户目的</div>
+                </th>
+                <th>
+                    <div class="width-30">来店次数</div>
+                </th>
+                <th>
+                    <div class="width-200">客户电话</div>
+                </th>
+                <th>
+                    <div class="width-50">是否有意向</div>
+                </th>
+                <th>
+                    <div class="width-50">是否确认</div>
+                </th>
+                <th>
+                    <div class="width-250">意向产品</div>
+                </th>
+                <th>
+                    <div class="width-102">预算金额</div>
+                </th>
+                <th>
+                    <div class="width-102">楼盘信息</div>
+                </th>
+                <th>
+                    <div class="width-102">户型大小</div>
+                </th>
+                <th>
+                    <div class="width-102">预计使用时间</div>
+                </th>
+                <th>
+                    <div class="width-200">销售常规讲解</div>
+                </th>
+                <th>
+                    <div class="width-75">成交金额</div>
+                </th>
+                <th>
+                    <div class="width-75">进店时间</div>
+                </th>
+                <th>
+                    <div class="width-75"> 出店时间</div>
+                </th>
+                <th>
+                    <div class="width-75"> 进店时长</div>
+                </th>
+                <th>
+                    <div class="width-75">特征</div>
+                </th>
+                <th>
+                    <div class="width-75">接待人</div>
+                </th>
+
+                <th>
+                    <div class="width-75">跟进人</div>
+                </th>
+            </tr>
+        </table>
+    </div>
+    <div class="table-responsive Botoom" style="height:600px;overflow-y:scroll;">
+        <table class="text-center " id="Table">
+            <thead>
+                <tr>
+                    <th>
+                        <div class="width-75">@Html.DisplayNameFor(model => model.店铺)</div>
+                    </th>
+                    <th>
+                        <div class="width-102"> @Html.DisplayNameFor(model => model.接待日期)</div>
+                    </th>
+                    <th>
+                        <div class="width-60"> @Html.DisplayNameFor(model => model.客户姓名)</div>
+                    </th>
+                    <th>
+                        <div class="width-30">@Html.DisplayNameFor(model => model.性别)</div>
+                    </th>
+                    <th>
+                        <div class="width-50">@Html.DisplayNameFor(model => model.年龄段)</div>
+                    </th>
+                    <th>
+                        <div class="width-56">@Html.DisplayNameFor(model => model.客户类型)</div>
+                    </th>
+                    <th>
+                        <div class="width-30">@Html.DisplayNameFor(model => model.客户类别)</div>
+                    </th>
+                    <th>
+                        <div class="width-56">@Html.DisplayNameFor(model => model.客户来源)</div>
+                    </th>
+                    <th>
+                        <div class="width-200">@Html.DisplayNameFor(model => model.客户目的)</div>
+                    </th>
+                    <th>
+                        <div class="width-30">@Html.DisplayNameFor(model => model.来店次数)</div>
+                    </th>
+                    <th>
+                        <div class="width-200"> @Html.DisplayNameFor(model => model.客户电话)</div>
+                    </th>
+                    <th>
+                        <div class="width-50">@Html.DisplayNameFor(model => model.是否有意向)</div>
+                    </th>
+                    <th>
+                        <div class="width-50">是否确认</div>
+                    </th>
+                    <th>
+                        <div class="width-250">意向产品</div>
+                    </th>
+                    <th>
+                        <div class="width-102">预算金额</div>
+                    </th>
+                    <th>
+                        <div class="width-102">楼盘信息</div>
+                    </th>
+                    <th>
+                        <div class="width-102">户型大小</div>
+                    </th>
+                    <th>
+                        <div class="width-102">预计使用时间</div>
+                    </th>
+                    <th>
+                        <div class="width-200">销售常规讲解</div>
+                    </th>
+                    <th>
+                        <div class="width-75">成交金额</div>
+                    </th>
+                    <th>
+                        <div class="width-75"> @Html.DisplayNameFor(model => model.进店时间)</div>
+                    </th>
+                    <th>
+                        <div class="width-75"> @Html.DisplayNameFor(model => model.出店时间)</div>
+                    </th>
+                    <th>
+                        <div class="width-75"> @Html.DisplayNameFor(model => model.进店时长)</div>
+                    </th>
+                    <th>
+                        <div class="width-75">@Html.DisplayNameFor(model => model.特征)</div>
+                    </th>
+                    <th>
+                        <div class="width-75">@Html.DisplayNameFor(model => model.接待人)</div>
+                    </th>
+
+                    <th>
+                        <div class="width-75">@Html.DisplayNameFor(model => model.跟进人)</div>
+                    </th>
+
+
+
+
+                    @*<th>
+            @Html.DisplayNameFor(model => model.安装地址)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.客户建议)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.制单日期)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.更新人姓名)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.更新日期)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.喜欢产品)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.喜欢元素)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.不喜欢产品)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.不喜欢元素)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.户型大小)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.是否关闭)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.关闭备注)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.销售讲解)
+        </th>
+
+
+
+        <th>
+            @Html.DisplayNameFor(model => model.社交软件)
+        </th>
+
+
+
+        <th>
+            @Html.DisplayNameFor(model => model.使用空间)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.家居使用者)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.设计师)
+        </th>*@
+
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    foreach (var item in Model)
+                    {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.店铺)
+                    </td>
+                    <td class="date">
+                        @item.接待日期
+
+                    </td>
+                    <td>
+                        @Html.ActionLink(item.客户姓名, "CustomerInfoView", "StoreAnalyze", new { id = item.ID }, new { target = "_blank" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.性别)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.年龄段)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.客户类型)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.客户类别)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.客户来源)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.客户目的)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.来店次数)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.客户电话)
+                    </td>
+                    <td>
+                        @if (item.是否有意向 == true)
+                        {
+                            <span>是</span>
+                        }
+                        else if (item.是否有意向 == false)
+                        {
+                            <span>否</span>
+                        }
+                        else
+                        {
+                            <span>未确认</span>
+                        }
+                    </td>
+                    <td>
+                        @if (item.是否确认 == true)
+                        {
+                            <span>是</span>
+                        }
+                        else if (item.是否确认 == false)
+                        {
+                            <span>否</span>
+                        }
+                        else
+                        {
+                            <span>未确认</span>
+                        }
+                    </td>
+                    <td>@item.喜欢产品</td>
+                    <td>@item.预算金额</td>
+                    <td>@item.安装地址</td>
+                    <td>@item.户型大小</td>
+                    <td>@item.预计使用时间</td>
+                    <td>@item.销售讲解</td>
+                    <td>@item.成交金额</td>
+                    <td>
+                        @item.进店时间.ToLongTimeString().ToString()
+
+                    </td>
+                    <td>
+                        @item.出店时间.ToLongTimeString().ToString()
+
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.进店时长)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.特征)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.接待人)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.跟进人)
+                    </td>
+                </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td colspan="25">暂无数据！</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    //根据是否滚动显示表头
+    var T = document.querySelector(".Top");
+    var B = document.querySelector(".Botoom");
+    B.addEventListener("scroll", function () {
+        if (B.scrollTop >= 10) {
+            $(".Top").removeClass("hidden");
+            T.scrollLeft = B.scrollLeft;
+        } else {
+            $(".Top").addClass("hidden");
+        }
+        
+    })
+    
+    //获取门店数据
+     $.ajax({
+        type: "get",
+        data: {},
+        url: '@Url.Action("Getstores", "StoreAnalyze")',
+        dataType: "json",
+        cache: false,
+        async: true,
+         success: function (data) {
+             //console.log(data);
+            $.each(data, (i, m) => {
+
+                $("#store").append("<option value=" + m.ID + ">" + m.Name + "</option>")
+
+            })
+        },
+         error: function (err) {
+             alert("点击过快或网络错误，请稍后重试！");
+            console.log(err)
+        }
+
+    })
+   //转换日期格式
+    dateTab($(".date"));
+    //根据选择的门店显示数据
+    var storeid = '';
+    $("#store").on("change", function () {
+        $("#storeMan").removeAttr("disabled")
+        //获取选中的文本
+        var Jopts = $("#store");
+        getText(Jopts)
+       
+        $(".personNum").removeClass("hidden");//统计人数
+        ////存储数据在本地用于跟进
+        storeid = $("#store").val();
+        $(".storeid").val(storeid);//日期查询需要的值
+        var storeName = $("#store").find(".active").text();
+        var trackStore = {
+            nowStoreid: storeid,
+            nowStoreName: storeName
+        }
+        sessionStorage.setItem("nowStore", JSON.stringify(trackStore));
+        //清空员工下拉框内容
+        $("#storeMan").empty();
+        //根据选择的店铺加载员工数据
+         $.ajax({
+            
+            type: "post",
+            data: { storeid: storeid },
+            url: '@Url.Action("GetStoreEmployees", "StoreAnalyze")',
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                   // console.log(data);
+                $("#storeMan").append("<option value='0'>全部</option>")
+                $.each(data, (i, m) => {
+                   
+                    $("#storeMan").append("<option value=" + m.ID + ">" + m.姓名 + "</option>")
+
+                })
+            },
+             error: function (err) {
+                 alert("点击过快或网络错误，请稍后重试！");
+                console.log(err)
+            }
+
+            })
+     
+        
+    })
+    //显示所有数据
+    //$(".showAllData").click(function () {
+    //    if (storeid == "" || storeid == "0") {
+    //       alert("当前已是全部数据！")
+    //    } else {
+    //        RecvingTable(storeid, 0, "", "");
+    //    }
+         
+        
+    //})
+    // 加载员工数据
+    //var storeMan = "";
+    $("#storeMan").on("change", function () {
+        //storeMan = $("#storeMan").val();
+        var Jopts = $("#storeMan");
+        getText(Jopts);
+
+    })
+    
+    // 跳转到跟进页面
+    $(".TrackInfo").click(function () {
+        //console.log(storeid)
+       
+        window.open("@Url.Action("CustomerTrackListView", "StoreAnalyze")?storeID=" + storeid );
+    })
+    //获取文本
+    function getText(Jopts) {
+
+        var value = Jopts.val();//这个值就是你获取的值;
+        if (value != "") {
+            for (var i = 0; i < Jopts.find("option").length; i++) {
+                if (value == Jopts.find("option")[i].value) {
+                    //console.log(Jopts.find("option")[i]);
+                    if ($(Jopts.find("option")[i]).hasClass("active")) {
+                        return;
+                    } else {
+                        $(Jopts.find("option")[i]).siblings().removeClass("active")
+                        $(Jopts.find("option")[i]).addClass("active");
+
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    //导出表格
+    function Excel_export() {
+        var str = '';
+        if ($("#store").val() == null || $("#store").val() == "") {
+            btn_export("全国门店接待统计");
+            return;
+        }
+        if ($("#store").val() != "" && $("#storeMan").val() != "") {
+            str = $("#store").find(".active").text() +'-'+ $("#storeMan").find(".active").text();
+            btn_export(str);
+            return;
+        }
+        if ($("#store").val() != "") {
+            str = $("#store").find(".active").text();
+            btn_export(str);
+            return;
+        }
+        
+    }
+    //查询按钮
+    $("#searchBtn").click(function () {
+        var startTime = $("#startTime").val();
+        var endTime = $("#endTime").val();
+        var emid = $("#storeMan").val();
+        if (startTime == "" && endTime == "" && emid == "" && storeid == "") {
+            alert("请选择查询条件!");
+           
+        } else {
+           
+            RecvingTable(storeid, emid, startTime, endTime);//通过json数据填充列表
+            @*window.open("@Url.Action("Index", "StoreAnalyze")?storeid=" + storeid + "&emid=" + emid + "&startTime=" + startTime + "&endTime=" + endTime);*@
+        }
+    })
+
+    //接待相关函数
+    function RecvingTable(storeid, Manid, startTime, endTime) {
+        console.log("请求数据了", storeid, Manid, startTime, endTime)
+        $("#Table tbody").html("<tr><td colspan='25' style='height:120px;text-align: start;' class='loading'>正在加载</td></tr>");
+        $.ajax({
+            url: '@Url.Action("GetRecving", "StoreAnalyze")',
+            type: "post",
+            data: { storeid: storeid, emid: Manid, startDate: startTime, EndDate: endTime},
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (data) {
+                console.log(data);
+                $(".RecNum").text(data.recCount);
+                $(".TrackNum").text(data.trackCount);
+                $(".ExcNum").text(data.excCount);
+
+                if (data.success==false) {
+                     //console.log(1)
+                    $("#Table tbody").html('<tr><td colspan="25" style="height:120px;text-align: start;">'+data.msg+'</td></tr>')
+                } else {
+                    var htmlStr = "";
+                     $.each(data.data, (i, m) => {
+                         //console.log(m.是否有意向)
+                         //console.log(i)
+                         if (m.预计使用时间 != null) {
+                             m.预计使用时间 = new Date(parseInt(m.预计使用时间.substr(6, 19))).toLocaleDateString();
+                         }
+                      
+                         htmlStr+='<tr><td>' + m.店铺 + '</td><td class="Xlstime">' + dateFtt("yyyy-MM-dd", m.接待日期)  +
+                             '</td><td><a style="cursor:pointer;" onclick="goCur(' + m.ID +' )">' + m.客户姓名 + '</a></td><td>' + m.性别 + '</td><td>' + m.年龄段 +
+                             '</td><td>' + m.客户类型 + '</td><td>' + m.客户类别 + '</td><td>' + m.客户来源 +
+                             '</td><td>' + m.客户目的 + '</td><td>' + m.来店次数 + '</td><td>' + m.客户电话 +
+                             '</td><td>' + m.是否有意向 + '</td><td>'+m.是否确认+'</td><td>' + m.喜欢产品 +
+                             '</td><td>' + m.预算金额 + '</td><td>' + m.安装地址 + '</td><td>' + m.户型大小 +
+                             '</td><td>' + m.预计使用时间 + '</td><td>' + m.销售讲解 + '</td><td>' + m.成交金额 + '</td><td class="Xlstime">' +
+                             dateFtt("hh:mm", m.进店时间) + '</td><td class="Xlstime">' + dateFtt("hh:mm", m.出店时间) +
+                             '</td><td class="conmeTime'+i+'">' + m.进店时长 + '</td><td>' + m.特征 + '</td><td>' + m.接待人 + '</td><td>'
+                             + m.跟进人 + '</td></tr>';
+                         var time = ".conmeTime" + i;
+                         if (m.进店时长 < 0) {
+                             $(time).css("color", "red");
+                         }
+                        
+                    })
+                    $("#Table tbody").html(htmlStr);
+                    clearNull($("#Table td"));
+                   
+                 }
+
+            },
+            error: function (err) {
+                alert("点击过快或网络超时，请稍后重试！")
+                console.log(err)
+            }
+
+        })
+    }
+    function goCur(id) {
+        var Id = id;
+        window.open("@Url.Action("CustomerInfoView", "StoreAnalyze")?id=" + Id);
+
+    }
+    //日期格式化
+    /**************************************时间格式化处理************************************/
+    function dateFtt(format, date) { 
+        
+            if (date == null) return "";
+            date = ChangeDateFormat(date);
+            date = new Date(date);
+
+
+
+            var map = {
+                "M": date.getMonth() + 1, //月份
+                "d": date.getDate(), //日
+                "h": date.getHours(), //小时
+                "m": date.getMinutes(), //分
+                "s": date.getSeconds(), //秒
+                "q": Math.floor((date.getMonth() + 3) / 3), //季度
+                "S": date.getMilliseconds() //毫秒
+            };
+            format = format.replace(/([yMdhmsqS])+/g, function (all, t) {
+                var v = map[t];
+                if (v !== undefined) {
+                    if (all.length > 1) {
+                        v = '0' + v;
+                        v = v.substr(v.length - 2);
+                    }
+                    return v;
+                }
+                else if (t === 'y') {
+                    return (date.getFullYear() + '').substr(4 - all.length);
+                }
+                return all;
+            });
+            return format;
+        }
+    function ChangeDateFormat(cellval) {
+        var t = cellval.slice(6, 19) 
+        var NewDtime = new Date(parseInt(t));
+        return NewDtime; 
+
+       
+
+    }
+</script>
