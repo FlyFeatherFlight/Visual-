@@ -101,6 +101,7 @@ namespace CHICERP_LogisticsClient
                 {
                     msg = ex.Message;
                     MyClass.Msg.Show(msg);
+
                 }
 
             }
@@ -131,7 +132,7 @@ namespace CHICERP_LogisticsClient
                 {
                     dataGridView1.Rows.RemoveAt(intRow);
                 }
-                MyClass.Msg.Show(a + "||" + msg);
+              //  MyClass.Msg.Show(a + "||" + msg);
             }
         }
         private void Button_SelectPrint_Click(object sender, EventArgs e)
